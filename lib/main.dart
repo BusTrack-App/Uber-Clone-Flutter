@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:uber_clone/src/presentation/screens/auth/login/login_screen.dart';
+import 'package:uber_clone/src/presentation/screens/auth/register/register_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -16,7 +17,12 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
-      home: const LoginScreen(),
+      initialRoute: 'login',
+      routes: {
+        'login': (BuildContext context) => LoginScreen(),
+        'register': (BuildContext context) => RegisterScreen(),
+      },
+      // home: const LoginScreen(),
     );
   }
 }

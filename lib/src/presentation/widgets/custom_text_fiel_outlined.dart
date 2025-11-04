@@ -12,7 +12,7 @@ class CustomTextFielOutlined extends StatelessWidget {
     required this.text,
     required this.icon,
     required this.onChanged,
-    this.margin = const EdgeInsets.only(top: 50, left: 20, right: 20),
+    this.margin = const EdgeInsets.only(top: 25, left: 20, right: 20),
     this.validator
   });
 
@@ -37,7 +37,7 @@ class CustomTextFielOutlined extends StatelessWidget {
           label: Text(
             text,
             style: TextStyle(
-              color: Colors.white
+              color: Colors.black
             ),
           ),
           
@@ -61,12 +61,12 @@ class CustomTextFielOutlined extends StatelessWidget {
               children: [
                 Icon(
                   icon,
-                  color: Colors.white,
+                  color: Colors.black,
                 ),
                 Container(
                   height: 20,
                   width: 1,
-                  color: Colors.white,
+                  color: Colors.black,
                 )
               ],
             ),
