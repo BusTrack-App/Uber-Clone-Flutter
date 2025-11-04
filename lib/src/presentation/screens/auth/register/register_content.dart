@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:uber_clone/src/presentation/widgets/custom_button.dart';
 import 'package:uber_clone/src/presentation/widgets/custom_text_fiel_outlined.dart';
-import 'package:uber_clone/src/presentation/widgets/custom_text_field.dart';
 
 class RegisterContent extends StatelessWidget {
   const RegisterContent({super.key});
