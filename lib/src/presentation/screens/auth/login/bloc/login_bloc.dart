@@ -1,0 +1,27 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:uber_clone/src/presentation/screens/auth/login/bloc/login_event.dart';
+import 'package:uber_clone/src/presentation/screens/auth/login/bloc/login_state.dart';
+
+class LoginBloc extends Bloc<LoginEvent, LoginState> {
+  final formKey = GlobalKey<FormState>();
+
+  LoginBloc() : super(LoginState()) {
+    on<LoginInitEvent>((event, emit) {
+      emit(state.copyWith(formKey: formKey));
+    });
+
+    on<EmailChanged>((event, emit) {
+      emit(state.copyWith(email: event.email, formKey: formKey));
+    });
+
+    on<PasswordChanged>((event, emit) {
+      emit(state.copyWith(password: event.password));
+    });
+
+    on<FormSubmit>((event, emit) {
+      debugPrint('Email: ${state.email}');
+      debugPrint('Password: ${state.password}');
+    });
+  }
+}
