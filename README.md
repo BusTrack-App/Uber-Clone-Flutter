@@ -19,3 +19,4 @@ samples, guidance on mobile development, and a full API reference.
 
 Clean Architecture usado en este proyecto src/presentation, src/domain, src/data
 
+en el api_config.dart debe ponerse la url a del servidor a donde se hacen las peticiones
