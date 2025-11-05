@@ -1,15 +1,19 @@
 import 'package:injectable/injectable.dart';
+import 'package:uber_clone/src/data/dataSource/local/shared_pref.dart';
 import 'package:uber_clone/src/data/dataSource/remote/services/auth_service.dart';
 import 'package:uber_clone/src/data/repository/auth_repository_impl.dart';
 import 'package:uber_clone/src/domain/repository/auth_repository.dart';
 import 'package:uber_clone/src/domain/use_cases/auth/auth_use_case.dart';
+import 'package:uber_clone/src/domain/use_cases/auth/get_user_session_use_case.dart';
 import 'package:uber_clone/src/domain/use_cases/auth/login_use_case.dart';
 import 'package:uber_clone/src/domain/use_cases/auth/register_use_case.dart';
+import 'package:uber_clone/src/domain/use_cases/auth/save_session_user_use_case.dart';
 
 @module
 abstract class AppModule {
-  // @injectable
-  // SharefPref get sharefPref => SharefPref();
+  
+  @injectable
+  SharedPref get sharefPref => SharedPref();
 
   // @injectable
   // Socket get socket => io(
@@ -34,12 +38,14 @@ abstract class AppModule {
   AuthService get authService => AuthService();
 
   @injectable
-  AuthRepository get authRepository => AuthRepositoryImpl(authService);
+  AuthRepository get authRepository => AuthRepositoryImpl(authService, sharefPref);
 
   @injectable
   AuthUseCases get authUseCases => AuthUseCases(
     login: LoginUseCase(authRepository),
-    register: RegisterUseCase(authRepository)
+    register: RegisterUseCase(authRepository),
+    saveUserSession: SaveUserSessionUseCase(authRepository),
+    getUserSession: GetUserSessionUseCase(authRepository)
   );
 
   // @injectable

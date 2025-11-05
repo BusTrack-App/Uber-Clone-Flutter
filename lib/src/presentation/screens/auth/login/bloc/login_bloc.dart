@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:uber_clone/src/domain/models/auth_response.dart';
 import 'package:uber_clone/src/domain/use_cases/auth/auth_use_case.dart';
 import 'package:uber_clone/src/domain/utils/resource.dart';
 import 'package:uber_clone/src/presentation/screens/auth/login/bloc/login_event.dart';
@@ -15,21 +16,22 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
   LoginBloc(this.authUseCases): super(LoginState()) {
 
     on<LoginInitEvent>((event, emit) async {
-      // AuthResponse? authResponse = await authUseCases.getUserSession.run();
-      // debugPrint('Auth Response Session: ${authResponse.toJson()}');
+      AuthResponse? authResponse = await authUseCases.getUserSession.run();
+      debugPrint('Auth Response Session: ${authResponse?.toJson()}');
       emit(state.copyWith(formKey: formKey));
-      // emit(
-        // debugPrint('');
-        // state.copyWith(
-        //   response: Success(authResponse),
-        //   formKey: formKey
-        // )
-      // );
+      if (authResponse != null) {
+        emit(
+          state.copyWith(
+            response: Success(authResponse),
+            formKey: formKey
+          )
+        );
+      }
     });
 
-    // on<SaveUserSession>((event, emit) async {
-    //   await authUseCases.saveUserSession.run(event.authResponse);
-    // });
+    on<SaveUserSession>((event, emit) async {
+      await authUseCases.saveUserSession.run(event.authResponse);
+    });
 
     on<EmailChanged>((event, emit) {
       // event.email  LO QUE EL USUARIO ESTA ESCRIBIENDO

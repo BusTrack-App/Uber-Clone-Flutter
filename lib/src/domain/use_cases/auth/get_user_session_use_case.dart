@@ -6,6 +6,6 @@ class GetUserSessionUseCase {
 
   GetUserSessionUseCase(this.authRepository);
 
-  // run() => authRepository.getUserSession();
+  run() => authRepository.getUserSession();
 
 }

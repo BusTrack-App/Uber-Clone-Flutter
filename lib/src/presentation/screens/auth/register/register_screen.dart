@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:uber_clone/src/domain/models/auth_response.dart';
 import 'package:uber_clone/src/domain/utils/resource.dart';
 import 'package:uber_clone/src/presentation/screens/auth/register/bloc/register_bloc.dart';
 import 'package:uber_clone/src/presentation/screens/auth/register/bloc/register_event.dart';
@@ -25,10 +26,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
             Fluttertoast.showToast(msg: response.message, toastLength: Toast.LENGTH_LONG);
           }
           else if (response is Success) {
-            // final authResponse = response.data as AuthResponse;
+            final authResponse = response.data as AuthResponse;
             context.read<RegisterBloc>().add(FormReset());
-            // context.read<RegisterBloc>().add(SaveUserSession(authResponse: authResponse));
-            // Navigator.pushNamedAndRemoveUntil(context, 'client/home', (route) => false);
+            context.read<RegisterBloc>().add(SaveUserSession(authResponse: authResponse));
+            Navigator.pushNamedAndRemoveUntil(context, 'client/home', (route) => false);
           }
         },
         child: BlocBuilder<RegisterBloc, RegisterState>(

@@ -1,4 +1,5 @@
 
+import 'package:uber_clone/src/domain/models/auth_response.dart';
 import 'package:uber_clone/src/presentation/utils/bloc_form_item.dart';
 
 abstract class RegisterEvent {}
@@ -33,6 +34,11 @@ class PasswordChanged extends RegisterInitEvent {
 class ConfirmPasswordChanged extends RegisterInitEvent {
   final BlocFormItem confirmPassword;
   ConfirmPasswordChanged({ required this.confirmPassword });
+}
+
+class SaveUserSession extends RegisterInitEvent {
+  final AuthResponse authResponse;
+  SaveUserSession({ required this.authResponse });
 }
 
 class FormSubmit extends RegisterInitEvent {}

@@ -5,6 +5,7 @@ import 'package:uber_clone/bloc_providers.dart';
 import 'package:uber_clone/injection.dart';
 import 'package:uber_clone/src/presentation/screens/auth/login/login_screen.dart';
 import 'package:uber_clone/src/presentation/screens/auth/register/register_screen.dart';
+import 'package:uber_clone/src/presentation/screens/client/home/client_home_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -32,6 +33,7 @@ class MyApp extends StatelessWidget {
         routes: {
           'login': (BuildContext context) => LoginScreen(),
           'register': (BuildContext context) => RegisterScreen(),
+          'client/home': (BuildContext context) => ClientHomeScreen(),
         },
       ),
     );
