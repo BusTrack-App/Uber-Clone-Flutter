@@ -1,16 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:uber_clone/src/domain/use_cases/auth/auth_use_case.dart';
+import 'package:uber_clone/src/domain/utils/resource.dart';
 import 'package:uber_clone/src/presentation/screens/auth/register/bloc/register_event.dart';
 import 'package:uber_clone/src/presentation/screens/auth/register/bloc/register_state.dart';
 import 'package:uber_clone/src/presentation/utils/bloc_form_item.dart';
 
 class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
-
+  AuthUseCases authUseCases;
   final formKey = GlobalKey<FormState>();
 
-  RegisterBloc(locator) : super(RegisterState()) {
+  RegisterBloc(this.authUseCases) : super(RegisterState()) {
     on<RegisterInitEvent>((event, emit) {
-      emit(state.copyWith( formKey: formKey ));
+      emit(state.copyWith(formKey: formKey));
     });
 
     on<NameChanged>((event, emit) {
@@ -18,10 +20,10 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
         state.copyWith(
           name: BlocFormItem(
             value: event.name.value,
-            error: event.name.value.isEmpty ? 'Ingresa el nombre' : null
+            error: event.name.value.isEmpty ? 'Ingresa el nombre' : null,
           ),
-          formKey: formKey
-        )
+          formKey: formKey,
+        ),
       );
     });
 
@@ -30,10 +32,10 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
         state.copyWith(
           lastname: BlocFormItem(
             value: event.lastname.value,
-            error: event.lastname.value.isEmpty ? 'Ingresa el apellido' : null
+            error: event.lastname.value.isEmpty ? 'Ingresa el apellido' : null,
           ),
-          formKey: formKey
-        )
+          formKey: formKey,
+        ),
       );
     });
 
@@ -42,10 +44,10 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
         state.copyWith(
           email: BlocFormItem(
             value: event.email.value,
-            error: event.email.value.isEmpty ? 'Ingresa el email' : null
+            error: event.email.value.isEmpty ? 'Ingresa el email' : null,
           ),
-          formKey: formKey
-        )
+          formKey: formKey,
+        ),
       );
     });
 
@@ -54,10 +56,10 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
         state.copyWith(
           phone: BlocFormItem(
             value: event.phone.value,
-            error: event.phone.value.isEmpty ? 'Ingresa el telefono' : null
+            error: event.phone.value.isEmpty ? 'Ingresa el telefono' : null,
           ),
-          formKey: formKey
-        )
+          formKey: formKey,
+        ),
       );
     });
 
@@ -66,14 +68,14 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
         state.copyWith(
           password: BlocFormItem(
             value: event.password.value,
-            error: event.password.value.isEmpty 
-              ? 'Ingresa el Password' 
-              : event.password.value.length < 6 
-                ? 'Mas de 6 caracteres' 
-                : null
+            error: event.password.value.isEmpty
+                ? 'Ingresa el Password'
+                : event.password.value.length < 6
+                ? 'Mas de 6 caracteres'
+                : null,
           ),
-          formKey: formKey
-        )
+          formKey: formKey,
+        ),
       );
     });
 
@@ -82,26 +84,40 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
         state.copyWith(
           confirmPassword: BlocFormItem(
             value: event.confirmPassword.value,
-            error: event.confirmPassword.value.isEmpty 
-              ? 'Confirma el password' 
-              : event.confirmPassword.value.length < 6 
-                ? 'Mas de 6 caracteres' 
-                : event.confirmPassword.value != state.password.value 
-                  ? 'Los password no coinciden'
-                  : null
+            error: event.confirmPassword.value.isEmpty
+                ? 'Confirma el password'
+                : event.confirmPassword.value.length < 6
+                ? 'Mas de 6 caracteres'
+                : event.confirmPassword.value != state.password.value
+                ? 'Los password no coinciden'
+                : null,
           ),
-          formKey: formKey
-        )
+          formKey: formKey,
+        ),
       );
     });
 
-    on<FormSubmit>((event, emit) {
+    on<FormSubmit>((event, emit) async {
       debugPrint('Name: ${state.name.value}');
       debugPrint('LastName: ${state.lastname.value}');
       debugPrint('email: ${state.email.value}');
       debugPrint('phone: ${state.phone.value}');
       debugPrint('password: ${state.password.value}');
       debugPrint('confirmPassword: ${state.confirmPassword.value}');
+
+      emit(
+        state.copyWith(
+          response: Loading(),
+          formKey: formKey
+        )
+      );
+      Resource response = await authUseCases.register.run(state.toUser());
+      emit(
+        state.copyWith(
+          response: response,
+          formKey: formKey
+        )
+      );
     });
 
     on<FormReset>((event, emit) {

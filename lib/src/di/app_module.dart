@@ -4,6 +4,7 @@ import 'package:uber_clone/src/data/repository/auth_repository_impl.dart';
 import 'package:uber_clone/src/domain/repository/auth_repository.dart';
 import 'package:uber_clone/src/domain/use_cases/auth/auth_use_case.dart';
 import 'package:uber_clone/src/domain/use_cases/auth/login_use_case.dart';
+import 'package:uber_clone/src/domain/use_cases/auth/register_use_case.dart';
 
 @module
 abstract class AppModule {
@@ -37,7 +38,8 @@ abstract class AppModule {
 
   @injectable
   AuthUseCases get authUseCases => AuthUseCases(
-    login: LoginUseCase(authRepository)
+    login: LoginUseCase(authRepository),
+    register: RegisterUseCase(authRepository)
   );
 
   // @injectable
