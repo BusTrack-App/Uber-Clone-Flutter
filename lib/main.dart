@@ -6,6 +6,7 @@ import 'package:uber_clone/injection.dart';
 import 'package:uber_clone/src/presentation/screens/auth/login/login_screen.dart';
 import 'package:uber_clone/src/presentation/screens/auth/register/register_screen.dart';
 import 'package:uber_clone/src/presentation/screens/client/home/client_home_screen.dart';
+import 'package:uber_clone/src/presentation/screens/profile/update/profile_update_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -34,6 +35,7 @@ class MyApp extends StatelessWidget {
           'login': (BuildContext context) => LoginScreen(),
           'register': (BuildContext context) => RegisterScreen(),
           'client/home': (BuildContext context) => ClientHomeScreen(),
+          'profile/update': (BuildContext context) => ProfileUpdateScreen(),
         },
       ),
     );
