@@ -5,7 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:uber_clone/src/domain/models/auth_response.dart';
 import 'package:uber_clone/src/domain/use_cases/auth/auth_use_case.dart';
-import 'package:uber_clone/src/domain/use_cases/users/users_use_case.dart';
+import 'package:uber_clone/src/domain/use_cases/users/user_use_case.dart';
 import 'package:uber_clone/src/domain/utils/resource.dart';
 import 'package:uber_clone/src/presentation/screens/profile/update/bloc/profile_update_event.dart';
 import 'package:uber_clone/src/presentation/screens/profile/update/bloc/profile_update_state.dart';

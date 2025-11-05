@@ -2,7 +2,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:uber_clone/injection.dart';
 import 'package:uber_clone/src/domain/use_cases/auth/auth_use_case.dart';
-import 'package:uber_clone/src/domain/use_cases/users/users_use_case.dart';
+import 'package:uber_clone/src/domain/use_cases/users/user_use_case.dart';
 import 'package:uber_clone/src/presentation/screens/auth/login/bloc/login_bloc.dart';
 import 'package:uber_clone/src/presentation/screens/auth/login/bloc/login_event.dart';
 import 'package:uber_clone/src/presentation/screens/auth/register/bloc/register_bloc.dart';
