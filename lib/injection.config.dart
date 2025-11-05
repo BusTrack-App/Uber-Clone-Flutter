@@ -18,10 +18,14 @@ import 'package:uber_clone/src/data/dataSource/remote/services/users_service.dar
     as _i720;
 import 'package:uber_clone/src/di/app_module.dart' as _i807;
 import 'package:uber_clone/src/domain/repository/auth_repository.dart' as _i291;
+import 'package:uber_clone/src/domain/repository/geolocator_repository.dart'
+    as _i617;
 import 'package:uber_clone/src/domain/repository/users_repository.dart'
     as _i374;
 import 'package:uber_clone/src/domain/use_cases/auth/auth_use_case.dart'
     as _i180;
+import 'package:uber_clone/src/domain/use_cases/geolocator/geolocator_use_cases.dart'
+    as _i974;
 import 'package:uber_clone/src/domain/use_cases/users/user_use_case.dart'
     as _i49;
 
@@ -41,6 +45,10 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i374.UsersRepository>(() => appModule.usersRepository);
     gh.factory<_i49.UsersUseCases>(() => appModule.usersUseCases);
     gh.factory<_i720.UsersService>(() => appModule.usersService);
+    gh.factory<_i617.GeolocatorRepository>(
+      () => appModule.geolocatorRepository,
+    );
+    gh.factory<_i974.GeolocatorUseCases>(() => appModule.geolocatorUseCases);
     return this;
   }
 }
