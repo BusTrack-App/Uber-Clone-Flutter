@@ -6,8 +6,13 @@ import 'package:uber_clone/src/presentation/screens/auth/login/bloc/login_bloc.d
 import 'package:uber_clone/src/presentation/screens/auth/login/bloc/login_event.dart';
 import 'package:uber_clone/src/presentation/screens/auth/register/bloc/register_bloc.dart';
 import 'package:uber_clone/src/presentation/screens/auth/register/bloc/register_event.dart';
+import 'package:uber_clone/src/presentation/screens/client/home/bloc/client_home_bloc.dart';
 
 List<BlocProvider> blocProviders = [
   BlocProvider<LoginBloc>(create: (context) => LoginBloc(locator<AuthUseCases>())..add(LoginInitEvent())),
   BlocProvider<RegisterBloc>(create: (context) => RegisterBloc(locator<AuthUseCases>())..add(RegisterInitEvent())),
+
+  // Vista del Home
+  BlocProvider<ClientHomeBloc>(create: (context) => ClientHomeBloc(locator<AuthUseCases>())),
+
 ];
