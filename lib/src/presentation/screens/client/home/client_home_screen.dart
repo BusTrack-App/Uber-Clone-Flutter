@@ -4,6 +4,7 @@ import 'package:uber_clone/main.dart';
 import 'package:uber_clone/src/presentation/screens/client/home/bloc/client_home_bloc.dart';
 import 'package:uber_clone/src/presentation/screens/client/home/bloc/client_home_event.dart';
 import 'package:uber_clone/src/presentation/screens/client/home/bloc/client_home_state.dart';
+import 'package:uber_clone/src/presentation/screens/client/map_seeker/client_map_seecker_screen.dart';
 import 'package:uber_clone/src/presentation/screens/profile/info/profile_info_screen.dart';
 
 class ClientHomeScreen extends StatefulWidget {
@@ -15,7 +16,7 @@ class ClientHomeScreen extends StatefulWidget {
 
 class _ClientHomeScreenState extends State<ClientHomeScreen> {
   List<Widget> pageList = <Widget>[
-    // ClientMapSeekerPage(),
+    ClientMapSeeckerScreen(),
     // ClientHistoryTripPage(),
     ProfileInfoScreen(),
     // RolesPage(),
@@ -53,11 +54,21 @@ class _ClientHomeScreenState extends State<ClientHomeScreen> {
                   ),
                 ),
                 ListTile(
-                  title: Text('Perfil del usuario'),
+                  title: Text('Mapa de busqueda'),
                   selected: state.pageIndex == 0,
                   onTap: () {
                     context.read<ClientHomeBloc>().add(
                       ChangeDrawerPage(pageIndex: 0),
+                    );
+                    Navigator.pop(context);
+                  },
+                ),
+                ListTile(
+                  title: Text('Perfil del usuario'),
+                  selected: state.pageIndex == 1,
+                  onTap: () {
+                    context.read<ClientHomeBloc>().add(
+                      ChangeDrawerPage(pageIndex: 1),
                     );
                     Navigator.pop(context);
                   },
