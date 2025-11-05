@@ -3,9 +3,11 @@ import 'package:uber_clone/src/data/dataSource/local/shared_pref.dart';
 import 'package:uber_clone/src/data/dataSource/remote/services/auth_service.dart';
 import 'package:uber_clone/src/data/dataSource/remote/services/users_service.dart';
 import 'package:uber_clone/src/data/repository/auth_repository_impl.dart';
+import 'package:uber_clone/src/data/repository/geolocator_repository_impl.dart';
 import 'package:uber_clone/src/data/repository/users_repository_impl.dart';
 import 'package:uber_clone/src/domain/models/auth_response.dart';
 import 'package:uber_clone/src/domain/repository/auth_repository.dart';
+import 'package:uber_clone/src/domain/repository/geolocator_repository.dart';
 import 'package:uber_clone/src/domain/repository/users_repository.dart';
 import 'package:uber_clone/src/domain/use_cases/auth/auth_use_case.dart';
 import 'package:uber_clone/src/domain/use_cases/auth/get_user_session_use_case.dart';
@@ -13,6 +15,8 @@ import 'package:uber_clone/src/domain/use_cases/auth/login_use_case.dart';
 import 'package:uber_clone/src/domain/use_cases/auth/logout_use_case.dart';
 import 'package:uber_clone/src/domain/use_cases/auth/register_use_case.dart';
 import 'package:uber_clone/src/domain/use_cases/auth/save_session_user_use_case.dart';
+import 'package:uber_clone/src/domain/use_cases/geolocator/find_position_use_case.dart';
+import 'package:uber_clone/src/domain/use_cases/geolocator/geolocator_use_cases.dart';
 import 'package:uber_clone/src/domain/use_cases/users/update_notification_token_use_case.dart';
 import 'package:uber_clone/src/domain/use_cases/users/update_user_use_case.dart';
 import 'package:uber_clone/src/domain/use_cases/users/user_use_case.dart';
@@ -91,8 +95,18 @@ abstract class AppModule {
   // ClientRequestsRepository get clientRequestsRepository =>
   //     ClientRequestsRepositoryImpl(clientRequestsService);
 
-  // @injectable
-  // GeolocatorRepository get geolocatorRepository => GeolocatorRepositoryImpl();
+  @injectable
+  GeolocatorRepository get geolocatorRepository => GeolocatorRepositoryImpl();
+
+  @injectable
+  GeolocatorUseCases get geolocatorUseCases => GeolocatorUseCases(
+      findPosition: FindPositionUseCase(geolocatorRepository)
+      // createMarker: CreateMarkerUseCase(geolocatorRepository),
+      // getMarker: GetMarkerUseCase(geolocatorRepository),
+      // getPlacemarkData: GetPlacemarkDataUseCase(geolocatorRepository),
+      // getPolyline: GetPolylineUseCase(geolocatorRepository),
+      // getPositionStream: GetPositionStreamUseCase(geolocatorRepository)
+    );
 
   // @injectable
   // DriverPositionRepository get driversPositionRepository =>
@@ -108,14 +122,7 @@ abstract class AppModule {
 
 
 
-  // @injectable
-  // GeolocatorUseCases get geolocatorUseCases => GeolocatorUseCases(
-  //     findPosition: FindPositionUseCase(geolocatorRepository),
-  //     createMarker: CreateMarkerUseCase(geolocatorRepository),
-  //     getMarker: GetMarkerUseCase(geolocatorRepository),
-  //     getPlacemarkData: GetPlacemarkDataUseCase(geolocatorRepository),
-  //     getPolyline: GetPolylineUseCase(geolocatorRepository),
-  //     getPositionStream: GetPositionStreamUseCase(geolocatorRepository));
+
 
   // @injectable
   // SocketUseCases get socketUseCases => SocketUseCases(

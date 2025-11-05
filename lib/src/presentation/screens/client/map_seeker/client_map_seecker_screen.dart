@@ -1,7 +1,10 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:uber_clone/src/presentation/screens/client/map_seeker/bloc/client_map_seeker_bloc.dart.dart';
+import 'package:uber_clone/src/presentation/screens/client/map_seeker/bloc/client_map_seeker_state.dart';
 
 class ClientMapSeeckerScreen extends StatefulWidget {
   const ClientMapSeeckerScreen({super.key});
@@ -29,11 +32,15 @@ class ClientMapSeeckerScreenState extends State<ClientMapSeeckerScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: GoogleMap(
-        mapType: MapType.normal,
-        initialCameraPosition: _kGooglePlex,
-        onMapCreated: (GoogleMapController controller) {
-          _controller.complete(controller);
+      body: BlocBuilder<ClientMapSeekerBloc, ClientMapSeekerState>(
+        builder: (context, state) {
+          return GoogleMap(
+            mapType: MapType.normal,
+            initialCameraPosition: _kGooglePlex,
+            onMapCreated: (GoogleMapController controller) {
+              _controller.complete(controller);
+            },
+          );
         },
       ),
       floatingActionButton: FloatingActionButton.extended(
