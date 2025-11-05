@@ -8,7 +8,7 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
 
   final formKey = GlobalKey<FormState>();
 
-  RegisterBloc() : super(RegisterState()) {
+  RegisterBloc(locator) : super(RegisterState()) {
     on<RegisterInitEvent>((event, emit) {
       emit(state.copyWith( formKey: formKey ));
     });

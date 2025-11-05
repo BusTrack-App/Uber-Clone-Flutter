@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:uber_clone/bloc_providers.dart';
+import 'package:uber_clone/injection.dart';
 import 'package:uber_clone/src/presentation/screens/auth/login/login_screen.dart';
 import 'package:uber_clone/src/presentation/screens/auth/register/register_screen.dart';
 
-void main() {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await configureDependencies();
   runApp(const MyApp());
 }
 
