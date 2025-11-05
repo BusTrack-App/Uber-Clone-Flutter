@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:uber_clone/main.dart';
 import 'package:uber_clone/src/presentation/screens/client/home/bloc/client_home_bloc.dart';
 import 'package:uber_clone/src/presentation/screens/client/home/bloc/client_home_event.dart';
 import 'package:uber_clone/src/presentation/screens/client/home/bloc/client_home_state.dart';
@@ -61,6 +62,18 @@ class _ClientHomeScreenState extends State<ClientHomeScreen> {
                     Navigator.pop(context);
                   },
                 ),
+                ListTile(
+                  title: Text('Cerrar sesion'),
+                  onTap: () {
+                    context.read<ClientHomeBloc>().add(Logout());
+                    // context.read<BlocSocketIO>().add(DisconnectSocketIO());
+                    Navigator.pushAndRemoveUntil(
+                      context, 
+                      MaterialPageRoute(builder: (context) => MyApp()), 
+                      (route) => false
+                    );
+                  },
+                )
               ],
             ),
           );

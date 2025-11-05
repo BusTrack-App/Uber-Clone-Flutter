@@ -6,6 +6,7 @@ import 'package:uber_clone/src/domain/repository/auth_repository.dart';
 import 'package:uber_clone/src/domain/use_cases/auth/auth_use_case.dart';
 import 'package:uber_clone/src/domain/use_cases/auth/get_user_session_use_case.dart';
 import 'package:uber_clone/src/domain/use_cases/auth/login_use_case.dart';
+import 'package:uber_clone/src/domain/use_cases/auth/logout_use_case.dart';
 import 'package:uber_clone/src/domain/use_cases/auth/register_use_case.dart';
 import 'package:uber_clone/src/domain/use_cases/auth/save_session_user_use_case.dart';
 
@@ -45,7 +46,8 @@ abstract class AppModule {
     login: LoginUseCase(authRepository),
     register: RegisterUseCase(authRepository),
     saveUserSession: SaveUserSessionUseCase(authRepository),
-    getUserSession: GetUserSessionUseCase(authRepository)
+    getUserSession: GetUserSessionUseCase(authRepository),
+    logout: LogoutUseCase(authRepository)
   );
 
   // @injectable

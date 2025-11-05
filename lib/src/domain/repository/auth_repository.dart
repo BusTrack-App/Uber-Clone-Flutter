@@ -9,5 +9,5 @@ abstract class AuthRepository {
   Future<Resource<AuthResponse>> register(User user);
   Future<void> saveUserSession(AuthResponse authResponse);
   Future<AuthResponse?> getUserSession();
-  // Future<bool> logout();
+  Future<bool> logout();
 }

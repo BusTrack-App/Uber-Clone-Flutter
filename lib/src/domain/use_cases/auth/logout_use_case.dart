@@ -7,6 +7,6 @@ class LogoutUseCase {
 
   LogoutUseCase(this.authRepository);
 
-  // run() => authRepository.logout();
+  run() => authRepository.logout();
 
 }
