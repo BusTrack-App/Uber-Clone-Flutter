@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:uber_clone/bloc_providers.dart';
 import 'package:uber_clone/injection.dart';
 import 'package:uber_clone/src/presentation/screens/auth/login/login_screen.dart';
@@ -20,6 +21,7 @@ class MyApp extends StatelessWidget {
     return MultiBlocProvider(
       providers: blocProviders,
       child: MaterialApp(
+        builder: FToastBuilder(),
         title: 'Flutter Demo',
         debugShowCheckedModeBanner: false,
         theme: ThemeData(

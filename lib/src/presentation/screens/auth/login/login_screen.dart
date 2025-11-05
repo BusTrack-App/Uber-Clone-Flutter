@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:uber_clone/src/domain/utils/resource.dart';
 import 'package:uber_clone/src/presentation/screens/auth/login/bloc/login_bloc.dart';
 import 'package:uber_clone/src/presentation/screens/auth/login/bloc/login_event.dart';
@@ -30,10 +31,11 @@ class _LoginScreenState extends State<LoginScreen> {
         listener: (context, state) {
           final response = state.response;
           if (response is ErrorData) {
+            Fluttertoast.showToast(msg: response.message, toastLength: Toast.LENGTH_SHORT);
             debugPrint('Error: ${response.message}');
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(response.message)),
-            );
+            ScaffoldMessenger.of(
+              context,
+            ).showSnackBar(SnackBar(content: Text(response.message)));
           } else if (response is Success) {
             debugPrint('Éxito: ${response.data}');
             // Aquí puedes navegar al home
@@ -47,9 +49,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 children: [
                   LoginContent(state),
                   const Center(
-                    child: CircularProgressIndicator(
-                      color: Colors.white,
-                    ),
+                    child: CircularProgressIndicator(color: Colors.white),
                   ),
                 ],
               );
