@@ -15,8 +15,10 @@ import 'package:uber_clone/src/domain/use_cases/auth/login_use_case.dart';
 import 'package:uber_clone/src/domain/use_cases/auth/logout_use_case.dart';
 import 'package:uber_clone/src/domain/use_cases/auth/register_use_case.dart';
 import 'package:uber_clone/src/domain/use_cases/auth/save_session_user_use_case.dart';
+import 'package:uber_clone/src/domain/use_cases/geolocator/create_marker_use_case.dart';
 import 'package:uber_clone/src/domain/use_cases/geolocator/find_position_use_case.dart';
 import 'package:uber_clone/src/domain/use_cases/geolocator/geolocator_use_cases.dart';
+import 'package:uber_clone/src/domain/use_cases/geolocator/get_marker_use_case.dart';
 import 'package:uber_clone/src/domain/use_cases/users/update_notification_token_use_case.dart';
 import 'package:uber_clone/src/domain/use_cases/users/update_user_use_case.dart';
 import 'package:uber_clone/src/domain/use_cases/users/user_use_case.dart';
@@ -100,9 +102,9 @@ abstract class AppModule {
 
   @injectable
   GeolocatorUseCases get geolocatorUseCases => GeolocatorUseCases(
-      findPosition: FindPositionUseCase(geolocatorRepository)
-      // createMarker: CreateMarkerUseCase(geolocatorRepository),
-      // getMarker: GetMarkerUseCase(geolocatorRepository),
+      findPosition: FindPositionUseCase(geolocatorRepository),
+      createMarker: CreateMarkerUseCase(geolocatorRepository),
+      getMarker: GetMarkerUseCase(geolocatorRepository),
       // getPlacemarkData: GetPlacemarkDataUseCase(geolocatorRepository),
       // getPolyline: GetPolylineUseCase(geolocatorRepository),
       // getPositionStream: GetPositionStreamUseCase(geolocatorRepository)

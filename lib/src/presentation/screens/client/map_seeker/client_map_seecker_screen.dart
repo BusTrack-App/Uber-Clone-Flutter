@@ -35,6 +35,7 @@ class ClientMapSeeckerScreenState extends State<ClientMapSeeckerScreen> {
           return GoogleMap(
             mapType: MapType.normal,
             initialCameraPosition: _kGooglePlex,
+            markers: Set<Marker>.of(state.markers.values),
             onMapCreated: (GoogleMapController controller) {
               state.controller?.complete(controller);
             },

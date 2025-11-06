@@ -8,10 +8,11 @@ import 'package:uber_clone/src/domain/use_cases/geolocator/geolocator_use_cases.
 import 'package:uber_clone/src/presentation/screens/client/map_seeker/bloc/client_map_seeker_event.dart.dart';
 import 'package:uber_clone/src/presentation/screens/client/map_seeker/bloc/client_map_seeker_state.dart';
 
-class ClientMapSeekerBloc extends Bloc<ClientMapSeekerEvent, ClientMapSeekerState> {
-  
+class ClientMapSeekerBloc
+    extends Bloc<ClientMapSeekerEvent, ClientMapSeekerState> {
   GeolocatorUseCases geolocatorUseCases;
-  final Completer<GoogleMapController> controller = Completer<GoogleMapController>();
+  final Completer<GoogleMapController> controller =
+      Completer<GoogleMapController>();
 
   ClientMapSeekerBloc(this.geolocatorUseCases) : super(ClientMapSeekerState()) {
     on<ClientMapSeekerInitEvent>((event, emit) {
@@ -20,13 +21,34 @@ class ClientMapSeekerBloc extends Bloc<ClientMapSeekerEvent, ClientMapSeekerStat
 
     on<FindPosition>((event, emit) async {
       Position position = await geolocatorUseCases.findPosition.run();
-      emit(state.copyWith(position: position, controller: controller));
       add(
         ChangeMapCameraPosition(
           lat: position.latitude,
           lng: position.longitude,
         ),
       );
+      BitmapDescriptor imageMarker = await geolocatorUseCases.createMarker.run(
+        'assets/img/location_blue.png',
+      );
+      Marker marker = geolocatorUseCases.getMarker.run(
+        'MyLocation',
+        position.latitude,
+        position.longitude,
+        'Mi Posicion',
+        '',
+        imageMarker,
+      );
+
+      emit(
+        state.copyWith(
+          position: position,
+          markers: {
+            marker.mapsId: marker
+          },
+          controller: controller
+        )
+      );
+
       debugPrint('Position Lat: ${position.latitude}');
       debugPrint('Position Lng: ${position.longitude}');
     });
