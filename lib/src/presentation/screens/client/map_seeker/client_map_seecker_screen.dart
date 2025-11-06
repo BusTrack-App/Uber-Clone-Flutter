@@ -68,6 +68,15 @@ class ClientMapSeeckerScreenState extends State<ClientMapSeeckerScreen> {
                       GooglePlacesAutoComplete(pickUpController, 'Desde', (
                         prediction,
                       ) {
+                        // ignore: unnecessary_null_comparison
+                        if (prediction != null) {
+                          context.read<ClientMapSeekerBloc>().add(
+                            ChangeMapCameraPosition(
+                              lat: double.parse(prediction.lat!),
+                              lng: double.parse(prediction.lng!),
+                            ),
+                          );
+                        }
                         debugPrint('Lugar de recogida lat: ${prediction.lat}');
                         debugPrint('Lugar de recogida lng: ${prediction.lng}');
                       }),
