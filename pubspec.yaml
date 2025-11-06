@@ -50,7 +50,7 @@ dependencies:
   google_maps_flutter: ^2.14.0
   geolocator: ^14.0.2
   google_places_flutter: ^2.1.1
-
+  geocoding: ^4.0.0
 
 
 dev_dependencies:
