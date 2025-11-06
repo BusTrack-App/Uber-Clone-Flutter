@@ -48,3 +48,4 @@ android/app/src/main/AndroidManifest.xml
 android/app/src/main/AndroidManifest.xml
 android/app/src/main/AndroidManifest.xml
 lib/src/data/api/ApiKeyGoogle.dart
+lib/src/data/api/ApiKeyGoogle.dart

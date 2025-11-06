@@ -17,11 +17,6 @@ class ClientMapSeeckerScreenState extends State<ClientMapSeeckerScreen> {
   TextEditingController pickUpController = TextEditingController();
   TextEditingController destinationController = TextEditingController();
 
-  static const CameraPosition _kGooglePlex = CameraPosition(
-    target: LatLng(37.42796133580664, -122.085749655962),
-    zoom: 14.4746,
-  );
-
   @override
   void initState() {
     super.initState();
@@ -40,8 +35,17 @@ class ClientMapSeeckerScreenState extends State<ClientMapSeeckerScreen> {
             children: [
               GoogleMap(
                 mapType: MapType.normal,
-                initialCameraPosition: _kGooglePlex,
+                initialCameraPosition: state.cameraPosition,
                 markers: Set<Marker>.of(state.markers.values),
+                onCameraMove: (CameraPosition cameraPosition) {
+                  context.read<ClientMapSeekerBloc>().add(
+                    OnCameraMove(cameraPosition: cameraPosition),
+                  );
+                },
+                onCameraIdle: () async {
+                  context.read<ClientMapSeekerBloc>().add(OnCameraIdle());
+                  pickUpController.text = state.placemarkData?.address ?? '';
+                },
                 onMapCreated: (GoogleMapController controller) {
                   // ignore: deprecated_member_use
                   controller.setMapStyle(
@@ -78,10 +82,19 @@ class ClientMapSeeckerScreenState extends State<ClientMapSeeckerScreen> {
                   ),
                 ),
               ),
+              _iconMyLocation(),
             ],
           );
         },
       ),
+    );
+  }
+
+  Widget _iconMyLocation() {
+    return Container(
+      margin: EdgeInsets.only(bottom: 25),
+      alignment: Alignment.center,
+      child: Image.asset('assets/img/location_blue.png', width: 50, height: 50),
     );
   }
 }

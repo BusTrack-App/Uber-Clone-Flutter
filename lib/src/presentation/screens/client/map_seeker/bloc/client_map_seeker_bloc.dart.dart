@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:uber_clone/src/domain/models/placemark_data.dart';
 import 'package:uber_clone/src/domain/use_cases/geolocator/geolocator_use_cases.dart';
 import 'package:uber_clone/src/presentation/screens/client/map_seeker/bloc/client_map_seeker_event.dart.dart';
 import 'package:uber_clone/src/presentation/screens/client/map_seeker/bloc/client_map_seeker_state.dart';
@@ -22,17 +23,17 @@ class ClientMapSeekerBloc extends Bloc<ClientMapSeekerEvent, ClientMapSeekerStat
     on<FindPosition>((event, emit) async {
       Position position = await geolocatorUseCases.findPosition.run();
 
-      BitmapDescriptor imageMarker = await geolocatorUseCases.createMarker.run(
-        'assets/img/location_blue.png',
-      );
-      Marker marker = geolocatorUseCases.getMarker.run(
-        'MyLocation',
-        position.latitude,
-        position.longitude,
-        'Mi Posicion',
-        '',
-        imageMarker,
-      );
+      // BitmapDescriptor imageMarker = await geolocatorUseCases.createMarker.run(
+      //   'assets/img/location_blue.png',
+      // );
+      // Marker marker = geolocatorUseCases.getMarker.run(
+      //   'MyLocation',
+      //   position.latitude,
+      //   position.longitude,
+      //   'Mi Posicion',
+      //   '',
+      //   imageMarker,
+      // );
       add(
         ChangeMapCameraPosition(
           lat: position.latitude,
@@ -42,9 +43,9 @@ class ClientMapSeekerBloc extends Bloc<ClientMapSeekerEvent, ClientMapSeekerStat
       emit(
         state.copyWith(
           position: position,
-          markers: {
-            marker.mapsId: marker
-          },
+          // markers: {
+          //   marker.mapsId: marker
+          // },
         )
       );
 
@@ -69,5 +70,19 @@ class ClientMapSeekerBloc extends Bloc<ClientMapSeekerEvent, ClientMapSeekerStat
         debugPrint('ERROR EN ChangeMapCameraPosition: $e');
       }
     });
+
+    on<OnCameraMove>((event, emit) {
+      emit(state.copyWith(cameraPosition: event.cameraPosition));
+    });
+
+    on<OnCameraIdle>((event, emit) async {
+      try {
+        PlacemarkData placemarkData = await geolocatorUseCases.getPlacemarkData.run(state.cameraPosition);
+        emit(state.copyWith(placemarkData: placemarkData));
+      } catch (e) {
+        debugPrint('OnCameraIdle Error: $e');
+      }
+    });
+
   }
 }

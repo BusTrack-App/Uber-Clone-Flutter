@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:uber_clone/src/domain/models/placemark_data.dart';
 import 'package:uber_clone/src/domain/repository/geolocator_repository.dart';
 
 class GeolocatorRepositoryImpl implements GeolocatorRepository {
-
-
   @override
   Future<Position> findPosition() async {
     bool serviceEnabled;
@@ -28,7 +28,8 @@ class GeolocatorRepositoryImpl implements GeolocatorRepository {
     if (permission == LocationPermission.deniedForever) {
       debugPrint('Permiso no otorgado por el usuario permanentemente');
       return Future.error(
-          'Location permissions are permanently denied, we cannot request permissions.');
+        'Location permissions are permanently denied, we cannot request permissions.',
+      );
     }
     return await Geolocator.getCurrentPosition();
   }
@@ -43,41 +44,52 @@ class GeolocatorRepositoryImpl implements GeolocatorRepository {
   }
 
   @override
-  Marker getMarker(String markerId, double lat, double lng, String title,
-      String content, BitmapDescriptor imageMarker) {
+  Marker getMarker(
+    String markerId,
+    double lat,
+    double lng,
+    String title,
+    String content,
+    BitmapDescriptor imageMarker,
+  ) {
     MarkerId id = MarkerId(markerId);
     Marker marker = Marker(
-        markerId: id,
-        icon: imageMarker,
-        position: LatLng(lat, lng),
-        infoWindow: InfoWindow(title: title, snippet: content));
+      markerId: id,
+      icon: imageMarker,
+      position: LatLng(lat, lng),
+      infoWindow: InfoWindow(title: title, snippet: content),
+    );
     return marker;
   }
 
-  // @override
-  // Future<PlacemarkData?> getPlacemarkData(CameraPosition cameraPosition) async {
-  //   try {
-  //     double lat = cameraPosition.target.latitude;
-  //     double lng = cameraPosition.target.longitude;
-  //     List<Placemark> placemarkList = await placemarkFromCoordinates(lat, lng);
-  //     if (placemarkList != null) {
-  //       if (placemarkList.length > 0) {
-  //         String direction = placemarkList[0].thoroughfare!;
-  //         String street = placemarkList[0].subThoroughfare!;
-  //         String city = placemarkList[0].locality!;
-  //         String department = placemarkList[0].administrativeArea!;
-  //         PlacemarkData placemarkData = PlacemarkData(
-  //             address: '$direction, $street, $city, $department',
-  //             lat: lat,
-  //             lng: lng);
-  //         return placemarkData;
-  //       }
-  //     }
-  //   } catch (e) {
-  //     debugPrint('Error: $e');
-  //     return null;
-  //   }
-  // }
+  @override
+  Future<PlacemarkData?> getPlacemarkData(CameraPosition cameraPosition) async {
+    try {
+      double lat = cameraPosition.target.latitude;
+      double lng = cameraPosition.target.longitude;
+      List<Placemark> placemarkList = await placemarkFromCoordinates(lat, lng);
+      // ignore: unnecessary_null_comparison
+      if (placemarkList != null) {
+        // ignore: prefer_is_empty
+        if (placemarkList.length > 0) {
+          String direction = placemarkList[0].thoroughfare!;
+          String street = placemarkList[0].subThoroughfare!;
+          String city = placemarkList[0].locality!;
+          String department = placemarkList[0].administrativeArea!;
+          PlacemarkData placemarkData = PlacemarkData(
+            address: '$direction, $street, $city, $department',
+            lat: lat,
+            lng: lng,
+          );
+          return placemarkData;
+        }
+      }
+      return null;
+    } catch (e) {
+      debugPrint('Error: $e');
+      return null;
+    }
+  }
 
   // @override
   // Future<List<LatLng>> getPolyline(
@@ -99,5 +111,4 @@ class GeolocatorRepositoryImpl implements GeolocatorRepository {
   //   }
   //   return polylineCoordinates;
   // }
-
 }
