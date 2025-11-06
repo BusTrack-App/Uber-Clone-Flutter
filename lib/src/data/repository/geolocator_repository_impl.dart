@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:uber_clone/src/domain/models/placemark_data.dart';
 import 'package:uber_clone/src/domain/repository/geolocator_repository.dart';
 
 class GeolocatorRepositoryImpl implements GeolocatorRepository {
@@ -101,22 +100,4 @@ class GeolocatorRepositoryImpl implements GeolocatorRepository {
   //   return polylineCoordinates;
   // }
 
-  @override
-  Stream<Position> getPositionStream() {
-    LocationSettings locationSettings =
-        LocationSettings(accuracy: LocationAccuracy.best, distanceFilter: 1);
-    return Geolocator.getPositionStream(locationSettings: locationSettings);
-  }
-
-  @override
-  Future<PlacemarkData?> getPlacemarkData(CameraPosition cameraPosition) {
-    //  implement getPlacemarkData
-    throw UnimplementedError();
-  }
-
-  @override
-  Future<List<LatLng>> getPolyline(LatLng pickUpLatLng, LatLng destinationLatLng) {
-    //  implement getPolyline
-    throw UnimplementedError();
-  }
 }

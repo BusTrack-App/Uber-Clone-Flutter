@@ -1,9 +1,12 @@
+import 'dart:async';
+
 import 'package:equatable/equatable.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class ClientMapSeekerState extends Equatable {
 
-  // final Completer<GoogleMapController>? controller;
+  final Completer<GoogleMapController>? controller;
   final Position? position;
   // final CameraPosition cameraPosition;
   // final PlacemarkData? placemarkData;
@@ -15,7 +18,7 @@ class ClientMapSeekerState extends Equatable {
 
   const ClientMapSeekerState({
     this.position,
-    // this.controller,
+    this.controller,
     // this.cameraPosition = const CameraPosition(target: LatLng(4.7449125, -74.1113708), zoom: 14.0),
     // this.placemarkData,
     // this.pickUpLatLng,
@@ -27,7 +30,7 @@ class ClientMapSeekerState extends Equatable {
 
   ClientMapSeekerState copyWith({
     Position? position,
-    // Completer<GoogleMapController>? controller,
+    Completer<GoogleMapController>? controller,
     // CameraPosition? cameraPosition,
     // PlacemarkData? placemarkData,
     // LatLng? pickUpLatLng,
@@ -40,7 +43,7 @@ class ClientMapSeekerState extends Equatable {
     return ClientMapSeekerState(
       position: position ?? this.position,
       // markers: markers ?? this.markers,
-      // controller: controller ?? this.controller,
+      controller: controller ?? this.controller,
       // cameraPosition: cameraPosition ?? this.cameraPosition,
       // placemarkData: placemarkData ?? this.placemarkData,
       // pickUpLatLng: pickUpLatLng ?? this.pickUpLatLng,

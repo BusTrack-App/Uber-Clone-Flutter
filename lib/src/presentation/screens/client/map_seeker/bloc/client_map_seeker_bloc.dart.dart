@@ -1,23 +1,23 @@
+import 'dart:async';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:uber_clone/src/domain/use_cases/geolocator/geolocator_use_cases.dart';
 import 'package:uber_clone/src/presentation/screens/client/map_seeker/bloc/client_map_seeker_event.dart.dart';
 import 'package:uber_clone/src/presentation/screens/client/map_seeker/bloc/client_map_seeker_state.dart';
 
-class ClientMapSeekerBloc
-    extends Bloc<ClientMapSeekerEvent, ClientMapSeekerState> {
+class ClientMapSeekerBloc extends Bloc<ClientMapSeekerEvent, ClientMapSeekerState> {
   GeolocatorUseCases geolocatorUseCases;
-  // SocketUseCases socketUseCases;
-  // BlocSocketIO blocSocketIO;
+  final Completer<GoogleMapController> controller = Completer<GoogleMapController>();
 
-  ClientMapSeekerBloc(this.geolocatorUseCases)
-    // this.blocSocketIO, this.geolocatorUseCases, this.socketUseCases)
-    : super(ClientMapSeekerState()) {
-    // on<ClientMapSeekerInitEvent>((event, emit) {
-    // Completer<GoogleMapController> controller = Completer<GoogleMapController>();
-    // emit(state.copyWith(controller: controller));
-    // });
+  ClientMapSeekerBloc(this.geolocatorUseCases) : super(ClientMapSeekerState()) {
+
+
+    on<ClientMapSeekerInitEvent>((event, emit) {
+      emit(state.copyWith(controller: controller));
+    });
 
     on<FindPosition>((event, emit) async {
       Position position = await geolocatorUseCases.findPosition.run();
@@ -27,7 +27,7 @@ class ClientMapSeekerBloc
       //     lng: position.longitude,
       //   ),
       // );
-      emit(state.copyWith(position: position));
+      emit(state.copyWith(position: position, controller: controller));
       debugPrint('Position Lat: ${position.latitude}');
       debugPrint('Position Lng: ${position.longitude}');
     });
