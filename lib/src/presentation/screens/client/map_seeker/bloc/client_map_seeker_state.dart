@@ -58,7 +58,7 @@ class ClientMapSeekerState extends Equatable {
   List<Object?> get props => [
     position, 
     markers, 
-    // controller, 
+    controller, 
     // cameraPosition, 
     // placemarkData, 
     // pickUpLatLng, 
