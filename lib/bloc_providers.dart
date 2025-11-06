@@ -10,7 +10,6 @@ import 'package:uber_clone/src/presentation/screens/auth/register/bloc/register_
 import 'package:uber_clone/src/presentation/screens/auth/register/bloc/register_event.dart';
 import 'package:uber_clone/src/presentation/screens/client/home/bloc/client_home_bloc.dart';
 import 'package:uber_clone/src/presentation/screens/client/map_seeker/bloc/client_map_seeker_bloc.dart.dart';
-import 'package:uber_clone/src/presentation/screens/client/map_seeker/bloc/client_map_seeker_event.dart.dart';
 import 'package:uber_clone/src/presentation/screens/profile/info/bloc/profile_info_bloc.dart';
 import 'package:uber_clone/src/presentation/screens/profile/info/bloc/profile_info_event.dart';
 import 'package:uber_clone/src/presentation/screens/profile/update/bloc/profile_update_bloc.dart';
@@ -27,6 +26,6 @@ List<BlocProvider> blocProviders = [
   BlocProvider<ProfileUpdateBloc>(create: (context) => ProfileUpdateBloc(locator<UsersUseCases>(), locator<AuthUseCases>())),
 
   // Uso de mapas
-  BlocProvider<ClientMapSeekerBloc>(create: (context) => ClientMapSeekerBloc(locator<GeolocatorUseCases>())..add(ClientMapSeekerInitEvent())),
+  BlocProvider<ClientMapSeekerBloc>(create: (context) => ClientMapSeekerBloc(locator<GeolocatorUseCases>())),
 
 ];

@@ -8,25 +8,20 @@ import 'package:uber_clone/src/domain/use_cases/geolocator/geolocator_use_cases.
 import 'package:uber_clone/src/presentation/screens/client/map_seeker/bloc/client_map_seeker_event.dart.dart';
 import 'package:uber_clone/src/presentation/screens/client/map_seeker/bloc/client_map_seeker_state.dart';
 
-class ClientMapSeekerBloc
-    extends Bloc<ClientMapSeekerEvent, ClientMapSeekerState> {
+class ClientMapSeekerBloc extends Bloc<ClientMapSeekerEvent, ClientMapSeekerState> {
+
   GeolocatorUseCases geolocatorUseCases;
-  final Completer<GoogleMapController> controller =
-      Completer<GoogleMapController>();
+
 
   ClientMapSeekerBloc(this.geolocatorUseCases) : super(ClientMapSeekerState()) {
     on<ClientMapSeekerInitEvent>((event, emit) {
+      final Completer<GoogleMapController> controller = Completer<GoogleMapController>();
       emit(state.copyWith(controller: controller));
     });
 
     on<FindPosition>((event, emit) async {
       Position position = await geolocatorUseCases.findPosition.run();
-      add(
-        ChangeMapCameraPosition(
-          lat: position.latitude,
-          lng: position.longitude,
-        ),
-      );
+
       BitmapDescriptor imageMarker = await geolocatorUseCases.createMarker.run(
         'assets/img/location_blue.png',
       );
@@ -38,14 +33,18 @@ class ClientMapSeekerBloc
         '',
         imageMarker,
       );
-
+      add(
+        ChangeMapCameraPosition(
+          lat: position.latitude,
+          lng: position.longitude,
+        ),
+      );
       emit(
         state.copyWith(
           position: position,
           markers: {
             marker.mapsId: marker
           },
-          controller: controller
         )
       );
 
@@ -55,8 +54,7 @@ class ClientMapSeekerBloc
 
     on<ChangeMapCameraPosition>((event, emit) async {
       try {
-        GoogleMapController googleMapController =
-            await state.controller!.future;
+        GoogleMapController googleMapController = await state.controller!.future;
         await googleMapController.animateCamera(
           CameraUpdate.newCameraPosition(
             CameraPosition(

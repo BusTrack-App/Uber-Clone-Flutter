@@ -49,7 +49,7 @@ class _ClientHomeScreenState extends State<ClientHomeScreen> {
                     ),
                   ),
                   child: Text(
-                    'Menu del cliente',
+                    'Menu del',
                     style: TextStyle(color: Colors.white),
                   ),
                 ),

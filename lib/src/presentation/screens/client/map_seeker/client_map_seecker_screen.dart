@@ -26,6 +26,7 @@ class ClientMapSeeckerScreenState extends State<ClientMapSeeckerScreen> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      context.read<ClientMapSeekerBloc>().add(ClientMapSeekerInitEvent());
       context.read<ClientMapSeekerBloc>().add(FindPosition());
     });
   }
