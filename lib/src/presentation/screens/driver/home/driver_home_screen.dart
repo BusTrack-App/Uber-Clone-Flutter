@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:uber_clone/main.dart';
-import 'package:uber_clone/src/presentation/screens/client/map_seeker/client_map_seecker_screen.dart';
 import 'package:uber_clone/src/presentation/screens/driver/home/bloc/driver_home_bloc.dart';
 import 'package:uber_clone/src/presentation/screens/driver/home/bloc/driver_home_event.dart';
 import 'package:uber_clone/src/presentation/screens/driver/home/bloc/driver_home_state.dart';
+import 'package:uber_clone/src/presentation/screens/driver/map_seeker/driver_map_location_screen.dart';
 import 'package:uber_clone/src/presentation/screens/profile/info/profile_info_screen.dart';
 import 'package:uber_clone/src/presentation/screens/roles/roles_screen.dart';
 
@@ -17,7 +17,7 @@ class DriverHomeScreen extends StatefulWidget {
 
 class _DriverHomeScreenState extends State<DriverHomeScreen> {
   List<Widget> pageList = <Widget>[
-    ClientMapSeeckerScreen(),
+    DriverMapLocationScreen(),
     // ClientHistoryTripPage(),
     ProfileInfoScreen(),
     RolesScreen(),
@@ -57,7 +57,7 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
                   ),
                 ),
                 ListTile(
-                  title: Text('Mapa de viajes'),
+                  title: Text('Mapa de localizacion'),
                   selected: state.pageIndex == 0,
                   onTap: () {
                     context.read<DriverHomeBloc>().add(

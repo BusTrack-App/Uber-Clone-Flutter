@@ -12,6 +12,7 @@ import 'package:uber_clone/src/presentation/screens/client/home/bloc/client_home
 import 'package:uber_clone/src/presentation/screens/client/map_booking_info/bloc/client_map_booking_info_bloc.dart';
 import 'package:uber_clone/src/presentation/screens/client/map_seeker/bloc/client_map_seeker_bloc.dart.dart';
 import 'package:uber_clone/src/presentation/screens/driver/home/bloc/driver_home_bloc.dart';
+import 'package:uber_clone/src/presentation/screens/driver/map_seeker/bloc/driver_map_location_bloc.dart';
 import 'package:uber_clone/src/presentation/screens/profile/info/bloc/profile_info_bloc.dart';
 import 'package:uber_clone/src/presentation/screens/profile/info/bloc/profile_info_event.dart';
 import 'package:uber_clone/src/presentation/screens/profile/update/bloc/profile_update_bloc.dart';
@@ -34,5 +35,6 @@ List<BlocProvider> blocProviders = [
   // Uso de mapas
   BlocProvider<ClientMapSeekerBloc>(create: (context) => ClientMapSeekerBloc(locator<GeolocatorUseCases>())),
   BlocProvider<ClientMapBookingInfoBloc>(create: (context) => ClientMapBookingInfoBloc(locator<GeolocatorUseCases>())),
+  BlocProvider<DriverMapLocationBloc>(create: (context) => DriverMapLocationBloc(locator<GeolocatorUseCases>())),
 
 ];
