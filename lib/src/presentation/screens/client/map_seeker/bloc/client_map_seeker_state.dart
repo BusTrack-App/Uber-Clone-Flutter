@@ -2,10 +2,10 @@ import 'dart:async';
 import 'package:equatable/equatable.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:socket_io_client/socket_io_client.dart';
 import 'package:uber_clone/src/domain/models/placemark_data.dart';
 
 class ClientMapSeekerState extends Equatable {
-
   final Completer<GoogleMapController>? controller;
   final Position? position;
   final CameraPosition cameraPosition;
@@ -15,17 +15,22 @@ class ClientMapSeekerState extends Equatable {
   final LatLng? destinationLatLng;
   final String pickUpDescription;
   final String destinationDescription;
+  final Socket? socket;
 
   const ClientMapSeekerState({
     this.position,
     this.controller,
-    this.cameraPosition = const CameraPosition(target: LatLng(4.7449125, -74.1113708), zoom: 14.0),
+    this.cameraPosition = const CameraPosition(
+      target: LatLng(4.7449125, -74.1113708),
+      zoom: 14.0,
+    ),
     this.placemarkData,
     this.pickUpLatLng,
     this.destinationLatLng,
     this.pickUpDescription = '',
     this.destinationDescription = '',
     this.markers = const <MarkerId, Marker>{},
+    this.socket
   });
 
   ClientMapSeekerState copyWith({
@@ -38,8 +43,8 @@ class ClientMapSeekerState extends Equatable {
     String? pickUpDescription,
     String? destinationDescription,
     Map<MarkerId, Marker>? markers,
+    Socket? socket
   }) {
-    
     return ClientMapSeekerState(
       position: position ?? this.position,
       markers: markers ?? this.markers,
@@ -49,12 +54,23 @@ class ClientMapSeekerState extends Equatable {
       pickUpLatLng: pickUpLatLng ?? this.pickUpLatLng,
       destinationLatLng: destinationLatLng ?? this.destinationLatLng,
       pickUpDescription: pickUpDescription ?? this.pickUpDescription,
-      destinationDescription: destinationDescription ?? this.destinationDescription,
+      destinationDescription:
+          destinationDescription ?? this.destinationDescription,
+      socket: socket ?? this.socket
     );
   }
 
-
   @override
-  List<Object?> get props => [position, markers, controller, cameraPosition, placemarkData, pickUpLatLng, destinationLatLng, pickUpDescription, destinationDescription];
-
+  List<Object?> get props => [
+    position,
+    markers,
+    controller,
+    cameraPosition,
+    placemarkData,
+    pickUpLatLng,
+    destinationLatLng,
+    pickUpDescription,
+    destinationDescription,
+    socket
+  ];
 }

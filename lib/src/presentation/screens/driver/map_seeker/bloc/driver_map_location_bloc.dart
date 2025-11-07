@@ -96,11 +96,13 @@ class DriverMapLocationBloc
     });
 
     on<ConnectSocketIo>((event, emit) {
+      debugPrint('Desconectado al socket');
       Socket socket = socketUseCases.connect.run();
       emit(state.copyWith(socket: socket));
     });
 
     on<DisconnectSocketIo>((event, emit) {
+      debugPrint('Desconectado al socket');
       Socket socket = socketUseCases.disconnect.run();
       emit(state.copyWith(socket: socket));
     });

@@ -4,19 +4,23 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:socket_io_client/socket_io_client.dart';
 import 'package:uber_clone/src/domain/models/placemark_data.dart';
 import 'package:uber_clone/src/domain/use_cases/geolocator/geolocator_use_cases.dart';
+import 'package:uber_clone/src/domain/use_cases/socket/socket_use_cases.dart';
 import 'package:uber_clone/src/presentation/screens/client/map_seeker/bloc/client_map_seeker_event.dart.dart';
 import 'package:uber_clone/src/presentation/screens/client/map_seeker/bloc/client_map_seeker_state.dart';
 
-class ClientMapSeekerBloc extends Bloc<ClientMapSeekerEvent, ClientMapSeekerState> {
-
+class ClientMapSeekerBloc
+    extends Bloc<ClientMapSeekerEvent, ClientMapSeekerState> {
   GeolocatorUseCases geolocatorUseCases;
+  SocketUseCases socketUseCases;
 
-
-  ClientMapSeekerBloc(this.geolocatorUseCases) : super(ClientMapSeekerState()) {
+  ClientMapSeekerBloc(this.geolocatorUseCases, this.socketUseCases)
+    : super(ClientMapSeekerState()) {
     on<ClientMapSeekerInitEvent>((event, emit) {
-      final Completer<GoogleMapController> controller = Completer<GoogleMapController>();
+      final Completer<GoogleMapController> controller =
+          Completer<GoogleMapController>();
       emit(state.copyWith(controller: controller));
     });
 
@@ -46,7 +50,7 @@ class ClientMapSeekerBloc extends Bloc<ClientMapSeekerEvent, ClientMapSeekerStat
           // markers: {
           //   marker.mapsId: marker
           // },
-        )
+        ),
       );
 
       debugPrint('Position Lat: ${position.latitude}');
@@ -55,7 +59,8 @@ class ClientMapSeekerBloc extends Bloc<ClientMapSeekerEvent, ClientMapSeekerStat
 
     on<ChangeMapCameraPosition>((event, emit) async {
       try {
-        GoogleMapController googleMapController = await state.controller!.future;
+        GoogleMapController googleMapController =
+            await state.controller!.future;
         await googleMapController.animateCamera(
           CameraUpdate.newCameraPosition(
             CameraPosition(
@@ -77,7 +82,8 @@ class ClientMapSeekerBloc extends Bloc<ClientMapSeekerEvent, ClientMapSeekerStat
 
     on<OnCameraIdle>((event, emit) async {
       try {
-        PlacemarkData placemarkData = await geolocatorUseCases.getPlacemarkData.run(state.cameraPosition);
+        PlacemarkData placemarkData = await geolocatorUseCases.getPlacemarkData
+            .run(state.cameraPosition);
         emit(state.copyWith(placemarkData: placemarkData));
       } catch (e) {
         debugPrint('OnCameraIdle Error: $e');
@@ -85,16 +91,57 @@ class ClientMapSeekerBloc extends Bloc<ClientMapSeekerEvent, ClientMapSeekerStat
     });
 
     on<OnAutoCompletedPickUpSelected>((event, emit) {
-      emit(state.copyWith(
+      emit(
+        state.copyWith(
           pickUpLatLng: LatLng(event.lat, event.lng),
-          pickUpDescription: event.pickUpDescription));
+          pickUpDescription: event.pickUpDescription,
+        ),
+      );
     });
 
     on<OnAutoCompletedDestinationSelected>((event, emit) {
-      emit(state.copyWith(
+      emit(
+        state.copyWith(
           destinationLatLng: LatLng(event.lat, event.lng),
-          destinationDescription: event.destinationDescription));
+          destinationDescription: event.destinationDescription,
+        ),
+      );
     });
 
+    on<ConnectSocketIo>((event, emit) {
+      Socket socket = socketUseCases.connect.run();
+      debugPrint('Conectado al socket');
+      emit(state.copyWith(socket: socket));
+      add(ListenDriversDisconnectedSocketIO());
+    });
+
+    on<DisconnectSocketIo>((event, emit) {
+      debugPrint('Desconectado al socket');
+      Socket socket = socketUseCases.disconnect.run();
+      emit(state.copyWith(socket: socket));
+    });
+
+    on<ListenDriversPositionSocketIO>((event, emit) async {
+      debugPrint('Dentro del Listener Driver');
+      state.socket?.on('new_driver_position', (data) {
+        debugPrint('SOCKET DATA:');
+        debugPrint('SOCKET DATA: ${data['id']}');
+        debugPrint('SOCKET DATA: ${data['lat']}');
+        debugPrint('SOCKET DATA: ${data['lng']}');
+      });
+
+      // if (blocSocketIO.state.socket != null) {
+      //   blocSocketIO.state.socket?.on('new_driver_position', (data) {
+      //     add(AddDriverPositionMarker(
+      //         idSocket: data['id_socket'] as String,
+      //         id: data['id'] as int,
+      //         lat: data['lat'] as double,
+      //         lng: data['lng'] as double));
+      //   });
+      // }
+      // else {
+      //   print('SOCKET ES NULO');
+      // }
+    });
   }
 }
