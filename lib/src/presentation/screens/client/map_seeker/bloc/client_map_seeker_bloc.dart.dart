@@ -113,6 +113,7 @@ class ClientMapSeekerBloc
       debugPrint('Conectado al socket');
       emit(state.copyWith(socket: socket));
       add(ListenDriversPositionSocketIO());
+      add(ListenDriversDisconnectedSocketIO());
     });
 
     on<DisconnectSocketIo>((event, emit) {
@@ -137,7 +138,6 @@ class ClientMapSeekerBloc
           ),
         );
       });
-
       // if (blocSocketIO.state.socket != null) {
       //   blocSocketIO.state.socket?.on('new_driver_position', (data) {
       //     add(AddDriverPositionMarker(
@@ -150,6 +150,22 @@ class ClientMapSeekerBloc
       // else {
       //   print('SOCKET ES NULO');
       // }
+    });
+
+
+    on<ListenDriversDisconnectedSocketIO>((event, emit) {
+      // if (blocSocketIO.state.socket != null) {
+      state.socket?.on('driver_disconnected', (data) {
+        debugPrint('Id: ${data['id_socket']}');
+        add(RemoveDriverPositionMarker(
+            idSocket: data['id_socket'] as String));
+      });
+      // }
+    });
+
+    on<RemoveDriverPositionMarker>((event, emit) {
+      emit(state.copyWith(
+          markers: Map.of(state.markers)..remove(MarkerId(event.idSocket))));
     });
 
     on<AddDriverPositionMarker>((event, emit) async {

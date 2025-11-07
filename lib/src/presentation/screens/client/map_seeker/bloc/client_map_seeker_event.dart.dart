@@ -57,6 +57,7 @@ class RemoveDriverPositionMarker extends ClientMapSeekerEvent {
   RemoveDriverPositionMarker({required this.idSocket});
 }
 
+
 class AddDriverPositionMarker extends ClientMapSeekerEvent {
   final String idSocket;
   final int id;
