@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:uber_clone/src/domain/use_cases/auth/auth_use_case.dart';
 import 'package:uber_clone/src/domain/use_cases/geolocator/geolocator_use_cases.dart';
 import 'package:uber_clone/src/presentation/screens/client/map_booking_info/bloc/client_map_booking_info_event.dart';
 import 'package:uber_clone/src/presentation/screens/client/map_booking_info/bloc/client_map_booking_info_state.dart';
@@ -13,21 +12,22 @@ class ClientMapBookingInfoBloc extends Bloc<ClientMapBookingInfoEvent, ClientMap
 
   GeolocatorUseCases geolocatorUseCases;
   // ClientRequestsUseCases clientRequestsUseCases;
-  AuthUseCases authUseCases;
+  // AuthUseCases authUseCases;
   // BlocSocketIO blocSocketIO;
   
 
   // ClientMapBookingInfoBloc(this.blocSocketIO, this.geolocatorUseCases, this.clientRequestsUseCases, this.authUseCases): super(ClientMapBookingInfoState()) {
-  ClientMapBookingInfoBloc(this.geolocatorUseCases,this.authUseCases): super(ClientMapBookingInfoState()) {
+  ClientMapBookingInfoBloc(this.geolocatorUseCases): super(ClientMapBookingInfoState()) {
+    
     on<ClientMapBookingInfoInitEvent>((event, emit) async {
       Completer<GoogleMapController> controller = Completer<GoogleMapController>();
       emit(
         state.copyWith(
-          pickUpLatLng: event.pickUpLatLng,
-          destinationLatLng: event.destinationLatLng,
-          pickUpDescription: event.pickUpDescription,
-          destinationDescription: event.destinationDescription,
-          controller: controller,
+          // pickUpLatLng: event.pickUpLatLng,
+          // destinationLatLng: event.destinationLatLng,
+          // pickUpDescription: event.pickUpDescription,
+          // destinationDescription: event.destinationDescription,
+          // controller: controller,
         )
       );
       BitmapDescriptor pickUpDescriptor = await geolocatorUseCases.createMarker.run('assets/img/pin_white.png');
