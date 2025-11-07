@@ -1,5 +1,6 @@
 
-import 'package:uber_clone/src/domain/models/Role.dart';
+
+import 'package:uber_clone/src/domain/models/role.dart';
 
 class User {
   int? id;

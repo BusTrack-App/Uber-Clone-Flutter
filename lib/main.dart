@@ -7,7 +7,9 @@ import 'package:uber_clone/src/presentation/screens/auth/login/login_screen.dart
 import 'package:uber_clone/src/presentation/screens/auth/register/register_screen.dart';
 import 'package:uber_clone/src/presentation/screens/client/home/client_home_screen.dart';
 import 'package:uber_clone/src/presentation/screens/client/map_booking_info/client_map_booking_info_screen.dart';
+import 'package:uber_clone/src/presentation/screens/driver/home/driver_home_screen.dart';
 import 'package:uber_clone/src/presentation/screens/profile/update/profile_update_screen.dart';
+import 'package:uber_clone/src/presentation/screens/roles/roles_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -35,7 +37,9 @@ class MyApp extends StatelessWidget {
         routes: {
           'login': (BuildContext context) => LoginScreen(),
           'register': (BuildContext context) => RegisterScreen(),
+          'roles': (BuildContext context) => RolesScreen(),
           'client/home': (BuildContext context) => ClientHomeScreen(),
+          'driver/home': (BuildContext context) => DriverHomeScreen(),
           'profile/update': (BuildContext context) => ProfileUpdateScreen(),
 
           // Mapas

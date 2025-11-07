@@ -14,6 +14,8 @@ import 'package:uber_clone/src/presentation/screens/client/map_seeker/bloc/clien
 import 'package:uber_clone/src/presentation/screens/profile/info/bloc/profile_info_bloc.dart';
 import 'package:uber_clone/src/presentation/screens/profile/info/bloc/profile_info_event.dart';
 import 'package:uber_clone/src/presentation/screens/profile/update/bloc/profile_update_bloc.dart';
+import 'package:uber_clone/src/presentation/screens/roles/bloc/roles_bloc.dart';
+import 'package:uber_clone/src/presentation/screens/roles/bloc/roles_event.dart';
 
 List<BlocProvider> blocProviders = [
   BlocProvider<LoginBloc>(create: (context) => LoginBloc(locator<AuthUseCases>())..add(LoginInitEvent())),
@@ -21,6 +23,7 @@ List<BlocProvider> blocProviders = [
 
   // Vista del Home
   BlocProvider<ClientHomeBloc>(create: (context) => ClientHomeBloc(locator<AuthUseCases>())),
+  BlocProvider<RolesBloc>(create: (context) => RolesBloc(locator<AuthUseCases>())..add(GetRolesList())),
 
   // Vista del Perfil
   BlocProvider<ProfileInfoBloc>(create: (context) => ProfileInfoBloc(locator<AuthUseCases>())..add(GetUserInfo())),
