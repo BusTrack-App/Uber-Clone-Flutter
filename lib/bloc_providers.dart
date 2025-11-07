@@ -36,6 +36,6 @@ List<BlocProvider> blocProviders = [
   // Uso de mapas
   BlocProvider<ClientMapSeekerBloc>(create: (context) => ClientMapSeekerBloc(locator<GeolocatorUseCases>())),
   BlocProvider<ClientMapBookingInfoBloc>(create: (context) => ClientMapBookingInfoBloc(locator<GeolocatorUseCases>())),
-  BlocProvider<DriverMapLocationBloc>(create: (context) => DriverMapLocationBloc(locator<GeolocatorUseCases>(), locator<SocketUseCases>())),
+  BlocProvider<DriverMapLocationBloc>(create: (context) => DriverMapLocationBloc(locator<GeolocatorUseCases>(), locator<SocketUseCases>(), locator<AuthUseCases>())),
 
 ];

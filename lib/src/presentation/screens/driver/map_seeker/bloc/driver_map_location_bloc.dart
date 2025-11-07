@@ -3,6 +3,9 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:socket_io_client/socket_io_client.dart';
+import 'package:uber_clone/src/domain/models/auth_response.dart';
+import 'package:uber_clone/src/domain/use_cases/auth/auth_use_case.dart';
 import 'package:uber_clone/src/domain/use_cases/geolocator/geolocator_use_cases.dart';
 import 'package:uber_clone/src/domain/use_cases/socket/socket_use_cases.dart';
 import 'driver_map_location_event.dart';
@@ -13,10 +16,14 @@ class DriverMapLocationBloc
   GeolocatorUseCases geolocatorUseCases;
   StreamSubscription? positionSubscription;
   SocketUseCases socketUseCases;
+  AuthUseCases authUseCases;
 
-  DriverMapLocationBloc(this.geolocatorUseCases, this.socketUseCases)
-    : super(DriverMapLocationState()) {
-      // --------------------- FUNCION INIT -------------
+  DriverMapLocationBloc(
+    this.geolocatorUseCases,
+    this.socketUseCases,
+    this.authUseCases,
+  ) : super(DriverMapLocationState()) {
+    // --------------------- FUNCION INIT -------------
     on<DriverMapLocationInitEvent>((event, emit) {
       emit(state.copyWith(controller: Completer<GoogleMapController>()));
     });
@@ -81,6 +88,7 @@ class DriverMapLocationBloc
         ),
       );
       emit(state.copyWith(position: event.position));
+      add(EmitDriverPositionSocketIO());
     });
 
     on<StopLocation>((event, emit) {
@@ -88,11 +96,28 @@ class DriverMapLocationBloc
     });
 
     on<ConnectSocketIo>((event, emit) {
-      socketUseCases.connect.run();
+      Socket socket = socketUseCases.connect.run();
+      emit(state.copyWith(socket: socket));
     });
 
     on<DisconnectSocketIo>((event, emit) {
-      socketUseCases.disconnect.run();
+      Socket socket = socketUseCases.disconnect.run();
+      emit(state.copyWith(socket: socket));
+    });
+
+    on<EmitDriverPositionSocketIO>((event, emit) async {
+      AuthResponse authResponse = await authUseCases.getUserSession.run();
+      state.socket?.emit('change_driver_position', {
+        'id': authResponse.user.id,
+        'lat': state.position!.latitude,
+        'lng': state.position!.longitude,
+      });
+
+      // blocSocketIO.state.socket?.emit('change_driver_position', {
+      //   'id': state.idDriver,
+      //   'lat': state.position!.latitude,
+      //   'lng': state.position!.longitude,
+      // });
     });
   }
 }

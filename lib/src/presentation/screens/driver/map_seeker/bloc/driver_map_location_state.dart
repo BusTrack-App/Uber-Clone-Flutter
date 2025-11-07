@@ -2,12 +2,14 @@ import 'dart:async';
 import 'package:equatable/equatable.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:socket_io_client/socket_io_client.dart';
 
 class DriverMapLocationState extends Equatable {
   final Completer<GoogleMapController>? controller;
   final Position? position;
   final CameraPosition cameraPosition;
   final Map<MarkerId, Marker> markers;
+  final Socket? socket;
 
   const DriverMapLocationState({
     this.position,
@@ -17,6 +19,7 @@ class DriverMapLocationState extends Equatable {
       zoom: 14.0,
     ),
     this.markers = const <MarkerId, Marker>{},
+    this.socket,
   });
 
   DriverMapLocationState copyWith({
@@ -25,15 +28,17 @@ class DriverMapLocationState extends Equatable {
     Completer<GoogleMapController>? controller,
     CameraPosition? cameraPosition,
     Map<MarkerId, Marker>? markers,
+    Socket? socket
   }) {
     return DriverMapLocationState(
       position: position ?? this.position,
       markers: markers ?? this.markers,
       controller: controller ?? this.controller,
       cameraPosition: cameraPosition ?? this.cameraPosition,
+      socket: socket ?? this.socket
     );
   }
 
   @override
-  List<Object?> get props => [position, markers, controller, cameraPosition];
+  List<Object?> get props => [position, markers, controller, cameraPosition,socket];
 }
