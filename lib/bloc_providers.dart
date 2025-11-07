@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:uber_clone/injection.dart';
 import 'package:uber_clone/src/domain/use_cases/auth/auth_use_case.dart';
 import 'package:uber_clone/src/domain/use_cases/geolocator/geolocator_use_cases.dart';
+import 'package:uber_clone/src/domain/use_cases/socket/socket_use_cases.dart';
 import 'package:uber_clone/src/domain/use_cases/users/user_use_case.dart';
 import 'package:uber_clone/src/presentation/screens/auth/login/bloc/login_bloc.dart';
 import 'package:uber_clone/src/presentation/screens/auth/login/bloc/login_event.dart';
@@ -35,6 +36,6 @@ List<BlocProvider> blocProviders = [
   // Uso de mapas
   BlocProvider<ClientMapSeekerBloc>(create: (context) => ClientMapSeekerBloc(locator<GeolocatorUseCases>())),
   BlocProvider<ClientMapBookingInfoBloc>(create: (context) => ClientMapBookingInfoBloc(locator<GeolocatorUseCases>())),
-  BlocProvider<DriverMapLocationBloc>(create: (context) => DriverMapLocationBloc(locator<GeolocatorUseCases>())),
+  BlocProvider<DriverMapLocationBloc>(create: (context) => DriverMapLocationBloc(locator<GeolocatorUseCases>(), locator<SocketUseCases>())),
 
 ];

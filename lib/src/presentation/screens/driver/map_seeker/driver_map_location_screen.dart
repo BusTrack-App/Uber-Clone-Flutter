@@ -22,6 +22,7 @@ class DriverMapLocationScreenState extends State<DriverMapLocationScreen> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       context.read<DriverMapLocationBloc>().add(DriverMapLocationInitEvent());
+      context.read<DriverMapLocationBloc>().add(ConnectSocketIo());
       context.read<DriverMapLocationBloc>().add(FindPosition());
     });
   }
@@ -29,6 +30,7 @@ class DriverMapLocationScreenState extends State<DriverMapLocationScreen> {
   @override
   void dispose() {
     super.dispose();
+      context.read<DriverMapLocationBloc>().add(DisconnectSocketIo());
       context.read<DriverMapLocationBloc>().add(StopLocation());
   }
 
@@ -63,6 +65,7 @@ class DriverMapLocationScreenState extends State<DriverMapLocationScreen> {
                   iconData: Icons.check_circle,
                   // textColor: Colors.white,
                   onPressed: () {
+                    context.read<DriverMapLocationBloc>().add(DisconnectSocketIo());
                     context.read<DriverMapLocationBloc>().add(StopLocation());
                   }
                 )

@@ -4,16 +4,19 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:uber_clone/src/domain/use_cases/geolocator/geolocator_use_cases.dart';
+import 'package:uber_clone/src/domain/use_cases/socket/socket_use_cases.dart';
 import 'driver_map_location_event.dart';
 import 'driver_map_location_state.dart';
 
 class DriverMapLocationBloc
     extends Bloc<DriverMapLocationEvent, DriverMapLocationState> {
-  final GeolocatorUseCases geolocatorUseCases;
+  GeolocatorUseCases geolocatorUseCases;
   StreamSubscription? positionSubscription;
+  SocketUseCases socketUseCases;
 
-  DriverMapLocationBloc(this.geolocatorUseCases)
+  DriverMapLocationBloc(this.geolocatorUseCases, this.socketUseCases)
     : super(DriverMapLocationState()) {
+      // --------------------- FUNCION INIT -------------
     on<DriverMapLocationInitEvent>((event, emit) {
       emit(state.copyWith(controller: Completer<GoogleMapController>()));
     });
@@ -36,22 +39,18 @@ class DriverMapLocationBloc
     });
 
     on<AddMyPositionMarker>((event, emit) async {
-      BitmapDescriptor descriptor = await geolocatorUseCases.createMarker.run('assets/img/pin_white.png');
+      BitmapDescriptor descriptor = await geolocatorUseCases.createMarker.run(
+        'assets/img/pin_white.png',
+      );
       Marker marker = geolocatorUseCases.getMarker.run(
         'my_location',
         event.lat,
         event.lng,
         'Mi posicion',
         '',
-        descriptor
+        descriptor,
       );
-      emit(
-        state.copyWith(
-          markers: {
-            marker.markerId: marker
-          },
-        )
-      );
+      emit(state.copyWith(markers: {marker.markerId: marker}));
     });
 
     on<ChangeMapCameraPosition>((event, emit) async {
@@ -69,13 +68,31 @@ class DriverMapLocationBloc
 
     on<UpdateLocation>((event, emit) async {
       debugPrint('New Position ${event.position}');
-      add(AddMyPositionMarker(lat: event.position.latitude, lng: event.position.longitude));
-      add(ChangeMapCameraPosition(lat: event.position.latitude, lng: event.position.longitude));
+      add(
+        AddMyPositionMarker(
+          lat: event.position.latitude,
+          lng: event.position.longitude,
+        ),
+      );
+      add(
+        ChangeMapCameraPosition(
+          lat: event.position.latitude,
+          lng: event.position.longitude,
+        ),
+      );
       emit(state.copyWith(position: event.position));
     });
 
     on<StopLocation>((event, emit) {
       positionSubscription?.cancel();
+    });
+
+    on<ConnectSocketIo>((event, emit) {
+      socketUseCases.connect.run();
+    });
+
+    on<DisconnectSocketIo>((event, emit) {
+      socketUseCases.disconnect.run();
     });
   }
 }
