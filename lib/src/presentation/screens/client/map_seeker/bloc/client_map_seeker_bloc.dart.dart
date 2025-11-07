@@ -128,6 +128,14 @@ class ClientMapSeekerBloc
         debugPrint('SOCKET DATA: ${data['id']}');
         debugPrint('SOCKET DATA: ${data['lat']}');
         debugPrint('SOCKET DATA: ${data['lng']}');
+        add(
+          AddDriverPositionMarker(
+            idSocket: data['id_socket'] as String,
+            id: data['id'] as int,
+            lat: data['lat'] as double,
+            lng: data['lng'] as double,
+          ),
+        );
       });
 
       // if (blocSocketIO.state.socket != null) {
@@ -141,6 +149,31 @@ class ClientMapSeekerBloc
       // }
       // else {
       //   print('SOCKET ES NULO');
+      // }
+    });
+
+    on<AddDriverPositionMarker>((event, emit) async {
+      MarkerId markerId = MarkerId(event.idSocket);
+      LatLng newLatLng = LatLng(event.lat, event.lng);
+
+      BitmapDescriptor descriptor = await geolocatorUseCases.createMarker.run(
+        'assets/img/car_yellow.png',
+      );
+
+      // if (state.markers.containsKey(markerId)) {
+      //   LatLng previusPosition = state.markers[markerId]!.position;
+      //   add(AnimateMarkerMovement(
+      //       markerId: markerId, from: previusPosition, to: newLatLng));
+      // } else {
+      Marker marker = Marker(
+        markerId: markerId,
+        position: newLatLng,
+        rotation: 0,
+        draggable: false,
+        flat: true,
+        icon: descriptor,
+      );
+      emit(state.copyWith(markers: Map.of(state.markers)..[markerId] = marker));
       // }
     });
   }
