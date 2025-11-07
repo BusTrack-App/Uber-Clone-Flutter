@@ -1,4 +1,3 @@
-// driver_map_location_bloc.dart
 import 'dart:async';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -8,43 +7,51 @@ import 'package:uber_clone/src/domain/use_cases/geolocator/geolocator_use_cases.
 import 'driver_map_location_event.dart';
 import 'driver_map_location_state.dart';
 
-class DriverMapLocationBloc extends Bloc<DriverMapLocationEvent, DriverMapLocationState> {
+class DriverMapLocationBloc
+    extends Bloc<DriverMapLocationEvent, DriverMapLocationState> {
   final GeolocatorUseCases geolocatorUseCases;
+  StreamSubscription? positionSubscription;
 
-  DriverMapLocationBloc(this.geolocatorUseCases) : super(DriverMapLocationState()) {
+  DriverMapLocationBloc(this.geolocatorUseCases)
+    : super(DriverMapLocationState()) {
     on<DriverMapLocationInitEvent>((event, emit) {
-      emit(state.copyWith(
-        controller: Completer<GoogleMapController>(),
-      ));
+      emit(state.copyWith(controller: Completer<GoogleMapController>()));
     });
 
     on<FindPosition>((event, emit) async {
-      try {
-        // 1. Obtener posición
-        Position position = await geolocatorUseCases.findPosition.run();
+      Position position = await geolocatorUseCases.findPosition.run();
+      add(
+        ChangeMapCameraPosition(
+          lat: position.latitude,
+          lng: position.longitude,
+        ),
+      );
+      add(AddMyPositionMarker(lat: position.latitude, lng: position.longitude));
+      Stream<Position> positionStream = geolocatorUseCases.getPositionStream
+          .run();
+      positionSubscription = positionStream.listen((Position position) {
+        add(UpdateLocation(position: position));
+      });
+      emit(state.copyWith(position: position));
+    });
 
-        // 2. Crear ícono personalizado
-        BitmapDescriptor icon = await geolocatorUseCases.createMarker.run('assets/img/car_pin.png');
-
-        // 3. Crear marcador
-        Marker marker = Marker(
-          markerId: const MarkerId('my_location'),
-          position: LatLng(position.latitude, position.longitude),
-          icon: icon,
-          infoWindow: const InfoWindow(title: 'Mi ubicación'),
-        );
-
-        // 4. Mover cámara
-        add(ChangeMapCameraPosition(lat: position.latitude, lng: position.longitude));
-
-        // 5. Emitir estado con marcador
-        emit(state.copyWith(
-          position: position,
-          markers: {marker.markerId: marker},
-        ));
-      } catch (e) {
-        debugPrint('ERROR: $e');
-      }
+    on<AddMyPositionMarker>((event, emit) async {
+      BitmapDescriptor descriptor = await geolocatorUseCases.createMarker.run('assets/img/pin_white.png');
+      Marker marker = geolocatorUseCases.getMarker.run(
+        'my_location',
+        event.lat,
+        event.lng,
+        'Mi posicion',
+        '',
+        descriptor
+      );
+      emit(
+        state.copyWith(
+          markers: {
+            marker.markerId: marker
+          },
+        )
+      );
     });
 
     on<ChangeMapCameraPosition>((event, emit) async {
@@ -58,6 +65,17 @@ class DriverMapLocationBloc extends Bloc<DriverMapLocationEvent, DriverMapLocati
       } catch (e) {
         debugPrint('Error cámara: $e');
       }
+    });
+
+    on<UpdateLocation>((event, emit) async {
+      debugPrint('New Position ${event.position}');
+      add(AddMyPositionMarker(lat: event.position.latitude, lng: event.position.longitude));
+      add(ChangeMapCameraPosition(lat: event.position.latitude, lng: event.position.longitude));
+      emit(state.copyWith(position: event.position));
+    });
+
+    on<StopLocation>((event, emit) {
+      positionSubscription?.cancel();
     });
   }
 }

@@ -27,6 +27,12 @@ class DriverMapLocationScreenState extends State<DriverMapLocationScreen> {
   }
 
   @override
+  void dispose() {
+    super.dispose();
+      context.read<DriverMapLocationBloc>().add(StopLocation());
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: BlocBuilder<DriverMapLocationBloc, DriverMapLocationState>( // ¡CORREGIDO!
@@ -37,11 +43,6 @@ class DriverMapLocationScreenState extends State<DriverMapLocationScreen> {
                 mapType: MapType.normal,
                 initialCameraPosition: state.cameraPosition,
                 markers: Set<Marker>.of(state.markers.values),
-                onCameraMove: (CameraPosition cameraPosition) {
-                  context.read<DriverMapLocationBloc>().add(
-                    OnCameraMove(cameraPosition: cameraPosition),
-                  );
-                },
                 onMapCreated: (GoogleMapController controller) {
                   // ignore: deprecated_member_use
                   controller.setMapStyle(
@@ -58,14 +59,11 @@ class DriverMapLocationScreenState extends State<DriverMapLocationScreen> {
                 alignment: Alignment.bottomCenter,
                 child: CustomButton(
                   margin: EdgeInsets.only(bottom: 30, left: 60, right: 60),
-                  text: 'Ver Viajes', 
+                  text: 'Detener Localizacion', 
                   iconData: Icons.check_circle,
                   // textColor: Colors.white,
                   onPressed: () {
-                    Navigator.pushNamed(
-                      context, 
-                      'client/map/booking',
-                    );
+                    context.read<DriverMapLocationBloc>().add(StopLocation());
                   }
                 )
               )

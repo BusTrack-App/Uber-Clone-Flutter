@@ -16,5 +16,5 @@ abstract class GeolocatorRepository {
   );
   Future<PlacemarkData?> getPlacemarkData(CameraPosition cameraPosition);
   Future<List<LatLng>> getPolyline(LatLng pickUpLatLng, LatLng destinationLatLng);
-  // Stream<Position> getPositionStream();
+  Stream<Position> getPositionStream();
 }
