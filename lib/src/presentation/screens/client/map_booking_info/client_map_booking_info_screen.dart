@@ -14,11 +14,10 @@ class ClientMapBookingInfoScreen extends StatefulWidget {
       _ClientMapBookingInfoScreenState();
 }
 
-class _ClientMapBookingInfoScreenState
-    extends State<ClientMapBookingInfoScreen> {
+class _ClientMapBookingInfoScreenState extends State<ClientMapBookingInfoScreen> {
   LatLng? pickUpLatLng;
   LatLng? destinationLatLng;
-  String? pickUpDestination;
+  String? pickUpDescription;
   String? destinationDescription;
 
   @override
@@ -27,12 +26,13 @@ class _ClientMapBookingInfoScreenState
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       context.read<ClientMapBookingInfoBloc>().add(
         ClientMapBookingInfoInitEvent(
-          // pickUpLatLng: pickUpLatLng,
-          // destinationLatLng: destinationLatLng,
-          // pickUpDescription: pickUpDescription,
-          // destinationDescription: destinationDescription,
+          pickUpLatLng: pickUpLatLng!,
+          destinationLatLng: destinationLatLng!,
+          pickUpDescription: pickUpDescription!,
+          destinationDescription: destinationDescription!,
         ),
       );
+      context.read<ClientMapBookingInfoBloc>().add(AddPolyline());
     });
   }
 
@@ -42,11 +42,11 @@ class _ClientMapBookingInfoScreenState
         ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>;
     pickUpLatLng = arguments['pickUpLatLng'];
     destinationLatLng = arguments['destinationLatLng'];
-    pickUpDestination = arguments['pickUpDescription'];
+    pickUpDescription = arguments['pickUpDescription'];
     destinationDescription = arguments['destinationDescription'];
     debugPrint('pickUpLatLng: ${pickUpLatLng?.toJson()}');
     debugPrint('destinationLatLng: ${destinationLatLng?.toJson()}');
-    debugPrint('pickUpDestination: $pickUpDestination');
+    debugPrint('pickUpDestination: $pickUpDescription');
     debugPrint('destinationDescription: $destinationDescription');
     return Scaffold(
       body: BlocBuilder<ClientMapBookingInfoBloc, ClientMapBookingInfoState>(

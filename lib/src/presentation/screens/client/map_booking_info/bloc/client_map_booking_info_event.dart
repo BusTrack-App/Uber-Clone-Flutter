@@ -4,16 +4,16 @@ import 'package:uber_clone/src/presentation/utils/bloc_form_item.dart';
 abstract class ClientMapBookingInfoEvent {}
 
 class ClientMapBookingInfoInitEvent extends ClientMapBookingInfoEvent {
-  // final LatLng pickUpLatLng;
-  // final LatLng destinationLatLng;
-  // final String pickUpDescription;
-  // final String destinationDescription;
-  // ClientMapBookingInfoInitEvent({
-    // required this.pickUpLatLng,
-    // required this.destinationLatLng,
-    // required this.pickUpDescription,
-    // required this.destinationDescription,
-  // });
+  final LatLng pickUpLatLng;
+  final LatLng destinationLatLng;
+  final String pickUpDescription;
+  final String destinationDescription;
+  ClientMapBookingInfoInitEvent({
+    required this.pickUpLatLng,
+    required this.destinationLatLng,
+    required this.pickUpDescription,
+    required this.destinationDescription,
+  });
 }
 
 class FareOfferedChanged extends ClientMapBookingInfoEvent {

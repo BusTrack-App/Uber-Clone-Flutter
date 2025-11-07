@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:uber_clone/src/data/api/ApiKeyGoogle.dart';
 import 'package:uber_clone/src/domain/models/placemark_data.dart';
 import 'package:uber_clone/src/domain/repository/geolocator_repository.dart';
 
@@ -91,24 +93,22 @@ class GeolocatorRepositoryImpl implements GeolocatorRepository {
     }
   }
 
-  // @override
-  // Future<List<LatLng>> getPolyline(
-  //     LatLng pickUpLatLng, LatLng destinationLatLng) async {
-  //   PolylineResult result = await PolylinePoints().getRouteBetweenCoordinates(
-  //       request: PolylineRequest(
-  //           origin: PointLatLng(pickUpLatLng.latitude, pickUpLatLng.longitude),
-  //           destination: PointLatLng(
-  //               destinationLatLng.latitude, destinationLatLng.longitude),
-  //           mode: TravelMode.driving,
-  //           wayPoints: [PolylineWayPoint(location: "Bogota, Colombia")]),
-  //       googleApiKey: API_KEY_GOOGLE);
-
-  //   List<LatLng> polylineCoordinates = [];
-  //   if (result.points.isNotEmpty) {
-  //     result.points.forEach((PointLatLng point) {
-  //       polylineCoordinates.add(LatLng(point.latitude, point.longitude));
-  //     });
-  //   }
-  //   return polylineCoordinates;
-  // }
+  @override
+  Future<List<LatLng>> getPolyline( LatLng pickUpLatLng, LatLng destinationLatLng) async {
+    PolylineResult result = await PolylinePoints(apiKey: API_KEY_GOOGLE).getRouteBetweenCoordinates(
+        // ignore: deprecated_member_use
+        request: PolylineRequest(
+            origin: PointLatLng(pickUpLatLng.latitude, pickUpLatLng.longitude),
+            destination: PointLatLng(destinationLatLng.latitude, destinationLatLng.longitude),
+            mode: TravelMode.driving,
+            wayPoints: [PolylineWayPoint(location: "Bogota, Colombia")]),
+        );
+    List<LatLng> polylineCoordinates = [];
+    if (result.points.isNotEmpty) {
+      for (var point in result.points) {
+        polylineCoordinates.add(LatLng(point.latitude, point.longitude));
+      }
+    }
+    return polylineCoordinates;
+  }
 }

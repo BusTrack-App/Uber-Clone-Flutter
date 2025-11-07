@@ -20,6 +20,7 @@ import 'package:uber_clone/src/domain/use_cases/geolocator/find_position_use_cas
 import 'package:uber_clone/src/domain/use_cases/geolocator/geolocator_use_cases.dart';
 import 'package:uber_clone/src/domain/use_cases/geolocator/get_marker_use_case.dart';
 import 'package:uber_clone/src/domain/use_cases/geolocator/get_placemark_data_use_case.dart';
+import 'package:uber_clone/src/domain/use_cases/geolocator/get_polyline_use_case.dart';
 import 'package:uber_clone/src/domain/use_cases/users/update_notification_token_use_case.dart';
 import 'package:uber_clone/src/domain/use_cases/users/update_user_use_case.dart';
 import 'package:uber_clone/src/domain/use_cases/users/user_use_case.dart';
@@ -107,7 +108,7 @@ abstract class AppModule {
       createMarker: CreateMarkerUseCase(geolocatorRepository),
       getMarker: GetMarkerUseCase(geolocatorRepository),
       getPlacemarkData: GetPlacemarkDataUseCase(geolocatorRepository),
-      // getPolyline: GetPolylineUseCase(geolocatorRepository),
+      getPolyline: GetPolylineUseCase(geolocatorRepository),
       // getPositionStream: GetPositionStreamUseCase(geolocatorRepository)
     );
 

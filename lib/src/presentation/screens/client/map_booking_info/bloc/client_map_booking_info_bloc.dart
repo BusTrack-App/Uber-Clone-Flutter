@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:uber_clone/src/domain/use_cases/geolocator/geolocator_use_cases.dart';
@@ -23,11 +24,11 @@ class ClientMapBookingInfoBloc extends Bloc<ClientMapBookingInfoEvent, ClientMap
       Completer<GoogleMapController> controller = Completer<GoogleMapController>();
       emit(
         state.copyWith(
-          // pickUpLatLng: event.pickUpLatLng,
-          // destinationLatLng: event.destinationLatLng,
-          // pickUpDescription: event.pickUpDescription,
-          // destinationDescription: event.destinationDescription,
-          // controller: controller,
+          pickUpLatLng: event.pickUpLatLng,
+          destinationLatLng: event.destinationLatLng,
+          pickUpDescription: event.pickUpDescription,
+          destinationDescription: event.destinationDescription,
+          controller: controller,
         )
       );
       BitmapDescriptor pickUpDescriptor = await geolocatorUseCases.createMarker.run('assets/img/pin_white.png');
@@ -78,74 +79,23 @@ class ClientMapBookingInfoBloc extends Bloc<ClientMapBookingInfoEvent, ClientMap
       );
     });
 
-    // on<CreateClientRequest>((event, emit) async {
-    //   AuthResponse authResponse = await authUseCases.getUserSession.run();
-
-      // Resource<int> response = await clientRequestsUseCases.createClientRequest.run(
-        // ClientRequest(
-        //   idClient: authResponse.user.id!, 
-        //   fareOffered: double.parse(state.fareOffered.value), 
-        //   pickupDescription: state.pickUpDescription, 
-        //   destinationDescription: state.destinationDescription, 
-        //   pickupLat: state.pickUpLatLng!.latitude, 
-        //   pickupLng: state.pickUpLatLng!.longitude, 
-        //   destinationLat: state.destinationLatLng!.latitude, 
-        //   destinationLng: state.destinationLatLng!.longitude
-        // )
-      // );
-
-    //   emit(
-    //     state.copyWith(
-    //       responseClientRequest: response
-    //     )
-    //   );
-    // });
-
-    // on<EmitNewClientRequestSocketIO>((event, emit) {
-    //   if (blocSocketIO.state.socket != null) {
-    //     blocSocketIO.state.socket?.emit('new_client_request', {
-    //         'id_client_request': event.idClientRequest
-    //     });
-    //   }
-    // });
-
-    // on<GetTimeAndDistanceValues>((event, emit) async {
-    //   emit(
-    //     state.copyWith(
-    //       responseTimeAndDistance: Loading()
-    //     )
-    //   );
-    //   Resource<TimeAndDistanceValues> response = await clientRequestsUseCases.getTimeAndDistance.run(
-    //     state.pickUpLatLng!.latitude,
-    //     state.pickUpLatLng!.longitude,
-    //     state.destinationLatLng!.latitude,
-    //     state.destinationLatLng!.longitude,
-    //   );
-    //   emit(
-    //     state.copyWith(
-    //       responseTimeAndDistance: response
-    //     )
-    //   );
-    // });
-    
-
-    // on<AddPolyline>((event, emit) async {
-    //   List<LatLng> polylineCoordinates = await geolocatorUseCases.getPolyline.run(state.pickUpLatLng!, state.destinationLatLng!);
-    //   PolylineId id = PolylineId("MyRoute");
-    //   Polyline polyline = Polyline(
-    //     polylineId: id, 
-    //     color: Colors.blueAccent, 
-    //     points: polylineCoordinates,
-    //     width: 6
-    //   );
-    //   emit(
-    //     state.copyWith(
-    //       polylines: {
-    //         id: polyline
-    //       }
-    //     )
-    //   );
-    // });
+    on<AddPolyline>((event, emit) async {
+      List<LatLng> polylineCoordinates = await geolocatorUseCases.getPolyline.run(state.pickUpLatLng!, state.destinationLatLng!);
+      PolylineId id = PolylineId("MyRoute");
+      Polyline polyline = Polyline(
+        polylineId: id, 
+        color: Colors.blueAccent, 
+        points: polylineCoordinates,
+        width: 6
+      );
+      emit(
+        state.copyWith(
+          polylines: {
+            id: polyline
+          }
+        )
+      );
+    });
 
     
 
