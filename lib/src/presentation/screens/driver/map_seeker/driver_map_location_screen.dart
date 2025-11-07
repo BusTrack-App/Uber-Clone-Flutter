@@ -65,12 +65,6 @@ class DriverMapLocationScreenState extends State<DriverMapLocationScreen> {
                     Navigator.pushNamed(
                       context, 
                       'client/map/booking',
-                      // arguments: {
-                      //   'pickUpLatLng': state.pickUpLatLng,
-                      //   'destinationLatLng': state.destinationLatLng,
-                      //   'pickUpDescription': state.pickUpDescription,
-                      //   'destinationDescription': state.destinationDescription,
-                      // }
                     );
                   }
                 )

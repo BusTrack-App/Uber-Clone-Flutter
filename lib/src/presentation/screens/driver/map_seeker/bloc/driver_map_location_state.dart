@@ -10,14 +10,14 @@ class DriverMapLocationState extends Equatable {
   final Position? position;
   final CameraPosition cameraPosition;
   final Map<MarkerId, Marker> markers;
-  final int? idDriver;
+
+
 
   const DriverMapLocationState({
     this.position,
     this.controller,
     this.cameraPosition = const CameraPosition(target: LatLng(4.7449125, -74.1113708), zoom: 14.0),
     this.markers = const <MarkerId, Marker>{},
-    this.idDriver
   });
 
   DriverMapLocationState copyWith({
@@ -38,12 +38,12 @@ class DriverMapLocationState extends Equatable {
       markers: markers ?? this.markers,
       controller: controller ?? this.controller,
       cameraPosition: cameraPosition ?? this.cameraPosition,
-      idDriver: idDriver ?? this.idDriver
+
     );
   }
 
 
   @override
-  List<Object?> get props => [position, markers, controller, cameraPosition,  idDriver];
+  List<Object?> get props => [position, markers, controller, cameraPosition];
 
 }
