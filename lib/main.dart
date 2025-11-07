@@ -6,6 +6,7 @@ import 'package:uber_clone/injection.dart';
 import 'package:uber_clone/src/presentation/screens/auth/login/login_screen.dart';
 import 'package:uber_clone/src/presentation/screens/auth/register/register_screen.dart';
 import 'package:uber_clone/src/presentation/screens/client/home/client_home_screen.dart';
+import 'package:uber_clone/src/presentation/screens/client/map_booking_info/client_map_booking_info_screen.dart';
 import 'package:uber_clone/src/presentation/screens/profile/update/profile_update_screen.dart';
 
 void main() async {
@@ -36,6 +37,9 @@ class MyApp extends StatelessWidget {
           'register': (BuildContext context) => RegisterScreen(),
           'client/home': (BuildContext context) => ClientHomeScreen(),
           'profile/update': (BuildContext context) => ProfileUpdateScreen(),
+
+          // Mapas
+          'client/map/booking': (BuildContext context) => ClientMapBookingInfoScreen(),
         },
       ),
     );

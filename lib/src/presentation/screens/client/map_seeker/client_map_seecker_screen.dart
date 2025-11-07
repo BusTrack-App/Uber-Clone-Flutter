@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:google_places_flutter/model/prediction.dart';
 import 'package:uber_clone/src/presentation/screens/client/map_seeker/bloc/client_map_seeker_bloc.dart.dart';
 import 'package:uber_clone/src/presentation/screens/client/map_seeker/bloc/client_map_seeker_event.dart.dart';
 import 'package:uber_clone/src/presentation/screens/client/map_seeker/bloc/client_map_seeker_state.dart';
+import 'package:uber_clone/src/presentation/widgets/custom_button.dart';
 import 'package:uber_clone/src/presentation/widgets/google_places_auto_complete.dart';
 
 class ClientMapSeeckerScreen extends StatefulWidget {
@@ -45,6 +47,13 @@ class ClientMapSeeckerScreenState extends State<ClientMapSeeckerScreen> {
                 onCameraIdle: () async {
                   context.read<ClientMapSeekerBloc>().add(OnCameraIdle());
                   pickUpController.text = state.placemarkData?.address ?? '';
+                  if (state.placemarkData != null) {
+                    context.read<ClientMapSeekerBloc>().add(OnAutoCompletedPickUpSelected(
+                      lat: state.placemarkData!.lat, 
+                      lng: state.placemarkData!.lng,
+                      pickUpDescription: state.placemarkData!.address
+                    ));
+                  }
                 },
                 onMapCreated: (GoogleMapController controller) {
                   // ignore: deprecated_member_use
@@ -61,40 +70,73 @@ class ClientMapSeeckerScreenState extends State<ClientMapSeeckerScreen> {
               Container(
                 height: 120,
                 margin: EdgeInsets.only(left: 30, right: 30, top: 30),
-                child: Card(
-                  surfaceTintColor: Colors.white,
-                  child: Column(
-                    children: [
-                      GooglePlacesAutoComplete(pickUpController, 'Desde', (
-                        prediction,
-                      ) {
-                        // ignore: unnecessary_null_comparison
-                        if (prediction != null) {
-                          context.read<ClientMapSeekerBloc>().add(
-                            ChangeMapCameraPosition(
-                              lat: double.parse(prediction.lat!),
-                              lng: double.parse(prediction.lng!),
-                            ),
-                          );
-                        }
-                        debugPrint('Lugar de recogida lat: ${prediction.lat}');
-                        debugPrint('Lugar de recogida lng: ${prediction.lng}');
-                      }),
-                      const SizedBox(height: 15),
-                      GooglePlacesAutoComplete(destinationController, 'Hasta', (
-                        prediction,
-                      ) {
-                        debugPrint('Hasta de recogida lat: ${prediction.lat}');
-                        debugPrint('Hasta de recogida lng: ${prediction.lng}');
-                      }),
-                    ],
-                  ),
-                ),
+                child: _googlePlacesAutocomplete()
               ),
               _iconMyLocation(),
+              Container(
+                alignment: Alignment.bottomCenter,
+                child: CustomButton(
+                  margin: EdgeInsets.only(bottom: 30, left: 60, right: 60),
+                  text: 'REVISAR VIAJE', 
+                  iconData: Icons.check_circle,
+                  // textColor: Colors.white,
+                  onPressed: () {
+                    Navigator.pushNamed(
+                      context, 
+                      'client/map/booking',
+                      arguments: {
+                        'pickUpLatLng': state.pickUpLatLng,
+                        'destinationLatLng': state.destinationLatLng,
+                        'pickUpDescription': state.pickUpDescription,
+                        'destinationDescription': state.destinationDescription,
+                      }
+                    );
+                  }
+                )
+              )
             ],
           );
         },
+      ),
+    );
+  }
+
+
+  Widget _googlePlacesAutocomplete() {
+    return Card(
+      surfaceTintColor: Colors.white,
+      child: Column(
+        children: [
+          GooglePlacesAutoComplete(
+            pickUpController, 
+            'Recoger en', 
+            (Prediction prediction) {
+              context.read<ClientMapSeekerBloc>().add(ChangeMapCameraPosition(
+                lat: double.parse(prediction.lat!), 
+                lng: double.parse(prediction.lng!),
+              ));
+              context.read<ClientMapSeekerBloc>().add(OnAutoCompletedPickUpSelected(
+                lat: double.parse(prediction.lat!), 
+                lng: double.parse(prediction.lng!),
+                pickUpDescription: prediction.description ?? ''
+              ));
+                        }
+          ),
+          Divider(
+            color: Colors.grey[200],
+          ),
+          GooglePlacesAutoComplete(
+            destinationController, 
+            'Dejar en', 
+            (Prediction prediction) {
+              context.read<ClientMapSeekerBloc>().add(OnAutoCompletedDestinationSelected(
+                lat: double.parse(prediction.lat!), 
+                lng: double.parse(prediction.lng!),
+                destinationDescription: prediction.description ?? ''
+              ));
+            }
+          )
+        ],
       ),
     );
   }
