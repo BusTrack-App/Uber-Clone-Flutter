@@ -25,3 +25,14 @@ en el api_config.dart debe ponerse la url a del servidor a donde se hacen las pe
 
 // Configurar la api key de Google Maps en el android manifest y en el AppDelegate.swift del ios
 
+
+
+Para simular datos de un conductor desde postman hay que ejecutar una conexion a
+192.168.1.55:9092/
+
+y en message poner 'change_driver_position' y enviar un json asi
+{
+    "id": 5,         <- Id del conducor
+    "lat": 4.698628,
+    "lng": -74.103646
+}
