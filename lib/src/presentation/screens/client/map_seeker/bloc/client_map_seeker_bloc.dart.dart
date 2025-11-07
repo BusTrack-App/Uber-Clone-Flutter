@@ -112,7 +112,7 @@ class ClientMapSeekerBloc
       Socket socket = socketUseCases.connect.run();
       debugPrint('Conectado al socket');
       emit(state.copyWith(socket: socket));
-      add(ListenDriversDisconnectedSocketIO());
+      add(ListenDriversPositionSocketIO());
     });
 
     on<DisconnectSocketIo>((event, emit) {
