@@ -11,6 +11,7 @@ import 'package:uber_clone/src/presentation/screens/auth/register/bloc/register_
 import 'package:uber_clone/src/presentation/screens/client/home/bloc/client_home_bloc.dart';
 import 'package:uber_clone/src/presentation/screens/client/map_booking_info/bloc/client_map_booking_info_bloc.dart';
 import 'package:uber_clone/src/presentation/screens/client/map_seeker/bloc/client_map_seeker_bloc.dart.dart';
+import 'package:uber_clone/src/presentation/screens/driver/home/bloc/driver_home_bloc.dart';
 import 'package:uber_clone/src/presentation/screens/profile/info/bloc/profile_info_bloc.dart';
 import 'package:uber_clone/src/presentation/screens/profile/info/bloc/profile_info_event.dart';
 import 'package:uber_clone/src/presentation/screens/profile/update/bloc/profile_update_bloc.dart';
@@ -23,6 +24,7 @@ List<BlocProvider> blocProviders = [
 
   // Vista del Home
   BlocProvider<ClientHomeBloc>(create: (context) => ClientHomeBloc(locator<AuthUseCases>())),
+  BlocProvider<DriverHomeBloc>(create: (context) => DriverHomeBloc(locator<AuthUseCases>())),
   BlocProvider<RolesBloc>(create: (context) => RolesBloc(locator<AuthUseCases>())..add(GetRolesList())),
 
   // Vista del Perfil

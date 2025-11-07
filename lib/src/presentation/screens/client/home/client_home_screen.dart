@@ -6,6 +6,7 @@ import 'package:uber_clone/src/presentation/screens/client/home/bloc/client_home
 import 'package:uber_clone/src/presentation/screens/client/home/bloc/client_home_state.dart';
 import 'package:uber_clone/src/presentation/screens/client/map_seeker/client_map_seecker_screen.dart';
 import 'package:uber_clone/src/presentation/screens/profile/info/profile_info_screen.dart';
+import 'package:uber_clone/src/presentation/screens/roles/roles_screen.dart';
 
 class ClientHomeScreen extends StatefulWidget {
   const ClientHomeScreen({super.key});
@@ -19,6 +20,8 @@ class _ClientHomeScreenState extends State<ClientHomeScreen> {
     ClientMapSeeckerScreen(),
     // ClientHistoryTripPage(),
     ProfileInfoScreen(),
+    RolesScreen(),
+
     // RolesPage(),
   ];
 
@@ -70,6 +73,16 @@ class _ClientHomeScreenState extends State<ClientHomeScreen> {
                     context.read<ClientHomeBloc>().add(
                       ChangeDrawerPage(pageIndex: 1),
                     );
+                    Navigator.pop(context);
+                  },
+                ),
+                ListTile(
+                  title: Text('Roles de usuario'),
+                  selected: state.pageIndex == 3,
+                  onTap: () {
+                    context
+                        .read<ClientHomeBloc>()
+                        .add(ChangeDrawerPage(pageIndex: 2));
                     Navigator.pop(context);
                   },
                 ),
