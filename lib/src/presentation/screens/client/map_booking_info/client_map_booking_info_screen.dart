@@ -14,7 +14,8 @@ class ClientMapBookingInfoScreen extends StatefulWidget {
       _ClientMapBookingInfoScreenState();
 }
 
-class _ClientMapBookingInfoScreenState extends State<ClientMapBookingInfoScreen> {
+class _ClientMapBookingInfoScreenState
+    extends State<ClientMapBookingInfoScreen> {
   LatLng? pickUpLatLng;
   LatLng? destinationLatLng;
   String? pickUpDescription;
@@ -33,6 +34,12 @@ class _ClientMapBookingInfoScreenState extends State<ClientMapBookingInfoScreen>
         ),
       );
       context.read<ClientMapBookingInfoBloc>().add(AddPolyline());
+      context.read<ClientMapBookingInfoBloc>().add(
+        ChangeMapCameraPosition(
+          lat: pickUpLatLng!.latitude,
+          lng: pickUpLatLng!.longitude,
+        ),
+      );
     });
   }
 
