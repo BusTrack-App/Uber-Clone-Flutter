@@ -5,7 +5,9 @@ import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:socket_io_client/socket_io_client.dart';
 import 'package:uber_clone/src/domain/models/auth_response.dart';
+import 'package:uber_clone/src/domain/models/driver_position.dart';
 import 'package:uber_clone/src/domain/use_cases/auth/auth_use_case.dart';
+import 'package:uber_clone/src/domain/use_cases/drivers-position/drivers_position_use_cases.dart';
 import 'package:uber_clone/src/domain/use_cases/geolocator/geolocator_use_cases.dart';
 import 'package:uber_clone/src/domain/use_cases/socket/socket_use_cases.dart';
 import 'driver_map_location_event.dart';
@@ -17,17 +19,25 @@ class DriverMapLocationBloc
   StreamSubscription? positionSubscription;
   SocketUseCases socketUseCases;
   AuthUseCases authUseCases;
+  DriversPositionUseCases driversPositionUseCases;
 
   DriverMapLocationBloc(
     this.geolocatorUseCases,
     this.socketUseCases,
     this.authUseCases,
+    this.driversPositionUseCases,
   ) : super(DriverMapLocationState()) {
     // --------------------- FUNCION INIT -------------
-    on<DriverMapLocationInitEvent>((event, emit) {
-      emit(state.copyWith(controller: Completer<GoogleMapController>()));
+    on<DriverMapLocationInitEvent>((event, emit) async {
+      Completer<GoogleMapController> controller =
+          Completer<GoogleMapController>();
+      AuthResponse authResponse = await authUseCases.getUserSession.run();
+      emit(
+        state.copyWith(controller: controller, idDriver: authResponse.user.id),
+      );
     });
 
+    // --------------------- FUNCION FindPosition -------------
     on<FindPosition>((event, emit) async {
       Position position = await geolocatorUseCases.findPosition.run();
       add(
@@ -41,10 +51,20 @@ class DriverMapLocationBloc
           .run();
       positionSubscription = positionStream.listen((Position position) {
         add(UpdateLocation(position: position));
+        add(
+          SaveLocationData(
+            driverPosition: DriverPosition(
+              idDriver: state.idDriver!,
+              lat: position.latitude,
+              lng: position.longitude,
+            ),
+          ),
+        );
       });
       emit(state.copyWith(position: position));
     });
 
+    // --------------------- FUNCION AddMyPositionMarker -------------
     on<AddMyPositionMarker>((event, emit) async {
       BitmapDescriptor descriptor = await geolocatorUseCases.createMarker.run(
         'assets/img/pin_white.png',
@@ -60,6 +80,7 @@ class DriverMapLocationBloc
       emit(state.copyWith(markers: {marker.markerId: marker}));
     });
 
+    // --------------------- FUNCION Change CameraPosition -------------
     on<ChangeMapCameraPosition>((event, emit) async {
       try {
         final controller = await state.controller!.future;
@@ -73,6 +94,7 @@ class DriverMapLocationBloc
       }
     });
 
+    // --------------------- FUNCION UpdateLocation -------------
     on<UpdateLocation>((event, emit) async {
       debugPrint('New Position ${event.position}');
       add(
@@ -93,6 +115,7 @@ class DriverMapLocationBloc
 
     on<StopLocation>((event, emit) {
       positionSubscription?.cancel();
+      add(DeleteLocationData(idDriver: state.idDriver!));
     });
 
     on<ConnectSocketIo>((event, emit) {
@@ -108,11 +131,21 @@ class DriverMapLocationBloc
     });
 
     on<EmitDriverPositionSocketIO>((event, emit) async {
-      AuthResponse authResponse = await authUseCases.getUserSession.run();
       state.socket?.emit('change_driver_position', {
-        'id': authResponse.user.id,
+        'id': state.idDriver,
         'lat': state.position!.latitude,
         'lng': state.position!.longitude,
+      });
+
+      // ---------------- FUNCIONES DEL DRIVER -------------------
+      on<SaveLocationData>((event, emit) async {
+        await driversPositionUseCases.createDriverPosition.run(
+          event.driverPosition,
+        );
+      });
+
+      on<DeleteLocationData>((event, emit) async {
+        await driversPositionUseCases.deleteDriverPosition.run(event.idDriver);
       });
 
       // blocSocketIO.state.socket?.emit('change_driver_position', {

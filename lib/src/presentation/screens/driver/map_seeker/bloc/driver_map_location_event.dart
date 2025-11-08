@@ -1,5 +1,6 @@
 
 import 'package:geolocator/geolocator.dart';
+import 'package:uber_clone/src/domain/models/driver_position.dart';
 
 abstract class DriverMapLocationEvent {}
 
@@ -43,11 +44,11 @@ class ChangeMapCameraPosition extends DriverMapLocationEvent {
 }
 
 
-
-// class SaveLocationData extends DriverMapLocationEvent {
-//   final DriverPosition driverPosition;
-//   SaveLocationData({ required this.driverPosition });
-// }
+// Para la obtencion de datos del conductor-----------------------------
+class SaveLocationData extends DriverMapLocationEvent {
+  final DriverPosition driverPosition;
+  SaveLocationData({ required this.driverPosition });
+}
 
 class DeleteLocationData extends DriverMapLocationEvent {
   final int idDriver;
