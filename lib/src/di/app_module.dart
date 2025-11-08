@@ -3,15 +3,18 @@ import 'package:socket_io_client/socket_io_client.dart';
 import 'package:uber_clone/src/data/api/api_config.dart';
 import 'package:uber_clone/src/data/dataSource/local/shared_pref.dart';
 import 'package:uber_clone/src/data/dataSource/remote/services/auth_service.dart';
+import 'package:uber_clone/src/data/dataSource/remote/services/client_request_service.dart';
 import 'package:uber_clone/src/data/dataSource/remote/services/driver_position_service.dart';
 import 'package:uber_clone/src/data/dataSource/remote/services/users_service.dart';
 import 'package:uber_clone/src/data/repository/auth_repository_impl.dart';
+import 'package:uber_clone/src/data/repository/client_request_repository_impl.dart';
 import 'package:uber_clone/src/data/repository/drivers_position_repository_impl.dart';
 import 'package:uber_clone/src/data/repository/geolocator_repository_impl.dart';
 import 'package:uber_clone/src/data/repository/socket_repository_impl.dart';
 import 'package:uber_clone/src/data/repository/users_repository_impl.dart';
 import 'package:uber_clone/src/domain/models/auth_response.dart';
 import 'package:uber_clone/src/domain/repository/auth_repository.dart';
+import 'package:uber_clone/src/domain/repository/client_request_repository.dart';
 import 'package:uber_clone/src/domain/repository/drivers_position_repository.dart';
 import 'package:uber_clone/src/domain/repository/geolocator_repository.dart';
 import 'package:uber_clone/src/domain/repository/socket_repository.dart';
@@ -22,6 +25,8 @@ import 'package:uber_clone/src/domain/use_cases/auth/login_use_case.dart';
 import 'package:uber_clone/src/domain/use_cases/auth/logout_use_case.dart';
 import 'package:uber_clone/src/domain/use_cases/auth/register_use_case.dart';
 import 'package:uber_clone/src/domain/use_cases/auth/save_session_user_use_case.dart';
+import 'package:uber_clone/src/domain/use_cases/client-requests/client_requests_use_cases.dart';
+import 'package:uber_clone/src/domain/use_cases/client-requests/get_time_and_distance_use_case.dart';
 import 'package:uber_clone/src/domain/use_cases/drivers-position/create_driver_position_use_case.dart';
 import 'package:uber_clone/src/domain/use_cases/drivers-position/delete_driver_position_use_case.dart';
 import 'package:uber_clone/src/domain/use_cases/drivers-position/drivers_position_use_cases.dart';
@@ -116,10 +121,19 @@ abstract class AppModule {
 
 
 
+  // ------------------ Peticiones del usuario -------
+  @injectable
+  ClientRequestsService get clientRequestsService =>
+      ClientRequestsService(token);
 
-  // @injectable
-  // ClientRequestsService get clientRequestsService =>
-  //     ClientRequestsService(token);
+  @injectable
+  ClientRequestsRepository get clientRequestsRepository =>
+      ClientRequestsRepositoryImpl(clientRequestsService);
+
+  @injectable
+  ClientRequestsUseCases get clientRequestsUseCases => ClientRequestsUseCases(
+    getTimeAndDistanceUseCase: GetTimeAndDistanceUseCase(clientRequestsRepository)
+  );
 
   // @injectable
   // DriverTripRequestsService get driverTripRequestsService =>
@@ -131,9 +145,7 @@ abstract class AppModule {
   @injectable
   SocketRepository get socketRepository => SocketRepositoryImpl(socket);
 
-  // @injectable
-  // ClientRequestsRepository get clientRequestsRepository =>
-  //     ClientRequestsRepositoryImpl(clientRequestsService);
+
 
   @injectable
   GeolocatorRepository get geolocatorRepository => GeolocatorRepositoryImpl();
@@ -162,22 +174,7 @@ abstract class AppModule {
     disconnect: DisconnectSocketUseCase(socketRepository),
   );
 
-  // @injectable
-  // ClientRequestsUseCases get clientRequestsUseCases => ClientRequestsUseCases(
-  //     createClientRequest: CreateClientRequestUseCase(clientRequestsRepository),
-  //     getTimeAndDistance: GetTimeAndDistanceUseCase(clientRequestsRepository),
-  //     getNearbyTripRequest:
-  //         GetNearbyTripRequestUseCase(clientRequestsRepository),
-  //     updateDriverAssigned:
-  //         UpdateDriverAssignedUseCase(clientRequestsRepository),
-  //     getByClientRequest: GetByClientRequestUseCase(clientRequestsRepository),
-  //     updateStatusClientRequest:
-  //         UpdateStatusClientRequestUseCase(clientRequestsRepository),
-  //     updateClientRating: UpdateClientRatingUseCase(clientRequestsRepository),
-  //     updateDriverRating: UpdateDriverRatingUseCase(clientRequestsRepository),
-  //     getByClientAssigned: GetByClientAssignedUseCase(clientRequestsRepository),
-  //     getByDriverAssigned:
-  //         GetByDriverAssignedUseCase(clientRequestsRepository));
+
 
   // @injectable
   // DriverTripRequestUseCases get driverTripRequestUseCases =>
