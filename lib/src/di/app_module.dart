@@ -132,7 +132,7 @@ abstract class AppModule {
 
   @injectable
   ClientRequestsUseCases get clientRequestsUseCases => ClientRequestsUseCases(
-    getTimeAndDistanceUseCase: GetTimeAndDistanceUseCase(clientRequestsRepository)
+    getTimeAndDistance: GetTimeAndDistanceUseCase(clientRequestsRepository)
   );
 
   // @injectable

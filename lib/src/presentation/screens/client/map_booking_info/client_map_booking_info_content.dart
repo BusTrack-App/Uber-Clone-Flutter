@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:uber_clone/src/domain/models/time_and_distance_values.dart';
 import 'package:uber_clone/src/presentation/screens/client/map_booking_info/bloc/client_map_booking_info_bloc.dart';
 import 'package:uber_clone/src/presentation/screens/client/map_booking_info/bloc/client_map_booking_info_event.dart';
 import 'package:uber_clone/src/presentation/screens/client/map_booking_info/bloc/client_map_booking_info_state.dart';
@@ -12,9 +13,9 @@ import 'package:uber_clone/src/presentation/widgets/default_icon_back.dart';
 class ClientMapBookingInfoContent extends StatelessWidget {
 
   final ClientMapBookingInfoState state;
-  // TimeAndDistanceValues timeAndDistanceValues;
+  TimeAndDistanceValues timeAndDistanceValues;
 
-  const ClientMapBookingInfoContent(this.state, {super.key});
+  ClientMapBookingInfoContent(this.state, this.timeAndDistanceValues, {super.key});
 
 
   @override
@@ -92,8 +93,7 @@ class ClientMapBookingInfoContent extends StatelessWidget {
               ),
             ),
             subtitle: Text(
-              // '${timeAndDistanceValues.distance.text} y ${timeAndDistanceValues.duration.text}',
-              '',
+              '${timeAndDistanceValues.distance.text} y ${timeAndDistanceValues.duration.text}',
               style: TextStyle(
                 fontSize: 13
               ),
@@ -108,8 +108,7 @@ class ClientMapBookingInfoContent extends StatelessWidget {
               ),
             ),
             subtitle: Text(
-              // '\$${timeAndDistanceValues.recommendedValue}',
-              '',
+              '\$${timeAndDistanceValues.recommendedValue}',
               style: TextStyle(
                 fontSize: 13
               ),

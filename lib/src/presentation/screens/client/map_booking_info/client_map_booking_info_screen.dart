@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:uber_clone/src/domain/models/time_and_distance_values.dart';
+import 'package:uber_clone/src/domain/utils/resource.dart';
 import 'package:uber_clone/src/presentation/screens/client/map_booking_info/bloc/client_map_booking_info_bloc.dart';
 import 'package:uber_clone/src/presentation/screens/client/map_booking_info/bloc/client_map_booking_info_event.dart';
 import 'package:uber_clone/src/presentation/screens/client/map_booking_info/bloc/client_map_booking_info_state.dart';
@@ -33,6 +35,7 @@ class _ClientMapBookingInfoScreenState
           destinationDescription: destinationDescription!,
         ),
       );
+      context.read<ClientMapBookingInfoBloc>().add(GetTimeAndDistanceValues());
       context.read<ClientMapBookingInfoBloc>().add(AddPolyline());
       context.read<ClientMapBookingInfoBloc>().add(
         ChangeMapCameraPosition(
@@ -58,7 +61,16 @@ class _ClientMapBookingInfoScreenState
     return Scaffold(
       body: BlocBuilder<ClientMapBookingInfoBloc, ClientMapBookingInfoState>(
         builder: (context, state) {
-          return ClientMapBookingInfoContent(state);
+          final responseTimeAndDistance = state.responseTimeAndDistance;
+          if (responseTimeAndDistance is Loading) {
+            return Center(
+              child: CircularProgressIndicator(),
+            );
+          } else if (responseTimeAndDistance is Success) {
+            TimeAndDistanceValues timeAndDistanceValues = responseTimeAndDistance.data as TimeAndDistanceValues;
+            return ClientMapBookingInfoContent(state, timeAndDistanceValues);
+          }
+          return Container();
         },
       ),
     );

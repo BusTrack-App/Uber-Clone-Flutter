@@ -4,10 +4,10 @@ import 'package:uber_clone/src/domain/use_cases/client-requests/get_time_and_dis
 
 class ClientRequestsUseCases {
 
-  GetTimeAndDistanceUseCase getTimeAndDistanceUseCase;
+  GetTimeAndDistanceUseCase getTimeAndDistance;
 
   ClientRequestsUseCases({
-    required this.getTimeAndDistanceUseCase
+    required this.getTimeAndDistance
   });
 
 }
