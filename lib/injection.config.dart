@@ -15,10 +15,14 @@ import 'package:socket_io_client/socket_io_client.dart' as _i414;
 import 'package:uber_clone/src/data/dataSource/local/shared_pref.dart' as _i653;
 import 'package:uber_clone/src/data/dataSource/remote/services/auth_service.dart'
     as _i246;
+import 'package:uber_clone/src/data/dataSource/remote/services/driver_position_service.dart'
+    as _i120;
 import 'package:uber_clone/src/data/dataSource/remote/services/users_service.dart'
     as _i720;
 import 'package:uber_clone/src/di/app_module.dart' as _i807;
 import 'package:uber_clone/src/domain/repository/auth_repository.dart' as _i291;
+import 'package:uber_clone/src/domain/repository/drivers_position_repository.dart'
+    as _i992;
 import 'package:uber_clone/src/domain/repository/geolocator_repository.dart'
     as _i617;
 import 'package:uber_clone/src/domain/repository/socket_repository.dart'
@@ -27,6 +31,8 @@ import 'package:uber_clone/src/domain/repository/users_repository.dart'
     as _i374;
 import 'package:uber_clone/src/domain/use_cases/auth/auth_use_case.dart'
     as _i180;
+import 'package:uber_clone/src/domain/use_cases/drivers-position/drivers_position_use_cases.dart'
+    as _i135;
 import 'package:uber_clone/src/domain/use_cases/geolocator/geolocator_use_cases.dart'
     as _i974;
 import 'package:uber_clone/src/domain/use_cases/socket/socket_use_cases.dart'
@@ -51,6 +57,15 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i374.UsersRepository>(() => appModule.usersRepository);
     gh.factory<_i49.UsersUseCases>(() => appModule.usersUseCases);
     gh.factory<_i720.UsersService>(() => appModule.usersService);
+    gh.factory<_i120.DriversPositionService>(
+      () => appModule.driversPositionService,
+    );
+    gh.factory<_i992.DriverPositionRepository>(
+      () => appModule.driversPositionRepository,
+    );
+    gh.factory<_i135.DriversPositionUseCases>(
+      () => appModule.driversPositionUseCases,
+    );
     gh.factory<_i860.SocketRepository>(() => appModule.socketRepository);
     gh.factory<_i617.GeolocatorRepository>(
       () => appModule.geolocatorRepository,
