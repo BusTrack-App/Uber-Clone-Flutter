@@ -37,7 +37,7 @@ class UsersService {
         return ErrorData(listToString(data['message']));
       }
     } catch (e) {
-      debugPrint('Error: $e');
+      debugPrint('Error users_service: $e');
       return ErrorData(e.toString());
     }
   }
@@ -61,7 +61,7 @@ class UsersService {
         return ErrorData(listToString(data['message']));
       }
     } catch (e) {
-      debugPrint('Error: $e');
+      debugPrint('Error users_service: $e');
       return ErrorData(e.toString());
     }
   }
@@ -91,7 +91,7 @@ class UsersService {
          return ErrorData(listToString(data['message']));
       }
     } catch (e) {
-      debugPrint('Error: $e');
+      debugPrint('Error users_service: $e');
       return ErrorData(e.toString());
     }
   }

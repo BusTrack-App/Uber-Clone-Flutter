@@ -28,7 +28,7 @@ class AuthService {
         return ErrorData(listToString(data['message']));
       }
     } catch (e) {
-      debugPrint('Error: $e');
+      debugPrint('Error auth_service en funcion login: $e');
       return ErrorData(e.toString());
     }
   }
@@ -49,7 +49,7 @@ class AuthService {
         return ErrorData(listToString(data['message']));
       }
     } catch (e) {
-      debugPrint('Error: $e');
+      debugPrint('Error auth_service en funcion register: $e');
       return ErrorData(e.toString());
     }
   }

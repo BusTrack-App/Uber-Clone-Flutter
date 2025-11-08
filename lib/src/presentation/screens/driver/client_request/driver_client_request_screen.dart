@@ -37,6 +37,7 @@ class _DriverClientRequestScreenState extends State<DriverClientRequestScreen> {
               List<ClientRequestResponse> clientRequests =
                   response.data as List<ClientRequestResponse>;
               return ListView.builder(
+                itemCount: clientRequests.length,
                 itemBuilder: (context, index) {
                   return Text(clientRequests[index].pickupDescription);
                 },

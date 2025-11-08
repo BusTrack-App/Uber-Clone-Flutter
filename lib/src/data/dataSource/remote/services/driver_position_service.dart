@@ -27,7 +27,7 @@ class DriversPositionService {
         return ErrorData(listToString(data['message']));
       }
     } catch (e) {
-      debugPrint('Error: $e');
+      debugPrint('Error driver_position_service: $e');
       return ErrorData(e.toString());
     }
   }
@@ -48,7 +48,7 @@ class DriversPositionService {
         return ErrorData(listToString(data['message']));
       }
     } catch (e) {
-      debugPrint('Error: $e');
+      debugPrint('Error driver_position_service: $e');
       return ErrorData(e.toString());
     }
   }

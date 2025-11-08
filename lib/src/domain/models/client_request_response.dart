@@ -24,6 +24,7 @@ class ClientRequestResponse {
   GoogleDistanceMatrix? googleDistanceMatrix;
   int? idDriverAssigned;
   double? fareAssigned;
+  // DriverCarInfo? car;
 
   ClientRequestResponse(
       {required this.id,
@@ -42,7 +43,8 @@ class ClientRequestResponse {
       this.fareAssigned,
       this.idDriverAssigned,
       this.driver,
-    });
+      // this.car
+  });
 
   static List<ClientRequestResponse> fromJsonList(List<dynamic> jsonList) {
     List<ClientRequestResponse> toList = [];
@@ -80,6 +82,7 @@ class ClientRequestResponse {
       googleDistanceMatrix: json["google_distance_matrix"] != null
           ? GoogleDistanceMatrix.fromJson(json["google_distance_matrix"])
           : null,
+      // car: json["car"] != null ? DriverCarInfo.fromJson(json["car"]) : null,
     );
   }
 
@@ -99,6 +102,7 @@ class ClientRequestResponse {
         "id_driver_assigned": idDriverAssigned,
         "fare_assigned": fareAssigned,
         "driver": driver,
+        // "car": car?.toJson()
       };
 }
 
@@ -177,7 +181,7 @@ class GoogleDistanceMatrix {
 
 class Distance {
   String text;
-  int value;
+  double value;
 
   Distance({
     required this.text,

@@ -2,11 +2,7 @@ abstract class DriverClientRequestsEvent {}
 
 class InitDriverClientRequest extends DriverClientRequestsEvent {}
 
-class GetNearbyTripRequest extends DriverClientRequestsEvent {
-  // final double driverLat;
-  // final double driverLng;
-  // GetNearbyTripRequest({required this.driverLat, required this.driverLng});
-}
+class GetNearbyTripRequest extends DriverClientRequestsEvent {}
 
 // class CreateDriverTripRequest extends DriverClientRequestsEvent {
 //   final DriverTripRequest driverTripRequest;

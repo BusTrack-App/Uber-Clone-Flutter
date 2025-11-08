@@ -35,18 +35,17 @@ class DriverClientRequestsBloc
           await driversPositionUseCases.getDriverPosition.run(
             authResponse.user.id!,
           );
-      emit(state.copyWith(response: Loading()));
+
       if (driverPositionResponse is Success) {
-        final driverPosition = driverPositionResponse.data as DriverPosition;
+        final driverPosition = driverPositionResponse.data;
+
         Resource<List<ClientRequestResponse>> response =
             await clientRequestsUseCases.getNearbyTripRequest.run(
               driverPosition.lat,
               driverPosition.lng,
             );
-       emit(state.copyWith(response: response));
+        emit(state.copyWith(response: response));
       }
-
-
     });
   }
 }

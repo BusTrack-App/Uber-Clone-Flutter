@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:uber_clone/src/data/api/api_config.dart';
@@ -14,13 +13,12 @@ class ClientRequestsService {
   Future<String> token;
   ClientRequestsService(this.token);
 
-
   Future<Resource<int>> create(ClientRequest clientRequest) async {
     try {
       Uri url = Uri.http(ApiConfig.API_PROJECT, '/client-requests');
       Map<String, String> headers = {
         'Content-Type': 'application/json',
-        'Authorization': await token
+        'Authorization': await token,
       };
       String body = json.encode(clientRequest);
       final response = await http.post(url, headers: headers, body: body);
@@ -31,22 +29,25 @@ class ClientRequestsService {
         return ErrorData(listToString(data['message']));
       }
     } catch (e) {
-      debugPrint('Error: $e');
+      debugPrint('Error client_request_service funcion create: $e');
       return ErrorData(e.toString());
     }
   }
 
   Future<Resource<TimeAndDistanceValues>> getTimeAndDistanceClientRequets(
-      double originLat,
-      double originLng,
-      double destinationLat,
-      double destinationLng) async {
+    double originLat,
+    double originLng,
+    double destinationLat,
+    double destinationLng,
+  ) async {
     try {
-      Uri url = Uri.http(ApiConfig.API_PROJECT,
-          '/client-requests/$originLat/$originLng/$destinationLat/$destinationLng');
+      Uri url = Uri.http(
+        ApiConfig.API_PROJECT,
+        '/client-requests/$originLat/$originLng/$destinationLat/$destinationLng',
+      );
       Map<String, String> headers = {
         'Content-Type': 'application/json',
-        'Authorization': await token
+        'Authorization': await token,
       };
       final response = await http.get(url, headers: headers);
       final data = json.decode(response.body);
@@ -58,19 +59,24 @@ class ClientRequestsService {
         return ErrorData(listToString(data['message']));
       }
     } catch (e) {
-      debugPrint('Error: $e');
+      debugPrint(
+        'Error client_request_service funcion getTimeAndDistanceClientRequets: $e',
+      );
       return ErrorData(e.toString());
     }
   }
 
-  Future<Resource<List<ClientRequestResponse>>> getNearbyTripRequest(
-      double driverLat, double driverLng) async {
+  Future<Resource<List<ClientRequestResponse>>> getNearbyTripRequest( double driverLat, double driverLng,) async {
+    debugPrint('DriverLat: $driverLat');
+    debugPrint('DriverLng: $driverLng');
     try {
       Uri url = Uri.http(
-          ApiConfig.API_PROJECT, '/client-requests/$driverLat/$driverLng');
+        ApiConfig.API_PROJECT,
+        '/client-requests/$driverLat/$driverLng',
+      );
       Map<String, String> headers = {
         'Content-Type': 'application/json',
-        'Authorization': await token
+        'Authorization': await token,
       };
       final response = await http.get(url, headers: headers);
       final data = json.decode(response.body);
@@ -81,13 +87,13 @@ class ClientRequestsService {
       } else {
         return ErrorData(listToString(data['message']));
       }
-    } catch (e) {
-      debugPrint('Error: $e');
+    } catch (e, stackTrace) {
+    debugPrint('/client-requests/$driverLat/$driverLng');
+    debugPrint('StackTrace: $stackTrace'); 
+      debugPrint(
+        'Error client_request_service funcion get nearby trip request: $e',
+      );
       return ErrorData(e.toString());
     }
   }
-
-
-
-
 }
