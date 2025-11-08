@@ -5,6 +5,7 @@ import 'package:uber_clone/src/domain/utils/resource.dart';
 import 'package:uber_clone/src/presentation/screens/driver/client_request/bloc/driver_client_request_bloc.dart';
 import 'package:uber_clone/src/presentation/screens/driver/client_request/bloc/driver_client_request_event.dart';
 import 'package:uber_clone/src/presentation/screens/driver/client_request/bloc/driver_client_request_state.dart';
+import 'package:uber_clone/src/presentation/screens/driver/client_request/driver_client_request_item.dart';
 
 class DriverClientRequestScreen extends StatefulWidget {
   const DriverClientRequestScreen({super.key});
@@ -39,7 +40,7 @@ class _DriverClientRequestScreenState extends State<DriverClientRequestScreen> {
               return ListView.builder(
                 itemCount: clientRequests.length,
                 itemBuilder: (context, index) {
-                  return Text(clientRequests[index].pickupDescription);
+                  return DriverClientRequestsItem(state, clientRequests[index]);
                 },
               );
             }
