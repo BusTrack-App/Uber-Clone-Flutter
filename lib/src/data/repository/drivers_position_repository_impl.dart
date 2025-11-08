@@ -18,8 +18,8 @@ class DriversPositionRepositoryImpl implements DriverPositionRepository {
     return driversPositionService.delete(idDriver);
   }
 
-  // @override
-  // Future<Resource<DriverPosition>> getDriverPosition(int idDriver) {
-  //   return driversPositionService.getDriverPosition(idDriver);
-  // }
+  @override
+  Future<Resource<DriverPosition>> getDriverPosition(int idDriver) {
+    return driversPositionService.getDriverPosition(idDriver);
+  }
 }

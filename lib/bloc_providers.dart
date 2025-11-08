@@ -13,6 +13,7 @@ import 'package:uber_clone/src/presentation/screens/auth/register/bloc/register_
 import 'package:uber_clone/src/presentation/screens/client/home/bloc/client_home_bloc.dart';
 import 'package:uber_clone/src/presentation/screens/client/map_booking_info/bloc/client_map_booking_info_bloc.dart';
 import 'package:uber_clone/src/presentation/screens/client/map_seeker/bloc/client_map_seeker_bloc.dart.dart';
+import 'package:uber_clone/src/presentation/screens/driver/client_request/bloc/driver_client_request_bloc.dart';
 import 'package:uber_clone/src/presentation/screens/driver/home/bloc/driver_home_bloc.dart';
 import 'package:uber_clone/src/presentation/screens/driver/map_seeker/bloc/driver_map_location_bloc.dart';
 import 'package:uber_clone/src/presentation/screens/profile/info/bloc/profile_info_bloc.dart';
@@ -73,6 +74,15 @@ List<BlocProvider> blocProviders = [
       locator<SocketUseCases>(),
       locator<AuthUseCases>(),
       locator<DriversPositionUseCases>(),
+    ),
+  ),
+  BlocProvider<DriverClientRequestsBloc>(
+    create: (context) => DriverClientRequestsBloc(
+      // context.read<BlocSocketIO>(),
+      locator<ClientRequestsUseCases>(),
+      locator<DriversPositionUseCases>(),
+      locator<AuthUseCases>(),
+      // locator<DriverTripRequestUseCases>()
     ),
   ),
 ];

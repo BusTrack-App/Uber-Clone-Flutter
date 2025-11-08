@@ -52,4 +52,27 @@ class DriversPositionService {
       return ErrorData(e.toString());
     }
   }
+
+
+  Future<Resource<DriverPosition>> getDriverPosition(int idDriver) async {
+    try {
+      Uri url =
+          Uri.http(ApiConfig.API_PROJECT, '/drivers-position/$idDriver');
+      Map<String, String> headers = {
+        'Content-Type': 'application/json',
+        'Authorization': await token
+      };
+      final response = await http.get(url, headers: headers);
+      final data = json.decode(response.body);
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        DriverPosition driverPosition = DriverPosition.fromJson(data);
+        return Success(driverPosition);
+      } else {
+        return ErrorData(listToString(data['message']));
+      }
+    } catch (e) {
+      debugPrint('Error en GetDriverPosition en DriverPosition.service: $e');
+      return ErrorData(e.toString());
+    }
+  }
 }

@@ -27,10 +27,12 @@ import 'package:uber_clone/src/domain/use_cases/auth/register_use_case.dart';
 import 'package:uber_clone/src/domain/use_cases/auth/save_session_user_use_case.dart';
 import 'package:uber_clone/src/domain/use_cases/client-requests/client_requests_use_cases.dart';
 import 'package:uber_clone/src/domain/use_cases/client-requests/create_client_request_use_case.dart';
+import 'package:uber_clone/src/domain/use_cases/client-requests/get_nearby_trip_request_use_case.dart';
 import 'package:uber_clone/src/domain/use_cases/client-requests/get_time_and_distance_use_case.dart';
 import 'package:uber_clone/src/domain/use_cases/drivers-position/create_driver_position_use_case.dart';
 import 'package:uber_clone/src/domain/use_cases/drivers-position/delete_driver_position_use_case.dart';
 import 'package:uber_clone/src/domain/use_cases/drivers-position/drivers_position_use_cases.dart';
+import 'package:uber_clone/src/domain/use_cases/drivers-position/get_driver_position_use_case.dart';
 import 'package:uber_clone/src/domain/use_cases/geolocator/create_marker_use_case.dart';
 import 'package:uber_clone/src/domain/use_cases/geolocator/find_position_use_case.dart';
 import 'package:uber_clone/src/domain/use_cases/geolocator/geolocator_use_cases.dart';
@@ -115,10 +117,8 @@ abstract class AppModule {
       DriversPositionUseCases(
         createDriverPosition: CreateDriverPositionUseCase(driversPositionRepository,),
         deleteDriverPosition: DeleteDriverPositionUseCase(driversPositionRepository,),
-        // getDriverPosition:
-        //     GetDriverPositionUseCase(driversPositionRepository));
-      );
-
+        getDriverPosition: GetDriverPositionUseCase(driversPositionRepository)
+  );
 
 
 
@@ -135,6 +135,7 @@ abstract class AppModule {
   ClientRequestsUseCases get clientRequestsUseCases => ClientRequestsUseCases(
     createClientRequest: CreateClientRequestUseCase(clientRequestsRepository),
     getTimeAndDistance: GetTimeAndDistanceUseCase(clientRequestsRepository),
+    getNearbyTripRequest: GetNearbyTripRequestUseCase(clientRequestsRepository),
   );
 
   // @injectable
