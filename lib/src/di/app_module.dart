@@ -26,6 +26,7 @@ import 'package:uber_clone/src/domain/use_cases/auth/logout_use_case.dart';
 import 'package:uber_clone/src/domain/use_cases/auth/register_use_case.dart';
 import 'package:uber_clone/src/domain/use_cases/auth/save_session_user_use_case.dart';
 import 'package:uber_clone/src/domain/use_cases/client-requests/client_requests_use_cases.dart';
+import 'package:uber_clone/src/domain/use_cases/client-requests/create_client_request_use_case.dart';
 import 'package:uber_clone/src/domain/use_cases/client-requests/get_time_and_distance_use_case.dart';
 import 'package:uber_clone/src/domain/use_cases/drivers-position/create_driver_position_use_case.dart';
 import 'package:uber_clone/src/domain/use_cases/drivers-position/delete_driver_position_use_case.dart';
@@ -132,7 +133,8 @@ abstract class AppModule {
 
   @injectable
   ClientRequestsUseCases get clientRequestsUseCases => ClientRequestsUseCases(
-    getTimeAndDistance: GetTimeAndDistanceUseCase(clientRequestsRepository)
+    createClientRequest: CreateClientRequestUseCase(clientRequestsRepository),
+    getTimeAndDistance: GetTimeAndDistanceUseCase(clientRequestsRepository),
   );
 
   // @injectable

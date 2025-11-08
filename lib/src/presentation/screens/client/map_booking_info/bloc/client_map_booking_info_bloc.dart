@@ -2,7 +2,10 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:uber_clone/src/domain/models/auth_response.dart';
+import 'package:uber_clone/src/domain/models/client_request.dart';
 import 'package:uber_clone/src/domain/models/time_and_distance_values.dart';
+import 'package:uber_clone/src/domain/use_cases/auth/auth_use_case.dart';
 import 'package:uber_clone/src/domain/use_cases/client-requests/client_requests_use_cases.dart';
 import 'package:uber_clone/src/domain/use_cases/geolocator/geolocator_use_cases.dart';
 import 'package:uber_clone/src/domain/utils/resource.dart';
@@ -14,11 +17,11 @@ class ClientMapBookingInfoBloc
     extends Bloc<ClientMapBookingInfoEvent, ClientMapBookingInfoState> {
   GeolocatorUseCases geolocatorUseCases;
   ClientRequestsUseCases clientRequestsUseCases;
-  // AuthUseCases authUseCases;
+  AuthUseCases authUseCases;
   // BlocSocketIO blocSocketIO;
 
   // ClientMapBookingInfoBloc(this.blocSocketIO, this.geolocatorUseCases, this.clientRequestsUseCases, this.authUseCases): super(ClientMapBookingInfoState()) {
-  ClientMapBookingInfoBloc(this.geolocatorUseCases, this.clientRequestsUseCases)
+  ClientMapBookingInfoBloc(this.geolocatorUseCases, this.clientRequestsUseCases, this.authUseCases)
     : super(ClientMapBookingInfoState()) {
     // ----------- INIT EVENT ----------------
     on<ClientMapBookingInfoInitEvent>((event, emit) async {
@@ -64,6 +67,38 @@ class ClientMapBookingInfoBloc
       );
     });
 
+    on<FareOfferedChanged>((event, emit) {
+      emit(
+        state.copyWith(fareOffered: BlocFormItem(
+          value: event.fareOffered.value,
+          error: event.fareOffered.value.isEmpty ? 'Ingresa la tarifa' : null
+        ))
+      );
+    });
+
+    on<CreateClientRequest>((event, emit) async {
+      AuthResponse authResponse = await authUseCases.getUserSession.run();
+
+      Resource<int> response = await clientRequestsUseCases.createClientRequest.run(
+        ClientRequest(
+          idClient: authResponse.user.id!, 
+          fareOffered: double.parse(state.fareOffered.value), 
+          pickupDescription: state.pickUpDescription, 
+          destinationDescription: state.destinationDescription, 
+          pickupLat: state.pickUpLatLng!.latitude, 
+          pickupLng: state.pickUpLatLng!.longitude, 
+          destinationLat: state.destinationLatLng!.latitude, 
+          destinationLng: state.destinationLatLng!.longitude
+        )
+      );
+
+      emit(
+        state.copyWith(
+          responseClientRequest: response
+        )
+      );
+    });
+
     on<GetTimeAndDistanceValues>((event, emit) async {
       emit(
         state.copyWith(
@@ -91,17 +126,6 @@ class ClientMapBookingInfoBloc
             target: LatLng(event.lat, event.lng),
             zoom: 12,
             bearing: 0,
-          ),
-        ),
-      );
-    });
-
-    on<FareOfferedChanged>((event, emit) {
-      emit(
-        state.copyWith(
-          fareOffered: BlocFormItem(
-            value: event.fareOffered.value,
-            error: event.fareOffered.value.isEmpty ? 'Ingresa la tarifa' : null,
           ),
         ),
       );

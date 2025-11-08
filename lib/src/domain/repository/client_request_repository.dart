@@ -1,5 +1,6 @@
 
 
+import 'package:uber_clone/src/domain/models/client_request.dart';
 import 'package:uber_clone/src/domain/models/time_and_distance_values.dart';
 import 'package:uber_clone/src/domain/utils/resource.dart';
 
@@ -12,5 +13,6 @@ abstract class ClientRequestsRepository {
     double destinationLng,
   );
 
+  Future<Resource<int>> create(ClientRequest clientRequest);
 
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:uber_clone/src/domain/models/time_and_distance_values.dart';
 import 'package:uber_clone/src/domain/utils/resource.dart';
@@ -59,19 +60,30 @@ class _ClientMapBookingInfoScreenState
     debugPrint('pickUpDestination: $pickUpDescription');
     debugPrint('destinationDescription: $destinationDescription');
     return Scaffold(
-      body: BlocBuilder<ClientMapBookingInfoBloc, ClientMapBookingInfoState>(
-        builder: (context, state) {
-          final responseTimeAndDistance = state.responseTimeAndDistance;
-          if (responseTimeAndDistance is Loading) {
-            return Center(
-              child: CircularProgressIndicator(),
+      body: BlocListener<ClientMapBookingInfoBloc, ClientMapBookingInfoState>(
+        listener: (context, state) {
+          final responseClientRequest = state.responseClientRequest;
+          if (responseClientRequest is Success) {
+            // int idClientRequest = responseClientRequest.data;
+            Fluttertoast.showToast(
+              msg: 'Solicitud Enviada',
+              toastLength: Toast.LENGTH_LONG,
             );
-          } else if (responseTimeAndDistance is Success) {
-            TimeAndDistanceValues timeAndDistanceValues = responseTimeAndDistance.data as TimeAndDistanceValues;
-            return ClientMapBookingInfoContent(state, timeAndDistanceValues);
           }
-          return Container();
         },
+        child: BlocBuilder<ClientMapBookingInfoBloc, ClientMapBookingInfoState>(
+          builder: (context, state) {
+            final responseTimeAndDistance = state.responseTimeAndDistance;
+            if (responseTimeAndDistance is Loading) {
+              return Center(child: CircularProgressIndicator());
+            } else if (responseTimeAndDistance is Success) {
+              TimeAndDistanceValues timeAndDistanceValues =
+                  responseTimeAndDistance.data as TimeAndDistanceValues;
+              return ClientMapBookingInfoContent(state, timeAndDistanceValues);
+            }
+            return Container();
+          },
+        ),
       ),
     );
   }
