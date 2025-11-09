@@ -36,3 +36,8 @@ y en message poner 'change_driver_position' y enviar un json asi
     "lat": 4.698628,
     "lng": -74.103646
 }
+
+
+
+Hasta aqui todo bien
+acabo de terminar el modulo 112
