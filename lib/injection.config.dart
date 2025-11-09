@@ -19,8 +19,8 @@ import 'package:uber_clone/src/data/dataSource/remote/services/client_request_se
     as _i155;
 import 'package:uber_clone/src/data/dataSource/remote/services/driver_position_service.dart'
     as _i120;
-import 'package:uber_clone/src/data/dataSource/remote/services/driver_tripe_request_service.dart'
-    as _i335;
+import 'package:uber_clone/src/data/dataSource/remote/services/driver_trip_request_service.dart'
+    as _i328;
 import 'package:uber_clone/src/data/dataSource/remote/services/users_service.dart'
     as _i720;
 import 'package:uber_clone/src/di/app_module.dart' as _i807;
@@ -87,7 +87,7 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i462.ClientRequestsUseCases>(
       () => appModule.clientRequestsUseCases,
     );
-    gh.factory<_i335.DriverTripRequestsService>(
+    gh.factory<_i328.DriverTripRequestsService>(
       () => appModule.driverTripRequestsService,
     );
     gh.factory<_i189.DriverTripRequestsRepository>(

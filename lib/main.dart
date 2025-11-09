@@ -5,6 +5,7 @@ import 'package:uber_clone/bloc_providers.dart';
 import 'package:uber_clone/injection.dart';
 import 'package:uber_clone/src/presentation/screens/auth/login/login_screen.dart';
 import 'package:uber_clone/src/presentation/screens/auth/register/register_screen.dart';
+import 'package:uber_clone/src/presentation/screens/client/driver_offers/client_driver_offers_screen.dart';
 import 'package:uber_clone/src/presentation/screens/client/home/client_home_screen.dart';
 import 'package:uber_clone/src/presentation/screens/client/map_booking_info/client_map_booking_info_screen.dart';
 import 'package:uber_clone/src/presentation/screens/driver/home/driver_home_screen.dart';
@@ -44,6 +45,7 @@ class MyApp extends StatelessWidget {
 
           // Mapas
           'client/map/booking': (BuildContext context) => ClientMapBookingInfoScreen(),
+          'client/driver/offers': (BuildContext context) => ClientDriverOffersScreen(),
         },
       ),
     );

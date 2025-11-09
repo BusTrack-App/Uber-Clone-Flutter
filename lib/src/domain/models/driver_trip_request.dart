@@ -47,10 +47,10 @@ class DriverTripRequest {
 
     static List<DriverTripRequest> fromJsonList(List<dynamic> jsonList) {
       List<DriverTripRequest> toList = [];
-      jsonList.forEach((json) { 
+      for (var json in jsonList) { 
         DriverTripRequest driverTripRequest = DriverTripRequest.fromJson(json);
         toList.add(driverTripRequest);
-      });
+      }
       return toList;
     }
 

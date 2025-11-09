@@ -65,6 +65,7 @@ class _ClientMapBookingInfoScreenState
           final responseClientRequest = state.responseClientRequest;
           if (responseClientRequest is Success) {
             // int idClientRequest = responseClientRequest.data;
+            Navigator.pushNamedAndRemoveUntil(context, 'client/driver/offers', (route) => false);
             Fluttertoast.showToast(
               msg: 'Solicitud Enviada',
               toastLength: Toast.LENGTH_LONG,

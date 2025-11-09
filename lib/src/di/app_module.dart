@@ -5,7 +5,7 @@ import 'package:uber_clone/src/data/dataSource/local/shared_pref.dart';
 import 'package:uber_clone/src/data/dataSource/remote/services/auth_service.dart';
 import 'package:uber_clone/src/data/dataSource/remote/services/client_request_service.dart';
 import 'package:uber_clone/src/data/dataSource/remote/services/driver_position_service.dart';
-import 'package:uber_clone/src/data/dataSource/remote/services/driver_tripe_request_service.dart';
+import 'package:uber_clone/src/data/dataSource/remote/services/driver_trip_request_service.dart';
 import 'package:uber_clone/src/data/dataSource/remote/services/users_service.dart';
 import 'package:uber_clone/src/data/repository/auth_repository_impl.dart';
 import 'package:uber_clone/src/data/repository/client_request_repository_impl.dart';
@@ -34,6 +34,7 @@ import 'package:uber_clone/src/domain/use_cases/client-requests/get_nearby_trip_
 import 'package:uber_clone/src/domain/use_cases/client-requests/get_time_and_distance_use_case.dart';
 import 'package:uber_clone/src/domain/use_cases/driver-trip-request/create_driver_trip_request_use_case.dart';
 import 'package:uber_clone/src/domain/use_cases/driver-trip-request/driver_trip_request_use_cases.dart';
+import 'package:uber_clone/src/domain/use_cases/driver-trip-request/get_driver_trip_offers_by_client_request_use_case.dart';
 import 'package:uber_clone/src/domain/use_cases/drivers-position/create_driver_position_use_case.dart';
 import 'package:uber_clone/src/domain/use_cases/drivers-position/delete_driver_position_use_case.dart';
 import 'package:uber_clone/src/domain/use_cases/drivers-position/drivers_position_use_cases.dart';
@@ -165,7 +166,9 @@ abstract class AppModule {
       DriverTripRequestUseCases(
           createDriverTripRequest:
               CreateDriverTripRequestUseCase(driverTripRequestsRepository),
-      );
+          getDriverTripOffersByClientRequest:
+              GetDriverTripOffersByClientRequestUseCase(
+                  driverTripRequestsRepository));
 
 
   @injectable
