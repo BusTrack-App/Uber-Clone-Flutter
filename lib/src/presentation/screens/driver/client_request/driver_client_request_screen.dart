@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:uber_clone/src/domain/models/client_request_response.dart';
 import 'package:uber_clone/src/domain/utils/resource.dart';
 import 'package:uber_clone/src/presentation/screens/driver/client_request/bloc/driver_client_request_bloc.dart';
@@ -28,7 +29,19 @@ class _DriverClientRequestScreenState extends State<DriverClientRequestScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: BlocListener<DriverClientRequestsBloc, DriverClientRequestsState>(
-        listener: (context, state) {},
+        listener: (context, state) {
+          final responseCreateTripRequest =
+              state.responseCreateDriverTripRequest;
+          if (responseCreateTripRequest is Success) {
+            Fluttertoast.showToast(
+                msg: 'La oferta se ha enviado correctamente',
+                toastLength: Toast.LENGTH_LONG);
+          } else if (responseCreateTripRequest is ErrorData) {
+            Fluttertoast.showToast(
+                msg: responseCreateTripRequest.message,
+                toastLength: Toast.LENGTH_LONG);
+          }
+        },
         child: BlocBuilder<DriverClientRequestsBloc, DriverClientRequestsState>(
           builder: (context, state) {
             final response = state.response;

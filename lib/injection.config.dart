@@ -19,12 +19,16 @@ import 'package:uber_clone/src/data/dataSource/remote/services/client_request_se
     as _i155;
 import 'package:uber_clone/src/data/dataSource/remote/services/driver_position_service.dart'
     as _i120;
+import 'package:uber_clone/src/data/dataSource/remote/services/driver_tripe_request_service.dart'
+    as _i335;
 import 'package:uber_clone/src/data/dataSource/remote/services/users_service.dart'
     as _i720;
 import 'package:uber_clone/src/di/app_module.dart' as _i807;
 import 'package:uber_clone/src/domain/repository/auth_repository.dart' as _i291;
 import 'package:uber_clone/src/domain/repository/client_request_repository.dart'
     as _i220;
+import 'package:uber_clone/src/domain/repository/driver_trip_request_repository.dart'
+    as _i189;
 import 'package:uber_clone/src/domain/repository/drivers_position_repository.dart'
     as _i992;
 import 'package:uber_clone/src/domain/repository/geolocator_repository.dart'
@@ -37,6 +41,8 @@ import 'package:uber_clone/src/domain/use_cases/auth/auth_use_case.dart'
     as _i180;
 import 'package:uber_clone/src/domain/use_cases/client-requests/client_requests_use_cases.dart'
     as _i462;
+import 'package:uber_clone/src/domain/use_cases/driver-trip-request/driver_trip_request_use_cases.dart'
+    as _i995;
 import 'package:uber_clone/src/domain/use_cases/drivers-position/drivers_position_use_cases.dart'
     as _i135;
 import 'package:uber_clone/src/domain/use_cases/geolocator/geolocator_use_cases.dart'
@@ -80,6 +86,15 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i462.ClientRequestsUseCases>(
       () => appModule.clientRequestsUseCases,
+    );
+    gh.factory<_i335.DriverTripRequestsService>(
+      () => appModule.driverTripRequestsService,
+    );
+    gh.factory<_i189.DriverTripRequestsRepository>(
+      () => appModule.driverTripRequestsRepository,
+    );
+    gh.factory<_i995.DriverTripRequestUseCases>(
+      () => appModule.driverTripRequestUseCases,
     );
     gh.factory<_i860.SocketRepository>(() => appModule.socketRepository);
     gh.factory<_i617.GeolocatorRepository>(
