@@ -54,7 +54,7 @@ class _DriverClientRequestScreenState extends State<DriverClientRequestScreen> {
           } else if (response is Success) {
             List<ClientRequestResponse> clientRequests =
                 response.data as List<ClientRequestResponse>;
-            print('Driver Request: $clientRequests');
+            debugPrint('Driver Request: $clientRequests');
             return ListView.builder(
                 itemCount: clientRequests.length,
                 itemBuilder: (context, index) {

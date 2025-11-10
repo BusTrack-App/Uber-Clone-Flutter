@@ -117,18 +117,18 @@ class ClientMapBookingInfoBloc
     on<EmitNewClientRequestSocketIO>((event, emit) async {
       final socket = blocSocketIO.state.socket;
       
-      print('DEBUG - Socket: $socket');
-      print('DEBUG - Socket conectado: ${socket?.connected}');
-      print('DEBUG - Socket ID: ${socket?.id}');
+      debugPrint('DEBUG - Socket: $socket');
+      debugPrint('DEBUG - Socket conectado: ${socket?.connected}');
+      debugPrint('DEBUG - Socket ID: ${socket?.id}');
       
       if (socket != null && socket.connected) {
-        print('ENVIANDO new_client_request | ID: ${event.idClientRequest}');
+        debugPrint('ENVIANDO new_client_request | ID: ${event.idClientRequest}');
         socket.emit('new_client_request', {
           'id_client_request': event.idClientRequest,
         });
       } else {
-        print('ERROR: Socket no conectado');
-        print('Intentando reconectar...');
+        debugPrint('ERROR: Socket no conectado');
+        debugPrint('Intentando reconectar...');
         
         // Intenta reconectar
         socket?.connect();
