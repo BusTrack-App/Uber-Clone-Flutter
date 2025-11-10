@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:uber_clone/bloc_socket_io/bloc_socket_io.dart';
+import 'package:uber_clone/bloc_socket_io/bloc_socket_io_event.dart';
 import 'package:uber_clone/src/domain/models/auth_response.dart';
 import 'package:uber_clone/src/domain/utils/resource.dart';
 import 'package:uber_clone/src/presentation/screens/auth/login/bloc/login_bloc.dart';
@@ -39,10 +41,7 @@ class _LoginScreenState extends State<LoginScreen> {
             debugPrint('Success Dta: ${response.data}');
             final authResponse = response.data as AuthResponse;
             context.read<LoginBloc>().add(SaveUserSession(authResponse: authResponse));
-            Navigator.pushNamedAndRemoveUntil(context, 'client/home', (route) => false); //  ESTA DEBERA SER BORRADA DESPUES
-            // context.read<LoginBloc>().add(UpdateNotificationToken(id: authResponse.user.id!));
-            // context.read<BlocSocketIO>().add(ConnectSocketIO());
-            // context.read<BlocSocketIO>().add(ListenDriverAssignedSocketIO());
+            context.read<BlocSocketIO>().add(ConnectSocketIO());
             if (authResponse.user.roles!.length > 1) {
               Navigator.pushNamedAndRemoveUntil(context, 'roles', (route) => false);
             }

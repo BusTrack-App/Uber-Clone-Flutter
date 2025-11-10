@@ -26,10 +26,6 @@ class AddMyPositionMarker extends DriverMapLocationEvent {
 }
 
 
-// CONEXION DEL SOCKET
-class ConnectSocketIo extends DriverMapLocationEvent {}
-class DisconnectSocketIo extends DriverMapLocationEvent {}
-
 class EmitDriverPositionSocketIO extends DriverMapLocationEvent {}
 
 

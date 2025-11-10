@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:uber_clone/bloc_socket_io/bloc_socket_io.dart';
+import 'package:uber_clone/bloc_socket_io/bloc_socket_io_event.dart';
 import 'package:uber_clone/main.dart';
 import 'package:uber_clone/src/presentation/screens/driver/client_request/driver_client_request_screen.dart';
 import 'package:uber_clone/src/presentation/screens/driver/home/bloc/driver_home_bloc.dart';
@@ -94,7 +96,7 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
                   onTap: () {
                     context
                         .read<DriverHomeBloc>()
-                        .add(ChangeDrawerPage(pageIndex: 2));
+                        .add(ChangeDrawerPage(pageIndex: 3));
                     Navigator.pop(context);
                   },
                 ),
@@ -102,7 +104,7 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
                   title: Text('Cerrar sesion'),
                   onTap: () {
                     context.read<DriverHomeBloc>().add(Logout());
-                    // context.read<BlocSocketIO>().add(DisconnectSocketIO());
+                    context.read<BlocSocketIO>().add(DisconnectSocketIO());
                     Navigator.pushAndRemoveUntil(
                       context, 
                       MaterialPageRoute(builder: (context) => MyApp()), 

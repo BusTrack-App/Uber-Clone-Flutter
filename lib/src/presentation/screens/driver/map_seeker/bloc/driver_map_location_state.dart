@@ -3,33 +3,33 @@ import 'package:equatable/equatable.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:socket_io_client/socket_io_client.dart';
+import 'package:uber_clone/src/domain/models/placemark_data.dart';
 
 class DriverMapLocationState extends Equatable {
+
   final Completer<GoogleMapController>? controller;
   final Position? position;
   final CameraPosition cameraPosition;
   final Map<MarkerId, Marker> markers;
-  final Socket? socket;
   final int? idDriver;
-
 
   const DriverMapLocationState({
     this.position,
     this.controller,
-    this.cameraPosition = const CameraPosition(
-      target: LatLng(4.7449125, -74.1113708),
-      zoom: 14.0,
-    ),
+    this.cameraPosition = const CameraPosition(target: LatLng(4.7449125, -74.1113708), zoom: 14.0),
     this.markers = const <MarkerId, Marker>{},
-    this.socket,
     this.idDriver
   });
 
   DriverMapLocationState copyWith({
     Position? position,
-    StreamSubscription? positionSubscription,
     Completer<GoogleMapController>? controller,
     CameraPosition? cameraPosition,
+    PlacemarkData? placemarkData,
+    LatLng? pickUpLatLng,
+    LatLng? destinationLatLng,
+    String? pickUpDescription,
+    String? destinationDescription,
     Map<MarkerId, Marker>? markers,
     Socket? socket,
     int? idDriver
@@ -39,11 +39,12 @@ class DriverMapLocationState extends Equatable {
       markers: markers ?? this.markers,
       controller: controller ?? this.controller,
       cameraPosition: cameraPosition ?? this.cameraPosition,
-      socket: socket ?? this.socket,
       idDriver: idDriver ?? this.idDriver
     );
   }
 
+
   @override
-  List<Object?> get props => [position, markers, controller, cameraPosition,socket, idDriver];
+  List<Object?> get props => [position, markers, controller, cameraPosition,  idDriver];
+
 }

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:uber_clone/bloc_socket_io/bloc_socket_io.dart';
+import 'package:uber_clone/bloc_socket_io/bloc_socket_io_event.dart';
 import 'package:uber_clone/src/presentation/screens/driver/map_seeker/bloc/driver_map_location_bloc.dart';
 import 'package:uber_clone/src/presentation/screens/driver/map_seeker/bloc/driver_map_location_event.dart';
 import 'package:uber_clone/src/presentation/screens/driver/map_seeker/bloc/driver_map_location_state.dart';
@@ -22,16 +24,8 @@ class DriverMapLocationScreenState extends State<DriverMapLocationScreen> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       context.read<DriverMapLocationBloc>().add(DriverMapLocationInitEvent());
-      context.read<DriverMapLocationBloc>().add(ConnectSocketIo());
       context.read<DriverMapLocationBloc>().add(FindPosition());
     });
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-      context.read<DriverMapLocationBloc>().add(DisconnectSocketIo());
-      context.read<DriverMapLocationBloc>().add(StopLocation());
   }
 
   @override
@@ -65,7 +59,7 @@ class DriverMapLocationScreenState extends State<DriverMapLocationScreen> {
                   iconData: Icons.check_circle,
                   // textColor: Colors.white,
                   onPressed: () {
-                    context.read<DriverMapLocationBloc>().add(DisconnectSocketIo());
+                    context.read<BlocSocketIO>().add(DisconnectSocketIO());
                     context.read<DriverMapLocationBloc>().add(StopLocation());
                   }
                 )

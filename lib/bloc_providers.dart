@@ -1,4 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:uber_clone/bloc_socket_io/bloc_socket_io.dart';
 import 'package:uber_clone/injection.dart';
 import 'package:uber_clone/src/domain/use_cases/auth/auth_use_case.dart';
 import 'package:uber_clone/src/domain/use_cases/client-requests/client_requests_use_cases.dart';
@@ -33,6 +34,11 @@ List<BlocProvider> blocProviders = [
     create: (context) =>
         RegisterBloc(locator<AuthUseCases>())..add(RegisterInitEvent()),
   ),
+
+  // Bloc para la conexion del socket ------
+  BlocProvider<BlocSocketIO>(
+      create: (context) =>
+          BlocSocketIO(locator<SocketUseCases>(), locator<AuthUseCases>())),
 
   // Vista del Home
   BlocProvider<ClientHomeBloc>(
@@ -71,12 +77,13 @@ List<BlocProvider> blocProviders = [
     ),
   ),
   BlocProvider<DriverMapLocationBloc>(
-    create: (context) => DriverMapLocationBloc(
-      locator<GeolocatorUseCases>(),
-      locator<SocketUseCases>(),
-      locator<AuthUseCases>(),
-      locator<DriversPositionUseCases>(),
-    ),
+      create: (context) => DriverMapLocationBloc(
+          context.read<BlocSocketIO>(),
+          locator<GeolocatorUseCases>(),
+          locator<SocketUseCases>(),
+          locator<AuthUseCases>(),
+          locator<DriversPositionUseCases>()
+      )
   ),
   BlocProvider<DriverClientRequestsBloc>(
     create: (context) => DriverClientRequestsBloc(
@@ -91,4 +98,8 @@ List<BlocProvider> blocProviders = [
       create: (context) => ClientDriverOffersBloc(
           locator<DriverTripRequestUseCases>(),
           locator<ClientRequestsUseCases>())),
+
+  BlocProvider<BlocSocketIO>(
+      create: (context) =>
+          BlocSocketIO(locator<SocketUseCases>(), locator<AuthUseCases>())),
 ];
