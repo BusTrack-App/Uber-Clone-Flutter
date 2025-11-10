@@ -114,15 +114,32 @@ class ClientMapBookingInfoBloc
       emit(state.copyWith(responseClientRequest: response));
     });
 
-    on<EmitNewClientRequestSocketIO>((event, emit) {
+    on<EmitNewClientRequestSocketIO>((event, emit) async {
       final socket = blocSocketIO.state.socket;
+      
+      print('DEBUG - Socket: $socket');
+      print('DEBUG - Socket conectado: ${socket?.connected}');
+      print('DEBUG - Socket ID: ${socket?.id}');
+      
       if (socket != null && socket.connected) {
         print('ENVIANDO new_client_request | ID: ${event.idClientRequest}');
         socket.emit('new_client_request', {
-          'id_client_request': event.idClientRequest, // ← FORZAR STRING
+          'id_client_request': event.idClientRequest,
         });
       } else {
         print('ERROR: Socket no conectado');
+        print('Intentando reconectar...');
+        
+        // Intenta reconectar
+        socket?.connect();
+        
+        // Espera un momento y reintenta
+        await Future.delayed(Durations.medium2);
+        if (socket?.connected == true) {
+          socket!.emit('new_client_request', {
+            'id_client_request': event.idClientRequest,
+          });
+        }
       }
     });
 

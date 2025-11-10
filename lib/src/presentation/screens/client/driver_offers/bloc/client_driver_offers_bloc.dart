@@ -31,7 +31,6 @@ class ClientDriverOffersBloc extends Bloc<ClientDriverOffersEvent, ClientDriverO
 
 
     on<ListenNewDriverOfferSocketIO>((event, emit) {
-      print('Escuchando el evento socket');
       if (blocSocketIO.state.socket != null) {
         blocSocketIO.state.socket?.on('created_driver_offer/${event.idClientRequest}', (data) {
           print('Escuchando el evento socket');

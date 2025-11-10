@@ -102,7 +102,4 @@ List<BlocProvider> blocProviders = [
           locator<DriverTripRequestUseCases>(),
           locator<ClientRequestsUseCases>())),
 
-  BlocProvider<BlocSocketIO>(
-      create: (context) =>
-          BlocSocketIO(locator<SocketUseCases>(), locator<AuthUseCases>())),
 ];
