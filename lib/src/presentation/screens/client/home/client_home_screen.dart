@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:uber_clone/bloc_socket_io/bloc_socket_io.dart';
+import 'package:uber_clone/bloc_socket_io/bloc_socket_io_event.dart';
 import 'package:uber_clone/main.dart';
 import 'package:uber_clone/src/presentation/screens/client/home/bloc/client_home_bloc.dart';
 import 'package:uber_clone/src/presentation/screens/client/home/bloc/client_home_event.dart';
@@ -90,7 +92,7 @@ class _ClientHomeScreenState extends State<ClientHomeScreen> {
                   title: Text('Cerrar sesion'),
                   onTap: () {
                     context.read<ClientHomeBloc>().add(Logout());
-                    // context.read<BlocSocketIO>().add(DisconnectSocketIO());
+                    context.read<BlocSocketIO>().add(DisconnectSocketIO());
                     Navigator.pushAndRemoveUntil(
                       context, 
                       MaterialPageRoute(builder: (context) => MyApp()), 

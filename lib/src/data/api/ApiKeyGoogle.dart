@@ -1,2 +1,2 @@
 // ignore: non_constant_identifier_names
-final String API_KEY_GOOGLE = 'AIzaSyC76MPKzk9Ms7K7w9nkgkx_EuKcMRxRL3c';
+final String API_KEY_GOOGLE = 'AIzaSyCB_U6DeVUjo172-bcCrR1kt8_QcZ3A2-c';

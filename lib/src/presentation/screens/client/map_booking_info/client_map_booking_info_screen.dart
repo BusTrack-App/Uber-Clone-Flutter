@@ -14,36 +14,31 @@ class ClientMapBookingInfoScreen extends StatefulWidget {
 
   @override
   State<ClientMapBookingInfoScreen> createState() =>
-      _ClientMapBookingInfoScreenState();
+      _ClientMapBookingInfoPageState();
 }
 
-class _ClientMapBookingInfoScreenState
-    extends State<ClientMapBookingInfoScreen> {
+class _ClientMapBookingInfoPageState extends State<ClientMapBookingInfoScreen> {
   LatLng? pickUpLatLng;
   LatLng? destinationLatLng;
-  String? pickUpDescription;
+  String? pickUpDestination;
   String? destinationDescription;
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      context.read<ClientMapBookingInfoBloc>().add(
-        ClientMapBookingInfoInitEvent(
-          pickUpLatLng: pickUpLatLng!,
-          destinationLatLng: destinationLatLng!,
-          pickUpDescription: pickUpDescription!,
-          destinationDescription: destinationDescription!,
-        ),
-      );
+      context
+          .read<ClientMapBookingInfoBloc>()
+          .add(ClientMapBookingInfoInitEvent(
+            pickUpLatLng: pickUpLatLng!,
+            destinationLatLng: destinationLatLng!,
+            pickUpDescription: pickUpDestination!,
+            destinationDescription: destinationDescription!,
+          ));
       context.read<ClientMapBookingInfoBloc>().add(GetTimeAndDistanceValues());
       context.read<ClientMapBookingInfoBloc>().add(AddPolyline());
-      context.read<ClientMapBookingInfoBloc>().add(
-        ChangeMapCameraPosition(
-          lat: pickUpLatLng!.latitude,
-          lng: pickUpLatLng!.longitude,
-        ),
-      );
+      context.read<ClientMapBookingInfoBloc>().add(ChangeMapCameraPosition(
+          lat: pickUpLatLng!.latitude, lng: pickUpLatLng!.longitude));
     });
   }
 
@@ -53,30 +48,27 @@ class _ClientMapBookingInfoScreenState
         ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>;
     pickUpLatLng = arguments['pickUpLatLng'];
     destinationLatLng = arguments['destinationLatLng'];
-    pickUpDescription = arguments['pickUpDescription'];
+    pickUpDestination = arguments['pickUpDescription'];
     destinationDescription = arguments['destinationDescription'];
-    debugPrint('pickUpLatLng: ${pickUpLatLng?.toJson()}');
-    debugPrint('destinationLatLng: ${destinationLatLng?.toJson()}');
-    debugPrint('pickUpDestination: $pickUpDescription');
-    debugPrint('destinationDescription: $destinationDescription');
     return Scaffold(
       body: BlocListener<ClientMapBookingInfoBloc, ClientMapBookingInfoState>(
         listener: (context, state) {
           final responseClientRequest = state.responseClientRequest;
           if (responseClientRequest is Success) {
-            // int idClientRequest = responseClientRequest.data;
-            Navigator.pushNamedAndRemoveUntil(context, 'client/driver/offers', (route) => false);
-            Fluttertoast.showToast(
-              msg: 'Solicitud Enviada',
-              toastLength: Toast.LENGTH_LONG,
-            );
+            int idClientRequest = responseClientRequest.data;
+            context.read<ClientMapBookingInfoBloc>().add(EmitNewClientRequestSocketIO(idClientRequest: idClientRequest));
+            // Navigator.pushNamedAndRemoveUntil(context, 'client/driver/offers', (route) => false);
+            Navigator.pushNamed(context, 'client/driver/offers', arguments: idClientRequest);
+            Fluttertoast.showToast(msg: 'Solicitud enviada', toastLength: Toast.LENGTH_LONG);
           }
         },
         child: BlocBuilder<ClientMapBookingInfoBloc, ClientMapBookingInfoState>(
           builder: (context, state) {
             final responseTimeAndDistance = state.responseTimeAndDistance;
             if (responseTimeAndDistance is Loading) {
-              return Center(child: CircularProgressIndicator());
+              return Center(
+                child: CircularProgressIndicator(),
+              );
             } else if (responseTimeAndDistance is Success) {
               TimeAndDistanceValues timeAndDistanceValues =
                   responseTimeAndDistance.data as TimeAndDistanceValues;

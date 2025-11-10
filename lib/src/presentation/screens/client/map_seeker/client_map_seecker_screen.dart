@@ -18,13 +18,17 @@ class ClientMapSeeckerScreen extends StatefulWidget {
 class ClientMapSeeckerScreenState extends State<ClientMapSeeckerScreen> {
   TextEditingController pickUpController = TextEditingController();
   TextEditingController destinationController = TextEditingController();
+  
+  // SOLUCIÓN: Flag para controlar cuándo actualizar el texto del input
+  bool _isSelectingFromAutocomplete = false;
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       context.read<ClientMapSeekerBloc>().add(ClientMapSeekerInitEvent());
-      context.read<ClientMapSeekerBloc>().add(ConnectSocketIo());
+      context.read<ClientMapSeekerBloc>().add(ListenDriversPositionSocketIO());
+      context.read<ClientMapSeekerBloc>().add(ListenDriversDisconnectedSocketIO());
       context.read<ClientMapSeekerBloc>().add(FindPosition());
     });
   }
@@ -46,15 +50,27 @@ class ClientMapSeeckerScreenState extends State<ClientMapSeeckerScreen> {
                   );
                 },
                 onCameraIdle: () async {
-                  context.read<ClientMapSeekerBloc>().add(OnCameraIdle());
-                  pickUpController.text = state.placemarkData?.address ?? '';
-                  if (state.placemarkData != null) {
-                    context.read<ClientMapSeekerBloc>().add(OnAutoCompletedPickUpSelected(
-                      lat: state.placemarkData!.lat, 
-                      lng: state.placemarkData!.lng,
-                      pickUpDescription: state.placemarkData!.address
-                    ));
+                  // SOLUCIÓN: Solo actualizar si NO estamos seleccionando desde el autocompletado
+                  if (!_isSelectingFromAutocomplete) {
+                    context.read<ClientMapSeekerBloc>().add(OnCameraIdle());
+                    
+                    // Esperar a que el estado se actualice
+                    await Future.delayed(Duration(milliseconds: 100));
+                    
+                    // Actualizar el texto solo si no hay un pickUpDescription ya seleccionado
+                    if (state.pickUpDescription.isEmpty && state.placemarkData != null) {
+                      pickUpController.text = state.placemarkData?.address ?? '';
+                      // ignore: use_build_context_synchronously
+                      context.read<ClientMapSeekerBloc>().add(OnAutoCompletedPickUpSelected(
+                        lat: state.placemarkData!.lat, 
+                        lng: state.placemarkData!.lng,
+                        pickUpDescription: state.placemarkData!.address
+                      ));
+                    }
                   }
+                  
+                  // Reset el flag después de procesar
+                  _isSelectingFromAutocomplete = false;
                 },
                 onMapCreated: (GoogleMapController controller) {
                   // ignore: deprecated_member_use
@@ -80,7 +96,6 @@ class ClientMapSeeckerScreenState extends State<ClientMapSeeckerScreen> {
                   margin: EdgeInsets.only(bottom: 30, left: 60, right: 60),
                   text: 'REVISAR VIAJE', 
                   iconData: Icons.check_circle,
-                  // textColor: Colors.white,
                   onPressed: () {
                     Navigator.pushNamed(
                       context, 
@@ -102,7 +117,6 @@ class ClientMapSeeckerScreenState extends State<ClientMapSeeckerScreen> {
     );
   }
 
-
   Widget _googlePlacesAutocomplete() {
     return Card(
       surfaceTintColor: Colors.white,
@@ -112,6 +126,12 @@ class ClientMapSeeckerScreenState extends State<ClientMapSeeckerScreen> {
             pickUpController, 
             'Recoger en', 
             (Prediction prediction) {
+              // SOLUCIÓN: Activar el flag antes de cambiar la cámara
+              _isSelectingFromAutocomplete = true;
+              
+              // Actualizar el texto del controller inmediatamente
+              pickUpController.text = prediction.description ?? '';
+              
               context.read<ClientMapSeekerBloc>().add(ChangeMapCameraPosition(
                 lat: double.parse(prediction.lat!), 
                 lng: double.parse(prediction.lng!),
@@ -121,7 +141,7 @@ class ClientMapSeeckerScreenState extends State<ClientMapSeeckerScreen> {
                 lng: double.parse(prediction.lng!),
                 pickUpDescription: prediction.description ?? ''
               ));
-                        }
+            }
           ),
           Divider(
             color: Colors.grey[200],
@@ -130,6 +150,9 @@ class ClientMapSeeckerScreenState extends State<ClientMapSeeckerScreen> {
             destinationController, 
             'Dejar en', 
             (Prediction prediction) {
+              // Actualizar el texto del controller inmediatamente
+              destinationController.text = prediction.description ?? '';
+              
               context.read<ClientMapSeekerBloc>().add(OnAutoCompletedDestinationSelected(
                 lat: double.parse(prediction.lat!), 
                 lng: double.parse(prediction.lng!),

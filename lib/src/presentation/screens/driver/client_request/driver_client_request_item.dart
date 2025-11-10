@@ -10,6 +10,7 @@ import 'package:uber_clone/src/presentation/utils/bloc_form_item.dart';
 import 'package:uber_clone/src/presentation/widgets/custom_text_field.dart';
 
 class DriverClientRequestsItem extends StatelessWidget {
+
   DriverClientRequestsState state;
   ClientRequestResponse? clientRequest;
 
@@ -49,22 +50,36 @@ class DriverClientRequestsItem extends StatelessWidget {
                 'Tarifa ofrecida: \$${clientRequest?.fareOffered}',
                 style: TextStyle(
                   color: Colors.blueAccent,
-                  fontWeight: FontWeight.bold,
+                  fontWeight: FontWeight.bold
                 ),
               ),
               subtitle: Text(
                 '${clientRequest?.client.name} ${clientRequest?.client.lastname}',
-                style: TextStyle(fontSize: 16, color: Colors.blue[900]),
+                style: TextStyle(
+                  fontSize: 16,
+                  color: Colors.blue[900]
+                ),
               ),
             ),
             ListTile(
               title: Text('Datos del viaje'),
-              subtitle: Column(children: [_textPickup(), _textDestination()]),
+              subtitle: Column(
+                children: [
+                  _textPickup(),
+                  _textDestination()
+                ],
+              ),
             ),
             ListTile(
               title: Text('Tiempo y Distancia'),
-              subtitle: Column(children: [_textMinutes(), _textDistance()]),
+              subtitle: Column(
+                children: [
+                  _textMinutes(),
+                  _textDistance()
+                ],
+              ),
             ),
+            
           ],
         ),
       ),
@@ -78,11 +93,14 @@ class DriverClientRequestsItem extends StatelessWidget {
           width: 140,
           child: Text(
             'Tiempo de llegada: ',
-            style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+            style: TextStyle(
+              color: Colors.black,
+              fontWeight: FontWeight.bold
+            ),
           ),
         ),
         Flexible(
-          child: Text(clientRequest?.googleDistanceMatrix?.duration.text ?? ''),
+          child: Text(clientRequest?.googleDistanceMatrix?.duration.text ?? '')
         ),
       ],
     );
@@ -95,11 +113,14 @@ class DriverClientRequestsItem extends StatelessWidget {
           width: 140,
           child: Text(
             'Recorrido: ',
-            style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+            style: TextStyle(
+              color: Colors.black,
+              fontWeight: FontWeight.bold
+            ),
           ),
         ),
         Flexible(
-          child: Text(clientRequest?.googleDistanceMatrix?.distance.text ?? ''),
+          child: Text(clientRequest?.googleDistanceMatrix?.distance.text ?? '')
         ),
       ],
     );
@@ -112,10 +133,15 @@ class DriverClientRequestsItem extends StatelessWidget {
           width: 90,
           child: Text(
             'Recoger en: ',
-            style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+            style: TextStyle(
+              color: Colors.black,
+              fontWeight: FontWeight.bold
+            ),
           ),
         ),
-        Flexible(child: Text(clientRequest?.pickupDescription ?? '')),
+        Flexible(
+          child: Text(clientRequest?.pickupDescription ?? '')
+        ),
       ],
     );
   }
@@ -127,10 +153,15 @@ class DriverClientRequestsItem extends StatelessWidget {
           width: 90,
           child: Text(
             'Llevar a: ',
-            style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+            style: TextStyle(
+              color: Colors.black,
+              fontWeight: FontWeight.bold
+            ),
           ),
         ),
-        Flexible(child: Text(clientRequest?.destinationDescription ?? '')),
+        Flexible(
+          child: Text(clientRequest?.destinationDescription ?? '')
+        ),
       ],
     );
   }
@@ -138,20 +169,27 @@ class DriverClientRequestsItem extends StatelessWidget {
   Widget _imageUser() {
     return SizedBox(
       width: 60,
-      // margin: EdgeInsets.only(top: 25, bottom: 15),
       child: AspectRatio(
         aspectRatio: 1,
         child: ClipOval(
-          child: clientRequest != null
-              ? clientRequest!.client.image != null
-                    ? FadeInImage.assetNetwork(
-                        placeholder: 'assets/img/user_image.png',
-                        image: clientRequest?.client.image,
-                        fit: BoxFit.cover,
-                        fadeInDuration: Duration(seconds: 1),
-                      )
-                    : Image.asset('assets/img/user_image.png')
-              : Container(),
+          child: clientRequest?.client.image != null &&
+                  clientRequest!.client.image!.isNotEmpty
+              ? FadeInImage.assetNetwork(
+                  placeholder: 'assets/img/user_image.png',
+                  image: 'http://192.168.1.55:3000${clientRequest!.client.image!}',
+                  fit: BoxFit.cover,
+                  fadeInDuration: const Duration(seconds: 1),
+                  imageErrorBuilder: (context, error, stackTrace) {
+                    return Image.asset(
+                      'assets/img/user_image.png',
+                      fit: BoxFit.cover,
+                    );
+                  },
+                )
+              : Image.asset(
+                  'assets/img/user_image.png',
+                  fit: BoxFit.cover,
+                ),
         ),
       ),
     );
@@ -159,31 +197,44 @@ class DriverClientRequestsItem extends StatelessWidget {
 
   // ignore: non_constant_identifier_names
   FareOfferedDialog(BuildContext context, Function() submit) {
+
     return showDialog(
-      context: context,
+      context: context, 
       builder: (BuildContext context) => AlertDialog(
-        title: Text('Ingresa tu tarifa', style: TextStyle(fontSize: 17)),
+        
+        title: Text(
+          'Ingresa tu tarifa',
+          style: TextStyle(
+            fontSize: 17
+          ),
+        ),
         contentPadding: EdgeInsets.only(bottom: 15),
         content: CustomTextField(
-          text: 'Valor',
-          icon: Icons.attach_money,
+          text: 'Valor', 
+          icon: Icons.attach_money, 
           keyboardType: TextInputType.phone,
           onChanged: (text) {
-            context.read<DriverClientRequestsBloc>().add(
-              FareOfferedChange(fareOffered: BlocFormItem(value: text)),
-            );
-          },
+            debugPrint('Tarifa del viaje: $text');
+            context.read<DriverClientRequestsBloc>().add(FareOfferedChange(fareOffered: BlocFormItem(value: text)));
+          }
         ),
         actions: [
           ElevatedButton(
             onPressed: () {
               Navigator.pop(context);
               submit();
-            },
-            child: Text('Enviar tarifa', style: TextStyle(color: Colors.black)),
+            }, 
+            child: Text(
+              'Enviar tarifa',
+              style: TextStyle(
+                color: Colors.black
+              ),
+            )
           ),
+          
         ],
-      ),
+      )
     );
+
   }
 }
