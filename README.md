@@ -47,3 +47,13 @@ acabo de terminar el modulo 113 TODO NICE
 Hay un error en la pantalla de cliente, al querer seleccionar una ubicacion mientras se mueve el mapa
 I/flutter (26550): Error: PlatformException(IO_ERROR, gcaa: UNAVAILABLE, null, null)
 I/flutter (26550): OnCameraIdle Error: type 'Null' is not a subtype of type 'PlacemarkData'
+
+
+
+
+
+ERROR:
+
+La conexion al socket IO es correcta segun el servidor ya que llega el mensaje de conexion exitosa
+Pero al tratar de enviar un mensaje desde ClientMapBookingBloc no llega el mensaje al servidor
+Tampoco se puede usar el listener en el Driver_client_request_bloc

@@ -43,9 +43,7 @@ class OnAutoCompletedDestinationSelected extends ClientMapSeekerEvent {
 
 
 // ----------------- Eventos para Socket Io --------------
-class ConnectSocketIo extends ClientMapSeekerEvent {}
 
-class DisconnectSocketIo extends ClientMapSeekerEvent {}
 
 class ListenDriversPositionSocketIO extends ClientMapSeekerEvent {}
 

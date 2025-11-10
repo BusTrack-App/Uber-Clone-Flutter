@@ -7,3 +7,8 @@ class GetDriverOffers extends ClientDriverOffersEvent{
   GetDriverOffers({required this.idClientRequest});
 }
 
+
+class ListenNewDriverOfferSocketIO extends ClientDriverOffersEvent {
+  final int idClientRequest;
+  ListenNewDriverOfferSocketIO({required this.idClientRequest});
+}

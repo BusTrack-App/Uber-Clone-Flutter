@@ -22,14 +22,15 @@ class _ClientDriverOffersScreenState extends State<ClientDriverOffersScreen> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      context.read<ClientDriverOffersBloc>().add(
-        GetDriverOffers(idClientRequest: 4),
-      );
+      if (idClientRequest != null) {
+        context.read<ClientDriverOffersBloc>().add(ListenNewDriverOfferSocketIO(idClientRequest: idClientRequest!));
+      }  
     });
   }
 
   @override
   Widget build(BuildContext context) {
+    idClientRequest = ModalRoute.of(context)?.settings.arguments as int;
     return Scaffold(
       body: BlocListener<ClientDriverOffersBloc, ClientDriverOffersState>(
         listener: (context, state) {

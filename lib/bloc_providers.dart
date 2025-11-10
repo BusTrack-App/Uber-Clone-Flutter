@@ -65,12 +65,14 @@ List<BlocProvider> blocProviders = [
   // Uso de mapas
   BlocProvider<ClientMapSeekerBloc>(
     create: (context) => ClientMapSeekerBloc(
+      context.read<BlocSocketIO>(),
       locator<GeolocatorUseCases>(),
       locator<SocketUseCases>(),
     ),
   ),
   BlocProvider<ClientMapBookingInfoBloc>(
     create: (context) => ClientMapBookingInfoBloc(
+      context.read<BlocSocketIO>(),
       locator<GeolocatorUseCases>(),
       locator<ClientRequestsUseCases>(),
       locator<AuthUseCases>(),
@@ -87,7 +89,7 @@ List<BlocProvider> blocProviders = [
   ),
   BlocProvider<DriverClientRequestsBloc>(
     create: (context) => DriverClientRequestsBloc(
-      // context.read<BlocSocketIO>(),
+      context.read<BlocSocketIO>(),
       locator<ClientRequestsUseCases>(),
       locator<DriversPositionUseCases>(),
       locator<AuthUseCases>(),
@@ -96,6 +98,7 @@ List<BlocProvider> blocProviders = [
   ),
   BlocProvider<ClientDriverOffersBloc>(
       create: (context) => ClientDriverOffersBloc(
+          context.read<BlocSocketIO>(),
           locator<DriverTripRequestUseCases>(),
           locator<ClientRequestsUseCases>())),
 

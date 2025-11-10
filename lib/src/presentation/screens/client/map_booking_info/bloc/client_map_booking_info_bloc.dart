@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:uber_clone/bloc_socket_io/bloc_socket_io.dart';
 import 'package:uber_clone/src/domain/models/auth_response.dart';
 import 'package:uber_clone/src/domain/models/client_request.dart';
 import 'package:uber_clone/src/domain/models/time_and_distance_values.dart';
@@ -18,12 +19,14 @@ class ClientMapBookingInfoBloc
   GeolocatorUseCases geolocatorUseCases;
   ClientRequestsUseCases clientRequestsUseCases;
   AuthUseCases authUseCases;
-  // BlocSocketIO blocSocketIO;
+  BlocSocketIO blocSocketIO;
 
-  // ClientMapBookingInfoBloc(this.blocSocketIO, this.geolocatorUseCases, this.clientRequestsUseCases, this.authUseCases): super(ClientMapBookingInfoState()) {
-  ClientMapBookingInfoBloc(this.geolocatorUseCases, this.clientRequestsUseCases, this.authUseCases)
-    : super(ClientMapBookingInfoState()) {
-    // ----------- INIT EVENT ----------------
+  ClientMapBookingInfoBloc(
+    this.blocSocketIO,
+    this.geolocatorUseCases,
+    this.clientRequestsUseCases,
+    this.authUseCases,
+  ) : super(ClientMapBookingInfoState()) {
     on<ClientMapBookingInfoInitEvent>((event, emit) async {
       Completer<GoogleMapController> controller =
           Completer<GoogleMapController>();
@@ -67,57 +70,6 @@ class ClientMapBookingInfoBloc
       );
     });
 
-    on<FareOfferedChanged>((event, emit) {
-      emit(
-        state.copyWith(fareOffered: BlocFormItem(
-          value: event.fareOffered.value,
-          error: event.fareOffered.value.isEmpty ? 'Ingresa la tarifa' : null
-        ))
-      );
-    });
-
-    on<CreateClientRequest>((event, emit) async {
-      AuthResponse authResponse = await authUseCases.getUserSession.run();
-
-      Resource<int> response = await clientRequestsUseCases.createClientRequest.run(
-        ClientRequest(
-          idClient: authResponse.user.id!, 
-          fareOffered: double.parse(state.fareOffered.value), 
-          pickupDescription: state.pickUpDescription, 
-          destinationDescription: state.destinationDescription, 
-          pickupLat: state.pickUpLatLng!.latitude, 
-          pickupLng: state.pickUpLatLng!.longitude, 
-          destinationLat: state.destinationLatLng!.latitude, 
-          destinationLng: state.destinationLatLng!.longitude
-        )
-      );
-
-      emit(
-        state.copyWith(
-          responseClientRequest: response
-        )
-      );
-    });
-
-    on<GetTimeAndDistanceValues>((event, emit) async {
-      emit(
-        state.copyWith(
-          responseTimeAndDistance: Loading()
-        )
-      );
-      Resource<TimeAndDistanceValues> response = await clientRequestsUseCases.getTimeAndDistance.run(
-        state.pickUpLatLng!.latitude,
-        state.pickUpLatLng!.longitude,
-        state.destinationLatLng!.latitude,
-        state.destinationLatLng!.longitude,
-      );
-      emit(
-        state.copyWith(
-          responseTimeAndDistance: response
-        )
-      );
-    });
-
     on<ChangeMapCameraPosition>((event, emit) async {
       GoogleMapController googleMapController = await state.controller!.future;
       await googleMapController.animateCamera(
@@ -129,6 +81,62 @@ class ClientMapBookingInfoBloc
           ),
         ),
       );
+    });
+
+    on<FareOfferedChanged>((event, emit) {
+      emit(
+        state.copyWith(
+          fareOffered: BlocFormItem(
+            value: event.fareOffered.value,
+            error: event.fareOffered.value.isEmpty ? 'Ingresa la tarifa' : null,
+          ),
+        ),
+      );
+    });
+
+    on<CreateClientRequest>((event, emit) async {
+      AuthResponse authResponse = await authUseCases.getUserSession.run();
+
+      Resource<int> response = await clientRequestsUseCases.createClientRequest
+          .run(
+            ClientRequest(
+              idClient: authResponse.user.id!,
+              fareOffered: double.parse(state.fareOffered.value),
+              pickupDescription: state.pickUpDescription,
+              destinationDescription: state.destinationDescription,
+              pickupLat: state.pickUpLatLng!.latitude,
+              pickupLng: state.pickUpLatLng!.longitude,
+              destinationLat: state.destinationLatLng!.latitude,
+              destinationLng: state.destinationLatLng!.longitude,
+            ),
+          );
+
+      emit(state.copyWith(responseClientRequest: response));
+    });
+
+    on<EmitNewClientRequestSocketIO>((event, emit) {
+      final socket = blocSocketIO.state.socket;
+      if (socket != null && socket.connected) {
+        print('ENVIANDO new_client_request | ID: ${event.idClientRequest}');
+        socket.emit('new_client_request', {
+          'id_client_request': event.idClientRequest, // ← FORZAR STRING
+        });
+      } else {
+        print('ERROR: Socket no conectado');
+      }
+    });
+
+    on<GetTimeAndDistanceValues>((event, emit) async {
+      emit(state.copyWith(responseTimeAndDistance: Loading()));
+      Resource<TimeAndDistanceValues> response = await clientRequestsUseCases
+          .getTimeAndDistance
+          .run(
+            state.pickUpLatLng!.latitude,
+            state.pickUpLatLng!.longitude,
+            state.destinationLatLng!.latitude,
+            state.destinationLatLng!.longitude,
+          );
+      emit(state.copyWith(responseTimeAndDistance: response));
     });
 
     on<AddPolyline>((event, emit) async {
