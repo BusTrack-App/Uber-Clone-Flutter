@@ -22,3 +22,9 @@ class AssignDriver extends ClientDriverOffersEvent {
     required this.fareAssigned,
   });
 }
+
+class EmitNewClientRequestSocketIO extends ClientDriverOffersEvent {
+  final int idClientRequest;
+  EmitNewClientRequestSocketIO({required this.idClientRequest}); 
+}
+

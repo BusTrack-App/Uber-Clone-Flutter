@@ -49,13 +49,18 @@ class ClientDriverOffersBloc
           responseAssignDriver: response
         )
       );
-      // if (response is Success) {
-      //   add(EmitNewClientRequestSocketIO(idClientRequest: event.idClientRequest));
-      //   add(EmitNewDriverAssignedSocketIO(
-      //     idClientRequest: event.idClientRequest,
-      //     idDriver: event.idDriver
-      //   ));
-      // }
+      if (response is Success) {
+        add(EmitNewClientRequestSocketIO(idClientRequest: event.idClientRequest));
+      }
+    });
+
+
+    on<EmitNewClientRequestSocketIO>((event, emit) {
+      if (blocSocketIO.state.socket != null) {
+        blocSocketIO.state.socket?.emit('new_client_request', {
+            'id_client_request': event.idClientRequest
+        });
+      }
     });
   }
 }
