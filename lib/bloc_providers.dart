@@ -3,6 +3,7 @@ import 'package:uber_clone/bloc_socket_io/bloc_socket_io.dart';
 import 'package:uber_clone/injection.dart';
 import 'package:uber_clone/src/domain/use_cases/auth/auth_use_case.dart';
 import 'package:uber_clone/src/domain/use_cases/client-requests/client_requests_use_cases.dart';
+import 'package:uber_clone/src/domain/use_cases/driver-car-info/DriverCarInfoUseCases.dart';
 import 'package:uber_clone/src/domain/use_cases/driver-trip-request/driver_trip_request_use_cases.dart';
 import 'package:uber_clone/src/domain/use_cases/drivers-position/drivers_position_use_cases.dart';
 import 'package:uber_clone/src/domain/use_cases/geolocator/geolocator_use_cases.dart';
@@ -17,6 +18,7 @@ import 'package:uber_clone/src/presentation/screens/client/home/bloc/client_home
 import 'package:uber_clone/src/presentation/screens/client/map_booking_info/bloc/client_map_booking_info_bloc.dart';
 import 'package:uber_clone/src/presentation/screens/client/map_seeker/bloc/client_map_seeker_bloc.dart.dart';
 import 'package:uber_clone/src/presentation/screens/client/map_trip/bloc/client_map_trip_bloc.dart';
+import 'package:uber_clone/src/presentation/screens/driver/carinfo/bloc/driver_car_info_bloc.dart';
 import 'package:uber_clone/src/presentation/screens/driver/client_request/bloc/driver_client_request_bloc.dart';
 import 'package:uber_clone/src/presentation/screens/driver/home/bloc/driver_home_bloc.dart';
 import 'package:uber_clone/src/presentation/screens/driver/map_seeker/bloc/driver_map_location_bloc.dart';
@@ -104,10 +106,12 @@ List<BlocProvider> blocProviders = [
           locator<ClientRequestsUseCases>())),
 
 
-
+  // ------- CAR INFO
+  BlocProvider<DriverCarInfoBloc>(
+      create: (context) => DriverCarInfoBloc(
+          locator<AuthUseCases>(), locator<DriverCarInfoUseCases>())),
 
   // Maps Trips
-
   BlocProvider<ClientMapTripBloc>(
       create: (context) => ClientMapTripBloc(
           context.read<BlocSocketIO>(),

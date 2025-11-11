@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:uber_clone/bloc_socket_io/bloc_socket_io.dart';
 import 'package:uber_clone/bloc_socket_io/bloc_socket_io_event.dart';
 import 'package:uber_clone/main.dart';
+import 'package:uber_clone/src/presentation/screens/driver/carinfo/driver_car_info_screen.dart';
 import 'package:uber_clone/src/presentation/screens/driver/client_request/driver_client_request_screen.dart';
 import 'package:uber_clone/src/presentation/screens/driver/home/bloc/driver_home_bloc.dart';
 import 'package:uber_clone/src/presentation/screens/driver/home/bloc/driver_home_event.dart';
@@ -22,7 +23,7 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
   List<Widget> pageList = <Widget>[
     DriverMapLocationScreen(),
     DriverClientRequestScreen(),
-    // ClientHistoryTripPage(),
+    DriverCarInfoScreen(),
     ProfileInfoScreen(),
     RolesScreen(),
 
@@ -81,7 +82,7 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
                   },
                 ),
                 ListTile(
-                  title: Text('Perfil del usuario'),
+                  title: Text('Mi vehiculo'),
                   selected: state.pageIndex == 2,
                   onTap: () {
                     context.read<DriverHomeBloc>().add(
@@ -91,12 +92,22 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
                   },
                 ),
                 ListTile(
-                  title: Text('Roles de usuario'),
+                  title: Text('Perfil del usuario'),
                   selected: state.pageIndex == 3,
+                  onTap: () {
+                    context.read<DriverHomeBloc>().add(
+                      ChangeDrawerPage(pageIndex: 3),
+                    );
+                    Navigator.pop(context);
+                  },
+                ),
+                ListTile(
+                  title: Text('Roles de usuario'),
+                  selected: state.pageIndex == 4,
                   onTap: () {
                     context
                         .read<DriverHomeBloc>()
-                        .add(ChangeDrawerPage(pageIndex: 3));
+                        .add(ChangeDrawerPage(pageIndex: 4));
                     Navigator.pop(context);
                   },
                 ),

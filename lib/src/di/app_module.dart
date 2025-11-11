@@ -4,11 +4,13 @@ import 'package:uber_clone/src/data/api/api_config.dart';
 import 'package:uber_clone/src/data/dataSource/local/shared_pref.dart';
 import 'package:uber_clone/src/data/dataSource/remote/services/auth_service.dart';
 import 'package:uber_clone/src/data/dataSource/remote/services/client_request_service.dart';
+import 'package:uber_clone/src/data/dataSource/remote/services/driver_car_info_service.dart';
 import 'package:uber_clone/src/data/dataSource/remote/services/driver_position_service.dart';
 import 'package:uber_clone/src/data/dataSource/remote/services/driver_trip_request_service.dart';
 import 'package:uber_clone/src/data/dataSource/remote/services/users_service.dart';
 import 'package:uber_clone/src/data/repository/auth_repository_impl.dart';
 import 'package:uber_clone/src/data/repository/client_request_repository_impl.dart';
+import 'package:uber_clone/src/data/repository/driver_car_info_repository_impl.dart';
 import 'package:uber_clone/src/data/repository/driver_trip_request_repository_impl.dart';
 import 'package:uber_clone/src/data/repository/drivers_position_repository_impl.dart';
 import 'package:uber_clone/src/data/repository/geolocator_repository_impl.dart';
@@ -17,6 +19,7 @@ import 'package:uber_clone/src/data/repository/users_repository_impl.dart';
 import 'package:uber_clone/src/domain/models/auth_response.dart';
 import 'package:uber_clone/src/domain/repository/auth_repository.dart';
 import 'package:uber_clone/src/domain/repository/client_request_repository.dart';
+import 'package:uber_clone/src/domain/repository/driver_car_info_repository.dart';
 import 'package:uber_clone/src/domain/repository/driver_trip_request_repository.dart';
 import 'package:uber_clone/src/domain/repository/drivers_position_repository.dart';
 import 'package:uber_clone/src/domain/repository/geolocator_repository.dart';
@@ -33,6 +36,9 @@ import 'package:uber_clone/src/domain/use_cases/client-requests/create_client_re
 import 'package:uber_clone/src/domain/use_cases/client-requests/get_nearby_trip_request_use_case.dart';
 import 'package:uber_clone/src/domain/use_cases/client-requests/get_time_and_distance_use_case.dart';
 import 'package:uber_clone/src/domain/use_cases/client-requests/update_driver_assigned_use_case.dart';
+import 'package:uber_clone/src/domain/use_cases/driver-car-info/DriverCarInfoUseCases.dart';
+import 'package:uber_clone/src/domain/use_cases/driver-car-info/create_driver_car_info_use_case.dart';
+import 'package:uber_clone/src/domain/use_cases/driver-car-info/get_driver_car_info_use_case.dart';
 import 'package:uber_clone/src/domain/use_cases/driver-trip-request/create_driver_trip_request_use_case.dart';
 import 'package:uber_clone/src/domain/use_cases/driver-trip-request/driver_trip_request_use_cases.dart';
 import 'package:uber_clone/src/domain/use_cases/driver-trip-request/get_driver_trip_offers_by_client_request_use_case.dart';
@@ -150,9 +156,19 @@ abstract class AppModule {
   // DriverTripRequestsService get driverTripRequestsService =>
   //     DriverTripRequestsService(token);
 
-  // @injectable
-  // DriverCarInfoService get driverCarInfoService => DriverCarInfoService(token);
 
+  // ------------------- Car Info --------------
+  @injectable
+  DriverCarInfoService get driverCarInfoService => DriverCarInfoService(token);
+
+  @injectable
+  DriverCarInfoRepository get driverCarInfoRepository =>
+      DriverCarInfoRepositoryImpl(driverCarInfoService);
+
+  @injectable
+  DriverCarInfoUseCases get driverCarInfoUseCases => DriverCarInfoUseCases(
+      createDriverCarInfo: CreateDriverCarInfoUseCase(driverCarInfoRepository),
+      getDriverCarInfo: GetDriverCarInfoUseCase(driverCarInfoRepository));
 
   // ---------------------Driver Trip Request ---------------
   @injectable
@@ -195,9 +211,7 @@ abstract class AppModule {
   // DriverTripRequestsRepository get driverTripRequestsRepository =>
   //     DriverTripRequestsRepositoryImpl(driverTripRequestsService);
 
-  // @injectable
-  // DriverCarInfoRepository get driverCarInfoRepository =>
-  //     DriverCarInfoRepositoryImpl(driverCarInfoService);
+
 
   @injectable
   SocketUseCases get socketUseCases => SocketUseCases(
@@ -216,8 +230,5 @@ abstract class AppModule {
   //             GetDriverTripOffersByClientRequestUseCase(
   //                 driverTripRequestsRepository));
 
-  // @injectable
-  // DriverCarInfoUseCases get driverCarInfoUseCases => DriverCarInfoUseCases(
-  //     createDriverCarInfo: CreateDriverCarInfoUseCase(driverCarInfoRepository),
-  //     getDriverCarInfo: GetDriverCarInfoUseCase(driverCarInfoRepository));
+
 }

@@ -17,6 +17,8 @@ import 'package:uber_clone/src/data/dataSource/remote/services/auth_service.dart
     as _i246;
 import 'package:uber_clone/src/data/dataSource/remote/services/client_request_service.dart'
     as _i155;
+import 'package:uber_clone/src/data/dataSource/remote/services/driver_car_info_service.dart'
+    as _i424;
 import 'package:uber_clone/src/data/dataSource/remote/services/driver_position_service.dart'
     as _i120;
 import 'package:uber_clone/src/data/dataSource/remote/services/driver_trip_request_service.dart'
@@ -27,6 +29,8 @@ import 'package:uber_clone/src/di/app_module.dart' as _i807;
 import 'package:uber_clone/src/domain/repository/auth_repository.dart' as _i291;
 import 'package:uber_clone/src/domain/repository/client_request_repository.dart'
     as _i220;
+import 'package:uber_clone/src/domain/repository/driver_car_info_repository.dart'
+    as _i381;
 import 'package:uber_clone/src/domain/repository/driver_trip_request_repository.dart'
     as _i189;
 import 'package:uber_clone/src/domain/repository/drivers_position_repository.dart'
@@ -41,6 +45,8 @@ import 'package:uber_clone/src/domain/use_cases/auth/auth_use_case.dart'
     as _i180;
 import 'package:uber_clone/src/domain/use_cases/client-requests/client_requests_use_cases.dart'
     as _i462;
+import 'package:uber_clone/src/domain/use_cases/driver-car-info/DriverCarInfoUseCases.dart'
+    as _i998;
 import 'package:uber_clone/src/domain/use_cases/driver-trip-request/driver_trip_request_use_cases.dart'
     as _i995;
 import 'package:uber_clone/src/domain/use_cases/drivers-position/drivers_position_use_cases.dart'
@@ -86,6 +92,15 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i462.ClientRequestsUseCases>(
       () => appModule.clientRequestsUseCases,
+    );
+    gh.factory<_i424.DriverCarInfoService>(
+      () => appModule.driverCarInfoService,
+    );
+    gh.factory<_i381.DriverCarInfoRepository>(
+      () => appModule.driverCarInfoRepository,
+    );
+    gh.factory<_i998.DriverCarInfoUseCases>(
+      () => appModule.driverCarInfoUseCases,
     );
     gh.factory<_i328.DriverTripRequestsService>(
       () => appModule.driverTripRequestsService,
