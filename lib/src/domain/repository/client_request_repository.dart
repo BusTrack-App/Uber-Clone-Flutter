@@ -22,4 +22,7 @@ abstract class ClientRequestsRepository {
   
   Future<Resource<List<ClientRequestResponse>>> getNearbyTripRequest(double driverLat,double driverLng);
 
+  Future<Resource<ClientRequestResponse>> getByClientRequest(int idClientRequest);
+
+
 }

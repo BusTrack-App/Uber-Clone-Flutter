@@ -38,4 +38,10 @@ class ClientRequestsRepositoryImpl implements ClientRequestsRepository {
     return clientRequestsService.updateDriverAssigned(idClientRequest, idDriver, fareAssigned);
   }
 
+
+  @override
+  Future<Resource<ClientRequestResponse>> getByClientRequest(int idClientRequest) {
+    return clientRequestsService.getByClientRequest(idClientRequest);
+  }
+
 }

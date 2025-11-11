@@ -127,4 +127,31 @@ class ClientRequestsService {
       return ErrorData(e.toString());
     }
   }
+
+
+  // Obtener todos los datos de una sola oferta
+  Future<Resource<ClientRequestResponse>> getByClientRequest(
+      int idClientRequest) async {
+    try {
+      Uri url = Uri.http(
+          ApiConfig.API_PROJECT, '/client-requests/$idClientRequest');
+      Map<String, String> headers = {
+        'Content-Type': 'application/json',
+        'Authorization': await token
+      };
+      final response = await http.get(url, headers: headers);
+      final data = json.decode(response.body);
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        ClientRequestResponse clientRequests =
+            ClientRequestResponse.fromJson(data);
+        return Success(clientRequests);
+      } else {
+        return ErrorData(listToString(data['message']));
+      }
+    } catch (e) {
+      debugPrint('Error: $e');
+      return ErrorData(e.toString());
+    }
+  }
+
 }
