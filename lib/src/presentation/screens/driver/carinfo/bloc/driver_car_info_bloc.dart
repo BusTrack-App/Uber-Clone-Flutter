@@ -4,7 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:uber_clone/src/domain/models/auth_response.dart';
 import 'package:uber_clone/src/domain/models/driver_car_info.dart';
 import 'package:uber_clone/src/domain/use_cases/auth/auth_use_case.dart';
-import 'package:uber_clone/src/domain/use_cases/driver-car-info/DriverCarInfoUseCases.dart';
+import 'package:uber_clone/src/domain/use_cases/driver-car-info/driver_car_info_use_cases.dart';
 import 'package:uber_clone/src/domain/utils/resource.dart';
 import 'package:uber_clone/src/presentation/screens/driver/carinfo/bloc/driver_car_info_event.dart';
 import 'package:uber_clone/src/presentation/screens/driver/carinfo/bloc/driver_car_info_state.dart';

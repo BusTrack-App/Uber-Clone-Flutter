@@ -26,8 +26,6 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
     DriverCarInfoScreen(),
     ProfileInfoScreen(),
     RolesScreen(),
-
-    // RolesPage(),
   ];
 
   @override

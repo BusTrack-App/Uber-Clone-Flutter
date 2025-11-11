@@ -36,7 +36,7 @@ import 'package:uber_clone/src/domain/use_cases/client-requests/create_client_re
 import 'package:uber_clone/src/domain/use_cases/client-requests/get_nearby_trip_request_use_case.dart';
 import 'package:uber_clone/src/domain/use_cases/client-requests/get_time_and_distance_use_case.dart';
 import 'package:uber_clone/src/domain/use_cases/client-requests/update_driver_assigned_use_case.dart';
-import 'package:uber_clone/src/domain/use_cases/driver-car-info/DriverCarInfoUseCases.dart';
+import 'package:uber_clone/src/domain/use_cases/driver-car-info/driver_car_info_use_cases.dart';
 import 'package:uber_clone/src/domain/use_cases/driver-car-info/create_driver_car_info_use_case.dart';
 import 'package:uber_clone/src/domain/use_cases/driver-car-info/get_driver_car_info_use_case.dart';
 import 'package:uber_clone/src/domain/use_cases/driver-trip-request/create_driver_trip_request_use_case.dart';
@@ -62,9 +62,15 @@ import 'package:uber_clone/src/domain/use_cases/users/user_use_case.dart';
 
 @module
 abstract class AppModule {
+  // ===================================================================
+  // ====================== SHARED PREFERENCES =========================
+  // ===================================================================
   @injectable
   SharedPref get sharefPref => SharedPref();
 
+  // ===================================================================
+  // =========================== SOCKET.IO =============================
+  // ===================================================================
   @injectable
   Socket get socket => io(
     'http://${ApiConfig.API_PROJECT_SOCKET}',
@@ -74,6 +80,21 @@ abstract class AppModule {
         .build(),
   );
 
+  // Repository
+  @injectable
+  SocketRepository get socketRepository => SocketRepositoryImpl(socket);
+
+  // Use Cases
+  @injectable
+  SocketUseCases get socketUseCases => SocketUseCases(
+    connect: ConnectSocketUseCase(socketRepository),
+    disconnect: DisconnectSocketUseCase(socketRepository),
+  );
+
+
+  // ===================================================================
+  // =========================== TOKEN =================================
+  // ===================================================================
   @injectable
   Future<String> get token async {
     String token = '';
@@ -85,13 +106,19 @@ abstract class AppModule {
     return token;
   }
 
+  // ===================================================================
+  // =========================== AUTH ===================================
+  // ===================================================================
+  // Service
   @injectable
   AuthService get authService => AuthService();
 
+  // Repository
   @injectable
   AuthRepository get authRepository =>
       AuthRepositoryImpl(authService, sharefPref);
 
+  // Use Cases
   @injectable
   AuthUseCases get authUseCases => AuthUseCases(
     login: LoginUseCase(authRepository),
@@ -101,49 +128,60 @@ abstract class AppModule {
     logout: LogoutUseCase(authRepository),
   );
 
+  // ===================================================================
+  // =========================== USERS ==================================
+  // ===================================================================
+  // Service
+  @injectable
+  UsersService get usersService => UsersService(token);
+
+  // Repository
   @injectable
   UsersRepository get usersRepository => UsersRepositoryImpl(usersService);
 
+  // Use Cases
   @injectable
   UsersUseCases get usersUseCases => UsersUseCases(
     update: UpdateUserUseCase(usersRepository),
     updateNotificationToken: UpdateNotificationTokenUseCase(usersRepository),
   );
 
-  @injectable
-  UsersService get usersService => UsersService(token);
-
-
-
-
-
-  // --------------------- Drivers Position -----------
+  // ===================================================================
+  // ====================== DRIVERS POSITION ===========================
+  // ===================================================================
+  // Service
   @injectable
   DriversPositionService get driversPositionService =>
       DriversPositionService(token);
+
+  // Repository
   @injectable
   DriverPositionRepository get driversPositionRepository =>
       DriversPositionRepositoryImpl(driversPositionService);
 
+  // Use Cases
   @injectable
   DriversPositionUseCases get driversPositionUseCases =>
       DriversPositionUseCases(
-        createDriverPosition: CreateDriverPositionUseCase(driversPositionRepository,),
-        deleteDriverPosition: DeleteDriverPositionUseCase(driversPositionRepository,),
+        createDriverPosition: CreateDriverPositionUseCase(driversPositionRepository),
+        deleteDriverPosition: DeleteDriverPositionUseCase(driversPositionRepository),
         getDriverPosition: GetDriverPositionUseCase(driversPositionRepository)
-  );
+      );
 
-
-
-  // ------------------ Peticiones del usuario -------
+  // ===================================================================
+  // ====================== CLIENT REQUESTS ============================
+  // ===================================================================
+  // Service
   @injectable
   ClientRequestsService get clientRequestsService =>
       ClientRequestsService(token);
 
+  // Repository
   @injectable
   ClientRequestsRepository get clientRequestsRepository =>
       ClientRequestsRepositoryImpl(clientRequestsService);
 
+  // Use Cases
   @injectable
   ClientRequestsUseCases get clientRequestsUseCases => ClientRequestsUseCases(
     createClientRequest: CreateClientRequestUseCase(clientRequestsRepository),
@@ -152,33 +190,38 @@ abstract class AppModule {
     updateDriverAssigned: UpdateDriverAssignedUseCase(clientRequestsRepository)
   );
 
-  // @injectable
-  // DriverTripRequestsService get driverTripRequestsService =>
-  //     DriverTripRequestsService(token);
-
-
-  // ------------------- Car Info --------------
+  // ===================================================================
+  // ======================== DRIVER CAR INFO ==========================
+  // ===================================================================
+  // Service
   @injectable
   DriverCarInfoService get driverCarInfoService => DriverCarInfoService(token);
 
+  // Repository
   @injectable
   DriverCarInfoRepository get driverCarInfoRepository =>
       DriverCarInfoRepositoryImpl(driverCarInfoService);
 
+  // Use Cases
   @injectable
   DriverCarInfoUseCases get driverCarInfoUseCases => DriverCarInfoUseCases(
       createDriverCarInfo: CreateDriverCarInfoUseCase(driverCarInfoRepository),
       getDriverCarInfo: GetDriverCarInfoUseCase(driverCarInfoRepository));
 
-  // ---------------------Driver Trip Request ---------------
+  // ===================================================================
+  // =================== DRIVER TRIP REQUESTS ==========================
+  // ===================================================================
+  // Service
   @injectable
   DriverTripRequestsService get driverTripRequestsService =>
       DriverTripRequestsService(token);
 
+  // Repository
   @injectable
   DriverTripRequestsRepository get driverTripRequestsRepository =>
       DriverTripRequestsRepositoryImpl(driverTripRequestsService);
 
+  // Use Cases
   @injectable
   DriverTripRequestUseCases get driverTripRequestUseCases =>
       DriverTripRequestUseCases(
@@ -189,14 +232,14 @@ abstract class AppModule {
                   driverTripRequestsRepository));
 
 
-  @injectable
-  SocketRepository get socketRepository => SocketRepositoryImpl(socket);
-
-
-
+  // ===================================================================
+  // ========================= GEOLOCATOR ==============================
+  // ===================================================================
+  // Repository
   @injectable
   GeolocatorRepository get geolocatorRepository => GeolocatorRepositoryImpl();
 
+  // Use Cases
   @injectable
   GeolocatorUseCases get geolocatorUseCases => GeolocatorUseCases(
     findPosition: FindPositionUseCase(geolocatorRepository),
@@ -206,29 +249,4 @@ abstract class AppModule {
     getPolyline: GetPolylineUseCase(geolocatorRepository),
     getPositionStream: GetPositionStreamUseCase(geolocatorRepository),
   );
-
-  // @injectable
-  // DriverTripRequestsRepository get driverTripRequestsRepository =>
-  //     DriverTripRequestsRepositoryImpl(driverTripRequestsService);
-
-
-
-  @injectable
-  SocketUseCases get socketUseCases => SocketUseCases(
-    connect: ConnectSocketUseCase(socketRepository),
-    disconnect: DisconnectSocketUseCase(socketRepository),
-  );
-
-
-
-  // @injectable
-  // DriverTripRequestUseCases get driverTripRequestUseCases =>
-  //     DriverTripRequestUseCases(
-  //         createDriverTripRequest:
-  //             CreateDriverTripRequestUseCase(driverTripRequestsRepository),
-  //         getDriverTripOffersByClientRequest:
-  //             GetDriverTripOffersByClientRequestUseCase(
-  //                 driverTripRequestsRepository));
-
-
 }

@@ -3,7 +3,7 @@ import 'package:uber_clone/bloc_socket_io/bloc_socket_io.dart';
 import 'package:uber_clone/injection.dart';
 import 'package:uber_clone/src/domain/use_cases/auth/auth_use_case.dart';
 import 'package:uber_clone/src/domain/use_cases/client-requests/client_requests_use_cases.dart';
-import 'package:uber_clone/src/domain/use_cases/driver-car-info/DriverCarInfoUseCases.dart';
+import 'package:uber_clone/src/domain/use_cases/driver-car-info/driver_car_info_use_cases.dart';
 import 'package:uber_clone/src/domain/use_cases/driver-trip-request/driver_trip_request_use_cases.dart';
 import 'package:uber_clone/src/domain/use_cases/drivers-position/drivers_position_use_cases.dart';
 import 'package:uber_clone/src/domain/use_cases/geolocator/geolocator_use_cases.dart';

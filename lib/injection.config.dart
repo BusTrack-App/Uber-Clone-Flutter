@@ -45,8 +45,8 @@ import 'package:uber_clone/src/domain/use_cases/auth/auth_use_case.dart'
     as _i180;
 import 'package:uber_clone/src/domain/use_cases/client-requests/client_requests_use_cases.dart'
     as _i462;
-import 'package:uber_clone/src/domain/use_cases/driver-car-info/DriverCarInfoUseCases.dart'
-    as _i998;
+import 'package:uber_clone/src/domain/use_cases/driver-car-info/driver_car_info_use_cases.dart'
+    as _i124;
 import 'package:uber_clone/src/domain/use_cases/driver-trip-request/driver_trip_request_use_cases.dart'
     as _i995;
 import 'package:uber_clone/src/domain/use_cases/drivers-position/drivers_position_use_cases.dart'
@@ -68,13 +68,15 @@ extension GetItInjectableX on _i174.GetIt {
     final appModule = _$AppModule();
     gh.factory<_i653.SharedPref>(() => appModule.sharefPref);
     gh.factory<_i414.Socket>(() => appModule.socket);
+    gh.factory<_i860.SocketRepository>(() => appModule.socketRepository);
+    gh.factory<_i332.SocketUseCases>(() => appModule.socketUseCases);
     gh.factoryAsync<String>(() => appModule.token);
     gh.factory<_i246.AuthService>(() => appModule.authService);
     gh.factory<_i291.AuthRepository>(() => appModule.authRepository);
     gh.factory<_i180.AuthUseCases>(() => appModule.authUseCases);
+    gh.factory<_i720.UsersService>(() => appModule.usersService);
     gh.factory<_i374.UsersRepository>(() => appModule.usersRepository);
     gh.factory<_i49.UsersUseCases>(() => appModule.usersUseCases);
-    gh.factory<_i720.UsersService>(() => appModule.usersService);
     gh.factory<_i120.DriversPositionService>(
       () => appModule.driversPositionService,
     );
@@ -99,7 +101,7 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i381.DriverCarInfoRepository>(
       () => appModule.driverCarInfoRepository,
     );
-    gh.factory<_i998.DriverCarInfoUseCases>(
+    gh.factory<_i124.DriverCarInfoUseCases>(
       () => appModule.driverCarInfoUseCases,
     );
     gh.factory<_i328.DriverTripRequestsService>(
@@ -111,12 +113,10 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i995.DriverTripRequestUseCases>(
       () => appModule.driverTripRequestUseCases,
     );
-    gh.factory<_i860.SocketRepository>(() => appModule.socketRepository);
     gh.factory<_i617.GeolocatorRepository>(
       () => appModule.geolocatorRepository,
     );
     gh.factory<_i974.GeolocatorUseCases>(() => appModule.geolocatorUseCases);
-    gh.factory<_i332.SocketUseCases>(() => appModule.socketUseCases);
     return this;
   }
 }
