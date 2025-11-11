@@ -42,6 +42,7 @@ class _LoginScreenState extends State<LoginScreen> {
             final authResponse = response.data as AuthResponse;
             context.read<LoginBloc>().add(SaveUserSession(authResponse: authResponse));
             context.read<BlocSocketIO>().add(ConnectSocketIO());
+            context.read<BlocSocketIO>().add(ListenDriverAssignedSocketIO());
             if (authResponse.user.roles!.length > 1) {
               Navigator.pushNamedAndRemoveUntil(context, 'roles', (route) => false);
             }
