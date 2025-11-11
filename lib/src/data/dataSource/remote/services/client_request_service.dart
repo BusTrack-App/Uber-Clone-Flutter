@@ -66,6 +66,37 @@ class ClientRequestsService {
     }
   }
 
+  // Actualizacion de datos y estatus ----------------------------------------------------------------------------
+  Future<Resource<bool>> updateDriverAssigned(
+      int idClientRequest, int idDriver, double fareAssigned) async {
+    try {
+      Uri url = Uri.http(
+          ApiConfig.API_PROJECT, '/client-requests/updateDriverAssigned');
+      Map<String, String> headers = {
+        'Content-Type': 'application/json',
+        'Authorization': await token
+      };
+      String body = json.encode({
+        'id': idClientRequest,
+        'id_driver_assigned': idDriver,
+        'fare_assigned': fareAssigned
+      });
+      final response = await http.put(url, headers: headers, body: body);
+      final data = json.decode(response.body);
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        return Success(true);
+      } else {
+        return ErrorData(listToString(data['message']));
+      }
+    } catch (e) {
+      debugPrint('Error: $e');
+      return ErrorData(e.toString());
+    }
+  }
+
+
+  // Obtencion de datos----------------------------------------------------------------------------
+
   Future<Resource<List<ClientRequestResponse>>> getNearbyTripRequest( double driverLat, double driverLng,) async {
     debugPrint('DriverLat: $driverLat');
     debugPrint('DriverLng: $driverLng');

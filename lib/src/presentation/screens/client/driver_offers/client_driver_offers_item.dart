@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:uber_clone/src/domain/models/driver_trip_request.dart';
+import 'package:uber_clone/src/presentation/screens/client/driver_offers/bloc/client_driver_offers_bloc.dart';
+import 'package:uber_clone/src/presentation/screens/client/driver_offers/bloc/client_driver_offers_event.dart';
 import 'package:uber_clone/src/presentation/widgets/custom_button.dart';
 
 class ClientDriverOffersItem extends StatelessWidget {
@@ -62,6 +65,13 @@ class ClientDriverOffersItem extends StatelessWidget {
               CustomButton(
                 text: 'Aceptar', 
                 onPressed: () {
+                  context.read<ClientDriverOffersBloc>().add(
+                    AssignDriver(
+                      idClientRequest: driverTripRequest!.idClientRequest, 
+                      idDriver: driverTripRequest!.idDriver, 
+                      fareAssigned: driverTripRequest!.fareOffered,
+                    )
+                  );
                 },
                 width: 120,
                 height: 40,

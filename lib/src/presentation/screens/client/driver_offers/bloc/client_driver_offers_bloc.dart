@@ -8,8 +8,8 @@ import 'package:uber_clone/src/domain/utils/resource.dart';
 import 'package:uber_clone/src/presentation/screens/client/driver_offers/bloc/client_driver_offers_event.dart';
 import 'package:uber_clone/src/presentation/screens/client/driver_offers/bloc/client_driver_offers_state.dart';
 
-class ClientDriverOffersBloc extends Bloc<ClientDriverOffersEvent, ClientDriverOffersState> {
-
+class ClientDriverOffersBloc
+    extends Bloc<ClientDriverOffersEvent, ClientDriverOffersState> {
   BlocSocketIO blocSocketIO;
   DriverTripRequestUseCases driverTripRequestUseCases;
   ClientRequestsUseCases clientRequestsUseCases;
@@ -29,16 +29,33 @@ class ClientDriverOffersBloc extends Bloc<ClientDriverOffersEvent, ClientDriverO
       emit(state.copyWith(responseDriverOffers: response));
     });
 
-
     on<ListenNewDriverOfferSocketIO>((event, emit) {
       if (blocSocketIO.state.socket != null) {
-        blocSocketIO.state.socket?.on('created_driver_offer/${event.idClientRequest}', (data) {
-          debugPrint('Escuchando el evento socket');
-          add(GetDriverOffers(idClientRequest: event.idClientRequest));
-          debugPrint('created_driver_offer/${event.idClientRequest}');
-        });
+        blocSocketIO.state.socket?.on(
+          'created_driver_offer/${event.idClientRequest}',
+          (data) {
+            debugPrint('Escuchando el evento socket');
+            add(GetDriverOffers(idClientRequest: event.idClientRequest));
+            debugPrint('created_driver_offer/${event.idClientRequest}');
+          },
+        );
       }
     });
 
+    on<AssignDriver>((event, emit) async {
+      Resource<bool> response = await clientRequestsUseCases.updateDriverAssigned.run(event.idClientRequest, event.idDriver, event.fareAssigned);
+      emit(
+        state.copyWith(
+          responseAssignDriver: response
+        )
+      );
+      // if (response is Success) {
+      //   add(EmitNewClientRequestSocketIO(idClientRequest: event.idClientRequest));
+      //   add(EmitNewDriverAssignedSocketIO(
+      //     idClientRequest: event.idClientRequest,
+      //     idDriver: event.idDriver
+      //   ));
+      // }
+    });
   }
 }

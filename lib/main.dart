@@ -8,6 +8,7 @@ import 'package:uber_clone/src/presentation/screens/auth/register/register_scree
 import 'package:uber_clone/src/presentation/screens/client/driver_offers/client_driver_offers_screen.dart';
 import 'package:uber_clone/src/presentation/screens/client/home/client_home_screen.dart';
 import 'package:uber_clone/src/presentation/screens/client/map_booking_info/client_map_booking_info_screen.dart';
+import 'package:uber_clone/src/presentation/screens/client/map_trip/client_map_trip_screen.dart';
 import 'package:uber_clone/src/presentation/screens/driver/home/driver_home_screen.dart';
 import 'package:uber_clone/src/presentation/screens/profile/update/profile_update_screen.dart';
 import 'package:uber_clone/src/presentation/screens/roles/roles_screen.dart';
@@ -46,6 +47,10 @@ class MyApp extends StatelessWidget {
           // Mapas
           'client/map/booking': (BuildContext context) => ClientMapBookingInfoScreen(),
           'client/driver/offers': (BuildContext context) => ClientDriverOffersScreen(),
+
+          // Maps Trip
+          'client/map/trip': (BuildContext context) => ClientMapTripScreen(),
+
         },
       ),
     );

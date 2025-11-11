@@ -16,6 +16,9 @@ abstract class ClientRequestsRepository {
 
   Future<Resource<int>> create(ClientRequest clientRequest);
 
+  // Actualizacion de estatus
+  Future<Resource<bool>> updateDriverAssigned(int idClientRequest, int idDriver, double fareAssigned);
+
   
   Future<Resource<List<ClientRequestResponse>>> getNearbyTripRequest(double driverLat,double driverLng);
 

@@ -33,4 +33,9 @@ class ClientRequestsRepositoryImpl implements ClientRequestsRepository {
     return clientRequestsService.getNearbyTripRequest(driverLat, driverLng);
   }
 
+  @override
+  Future<Resource<bool>> updateDriverAssigned(int idClientRequest, int idDriver, double fareAssigned) {
+    return clientRequestsService.updateDriverAssigned(idClientRequest, idDriver, fareAssigned);
+  }
+
 }
