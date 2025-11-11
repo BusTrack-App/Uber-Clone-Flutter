@@ -50,11 +50,12 @@ class ClientDriverOffersBloc
         )
       );
       if (response is Success) {
+        // Una ves asigando el conductor, se emite un mensaje para que se elimine la solicitud de los demas conductores
         add(EmitNewClientRequestSocketIO(idClientRequest: event.idClientRequest));
       }
     });
 
-
+    // Se emite este menasje para que lo escuchen los conductores
     on<EmitNewClientRequestSocketIO>((event, emit) {
       if (blocSocketIO.state.socket != null) {
         blocSocketIO.state.socket?.emit('new_client_request', {
