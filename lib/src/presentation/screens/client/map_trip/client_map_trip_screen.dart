@@ -17,23 +17,35 @@ class ClientMapTripScreen extends StatefulWidget {
 
 class _ClientMapTripScreenState extends State<ClientMapTripScreen> {
   int? idClientRequest;
+  bool _isInitialized = false;
 
   @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    
+    // Solo ejecutar una vez
+    if (!_isInitialized) {
+      _isInitialized = true;
+      
+      // Leer el argumento de la ruta
+      idClientRequest = ModalRoute.of(context)?.settings.arguments as int?;
+      
+      debugPrint('ID Client Request: $idClientRequest');
+      
+      // Inicializar el bloc
       if (idClientRequest != null) {
+        context.read<ClientMapTripBloc>().add(InitClientMapTripEvent());
         context.read<ClientMapTripBloc>().add(
           GetClientRequest(idClientRequest: idClientRequest!),
         );
       }
-    });
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    idClientRequest = ModalRoute.of(context)?.settings.arguments as int;
-    debugPrint(idClientRequest.toString());
+    // ✅ Ya NO lees idClientRequest aquí
+    
     return Scaffold(
       body: BlocListener<ClientMapTripBloc, ClientMapTripState>(
         listener: (context, state) {
@@ -51,7 +63,17 @@ class _ClientMapTripScreenState extends State<ClientMapTripScreen> {
         },
         child: BlocBuilder<ClientMapTripBloc, ClientMapTripState>(
           builder: (context, state) {
-            return ClientMapTripContent();
+            final responseClientRequest = state.responseGetClientRequest;
+            
+            if (responseClientRequest is Success) {
+              final data = responseClientRequest.data as ClientRequestResponse;
+              return ClientMapTripContent(state, data);
+            }
+            
+            // Mostrar loading mientras carga
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
           },
         ),
       ),
