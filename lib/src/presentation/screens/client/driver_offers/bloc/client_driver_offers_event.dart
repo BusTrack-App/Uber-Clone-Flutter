@@ -28,3 +28,8 @@ class EmitNewClientRequestSocketIO extends ClientDriverOffersEvent {
   EmitNewClientRequestSocketIO({required this.idClientRequest}); 
 }
 
+class EmitNewDriverAssignedSocketIO extends ClientDriverOffersEvent {
+  final int idClientRequest;
+  final int idDriver;
+  EmitNewDriverAssignedSocketIO({required this.idClientRequest, required this.idDriver}); 
+}

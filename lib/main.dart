@@ -10,8 +10,11 @@ import 'package:uber_clone/src/presentation/screens/client/home/client_home_scre
 import 'package:uber_clone/src/presentation/screens/client/map_booking_info/client_map_booking_info_screen.dart';
 import 'package:uber_clone/src/presentation/screens/client/map_trip/client_map_trip_screen.dart';
 import 'package:uber_clone/src/presentation/screens/driver/home/driver_home_screen.dart';
+import 'package:uber_clone/src/presentation/screens/driver/map_trip/driver_map_trip_screen.dart';
 import 'package:uber_clone/src/presentation/screens/profile/update/profile_update_screen.dart';
 import 'package:uber_clone/src/presentation/screens/roles/roles_screen.dart';
+
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -30,6 +33,7 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
         builder: FToastBuilder(),
         title: 'Flutter Demo',
+        navigatorKey: navigatorKey,
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
@@ -50,6 +54,7 @@ class MyApp extends StatelessWidget {
 
           // Maps Trip
           'client/map/trip': (BuildContext context) => ClientMapTripScreen(),
+          'driver/map/trip': (BuildContext context) => DriverMapTripScreen(),
 
         },
       ),

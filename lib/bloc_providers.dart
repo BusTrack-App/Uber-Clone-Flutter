@@ -22,6 +22,7 @@ import 'package:uber_clone/src/presentation/screens/driver/carinfo/bloc/driver_c
 import 'package:uber_clone/src/presentation/screens/driver/client_request/bloc/driver_client_request_bloc.dart';
 import 'package:uber_clone/src/presentation/screens/driver/home/bloc/driver_home_bloc.dart';
 import 'package:uber_clone/src/presentation/screens/driver/map_seeker/bloc/driver_map_location_bloc.dart';
+import 'package:uber_clone/src/presentation/screens/driver/map_trip/bloc/driver_map_trip_bloc.dart';
 import 'package:uber_clone/src/presentation/screens/profile/info/bloc/profile_info_bloc.dart';
 import 'package:uber_clone/src/presentation/screens/profile/info/bloc/profile_info_event.dart';
 import 'package:uber_clone/src/presentation/screens/profile/update/bloc/profile_update_bloc.dart';
@@ -40,8 +41,9 @@ List<BlocProvider> blocProviders = [
 
   // Bloc para la conexion del socket ------
   BlocProvider<BlocSocketIO>(
-      create: (context) =>
-          BlocSocketIO(locator<SocketUseCases>(), locator<AuthUseCases>())),
+    create: (context) =>
+        BlocSocketIO(locator<SocketUseCases>(), locator<AuthUseCases>()),
+  ),
 
   // Vista del Home
   BlocProvider<ClientHomeBloc>(
@@ -82,13 +84,13 @@ List<BlocProvider> blocProviders = [
     ),
   ),
   BlocProvider<DriverMapLocationBloc>(
-      create: (context) => DriverMapLocationBloc(
-          context.read<BlocSocketIO>(),
-          locator<GeolocatorUseCases>(),
-          locator<SocketUseCases>(),
-          locator<AuthUseCases>(),
-          locator<DriversPositionUseCases>()
-      )
+    create: (context) => DriverMapLocationBloc(
+      context.read<BlocSocketIO>(),
+      locator<GeolocatorUseCases>(),
+      locator<SocketUseCases>(),
+      locator<AuthUseCases>(),
+      locator<DriversPositionUseCases>(),
+    ),
   ),
   BlocProvider<DriverClientRequestsBloc>(
     create: (context) => DriverClientRequestsBloc(
@@ -96,26 +98,40 @@ List<BlocProvider> blocProviders = [
       locator<ClientRequestsUseCases>(),
       locator<DriversPositionUseCases>(),
       locator<AuthUseCases>(),
-      locator<DriverTripRequestUseCases>()
+      locator<DriverTripRequestUseCases>(),
     ),
   ),
   BlocProvider<ClientDriverOffersBloc>(
-      create: (context) => ClientDriverOffersBloc(
-          context.read<BlocSocketIO>(),
-          locator<DriverTripRequestUseCases>(),
-          locator<ClientRequestsUseCases>())),
-
+    create: (context) => ClientDriverOffersBloc(
+      context.read<BlocSocketIO>(),
+      locator<DriverTripRequestUseCases>(),
+      locator<ClientRequestsUseCases>(),
+    ),
+  ),
 
   // ------- CAR INFO
   BlocProvider<DriverCarInfoBloc>(
-      create: (context) => DriverCarInfoBloc(
-          locator<AuthUseCases>(), locator<DriverCarInfoUseCases>())),
+    create: (context) => DriverCarInfoBloc(
+      locator<AuthUseCases>(),
+      locator<DriverCarInfoUseCases>(),
+    ),
+  ),
 
   // Maps Trips
   BlocProvider<ClientMapTripBloc>(
-      create: (context) => ClientMapTripBloc(
-          context.read<BlocSocketIO>(),
-          locator<ClientRequestsUseCases>(),
-          locator<GeolocatorUseCases>(),
-          locator<AuthUseCases>())),
+    create: (context) => ClientMapTripBloc(
+      context.read<BlocSocketIO>(),
+      locator<ClientRequestsUseCases>(),
+      locator<GeolocatorUseCases>(),
+      locator<AuthUseCases>(),
+    ),
+  ),
+
+  BlocProvider<DriverMapTripBloc>(
+    create: (context) => DriverMapTripBloc(
+      context.read<BlocSocketIO>(),
+      locator<ClientRequestsUseCases>(),
+      locator<GeolocatorUseCases>(),
+    ),
+  ),
 ];

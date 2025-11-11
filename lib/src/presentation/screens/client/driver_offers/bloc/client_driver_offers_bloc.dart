@@ -52,6 +52,9 @@ class ClientDriverOffersBloc
       if (response is Success) {
         // Una ves asigando el conductor, se emite un mensaje para que se elimine la solicitud de los demas conductores
         add(EmitNewClientRequestSocketIO(idClientRequest: event.idClientRequest));
+
+        // Una ves el cliente acepte la oferta
+        add(EmitNewDriverAssignedSocketIO(idClientRequest: event.idClientRequest, idDriver: event.idDriver));
       }
     });
 
@@ -63,5 +66,16 @@ class ClientDriverOffersBloc
         });
       }
     });
+  
+    on<EmitNewDriverAssignedSocketIO>((event, emit) {
+      if (blocSocketIO.state.socket != null) {
+        blocSocketIO.state.socket?.emit('new_driver_assigned', {
+            'id_client_request': event.idClientRequest,
+            'id_driver': event.idDriver
+        });
+      }
+    });
+  
+  
   }
 }
