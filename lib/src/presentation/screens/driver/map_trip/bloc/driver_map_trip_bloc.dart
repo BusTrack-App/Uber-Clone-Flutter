@@ -7,6 +7,7 @@ import 'package:geolocator/geolocator.dart' as geolocator;
 import 'package:uber_clone/bloc_socket_io/bloc_socket_io.dart';
 import 'package:uber_clone/src/domain/use_cases/client-requests/client_requests_use_cases.dart';
 import 'package:uber_clone/src/domain/use_cases/geolocator/geolocator_use_cases.dart';
+import 'package:uber_clone/src/domain/utils/resource.dart';
 import 'package:uber_clone/src/presentation/screens/driver/map_trip/bloc/driver_map_trip_event.dart';
 import 'package:uber_clone/src/presentation/screens/driver/map_trip/bloc/driver_map_trip_state.dart';
 
@@ -27,41 +28,11 @@ class DriverMapTripBloc extends Bloc<DriverMapTripEvent, DriverMapTripState> {
       ));
     });
 
-    on<AddMarkerPickup>((event, emit) async {
-      BitmapDescriptor pickUpDescriptor = await geolocatorUseCases.createMarker
-          .run('assets/img/person_location.png');
-      Marker markerPickUp = geolocatorUseCases.getMarker.run(
-          'pickup',
-          event.lat,
-          event.lng,
-          'Lugar de recogida',
-          'Debes permancer aqui mientras llega el conductor',
-          pickUpDescriptor);
-      emit(state.copyWith(
-          markers: Map.of(state.markers)
-            ..[markerPickUp.markerId] = markerPickUp));
-    });
-
-    on<AddMarkerDestination>((event, emit) async {
-      BitmapDescriptor destinationDescriptor =
-          await geolocatorUseCases.createMarker.run('assets/img/red_flag.png');
-      Marker marker = geolocatorUseCases.getMarker.run('destination', event.lat,
-          event.lng, 'Lugar de destino', '', destinationDescriptor);
-      emit(state.copyWith(
-          markers: Map.of(state.markers)..[marker.markerId] = marker));
-    });
 
     on<GetClientRequest>((event, emit) async {
-      // Resource response = await clientRequestsUseCases.getByClientRequest
-      //     .run(event.idClientRequest);
-      // emit(state.copyWith(responseGetClientRequest: response));
-      // if (response is Success) {
-      //   final data = response.data as ClientRequestResponse;
-      //   emit(state.copyWith(clientRequestResponse: data));
-      //   add(FindPosition());
-      //   add(AddMarkerPickup(
-      //       lat: data.pickupPosition.y, lng: data.pickupPosition.x));
-      // }
+      Resource response = await clientRequestsUseCases.getByClientRequest
+          .run(event.idClientRequest);
+      emit(state.copyWith(responseGetClientRequest: response));
     });
 
     on<ChangeMapCameraPosition>((event, emit) async {
@@ -114,15 +85,6 @@ class DriverMapTripBloc extends Bloc<DriverMapTripEvent, DriverMapTripState> {
         destinationLat: state.clientRequestResponse!.pickupPosition.y,
         destinationLng: state.clientRequestResponse!.pickupPosition.x,
       ));
-    });
-
-    on<AddMyPositionMarker>((event, emit) async {
-      BitmapDescriptor descriptor =
-          await geolocatorUseCases.createMarker.run('assets/img/car_pin.png');
-      Marker marker = geolocatorUseCases.getMarker.run(
-          'my_location', event.lat, event.lng, 'Mi posicion', '', descriptor);
-      emit(state.copyWith(
-          markers: Map.of(state.markers)..[marker.markerId] = marker));
     });
 
     on<RemoveMarker>((event, emit) {

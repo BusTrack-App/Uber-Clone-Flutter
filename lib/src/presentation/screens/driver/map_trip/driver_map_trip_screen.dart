@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:uber_clone/src/domain/models/client_request_response.dart';
+import 'package:uber_clone/src/domain/utils/resource.dart';
 import 'package:uber_clone/src/presentation/screens/driver/map_trip/bloc/driver_map_trip_bloc.dart';
 import 'package:uber_clone/src/presentation/screens/driver/map_trip/bloc/driver_map_trip_event.dart';
 import 'package:uber_clone/src/presentation/screens/driver/map_trip/bloc/driver_map_trip_state.dart';
@@ -13,7 +16,6 @@ class DriverMapTripScreen extends StatefulWidget {
 }
 
 class _DriverMapTripScreenState extends State<DriverMapTripScreen> {
-
   int? idClientRequest;
 
   @override
@@ -21,8 +23,9 @@ class _DriverMapTripScreenState extends State<DriverMapTripScreen> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       if (idClientRequest != null) {
-        context.read<DriverMapTripBloc>().add(InitDriverMapTripEvent());
-        context.read<DriverMapTripBloc>().add(GetClientRequest(idClientRequest: idClientRequest!));
+        context.read<DriverMapTripBloc>().add(
+          GetClientRequest(idClientRequest: idClientRequest!),
+        );
       }
     });
   }
@@ -33,6 +36,16 @@ class _DriverMapTripScreenState extends State<DriverMapTripScreen> {
     return Scaffold(
       body: BlocListener<DriverMapTripBloc, DriverMapTripState>(
         listener: (context, state) {
+          final responseClientRequest = state.responseGetClientRequest;
+          if (responseClientRequest is Success) {
+            final data = responseClientRequest.data as ClientRequestResponse;
+            debugPrint('Driver responseClientRequest: ${data.toJson()}');
+          } else if (responseClientRequest is ErrorData) {
+            Fluttertoast.showToast(
+              msg: responseClientRequest.message,
+              toastLength: Toast.LENGTH_LONG,
+            );
+          }
         },
         child: BlocBuilder<DriverMapTripBloc, DriverMapTripState>(
           builder: (context, state) {
