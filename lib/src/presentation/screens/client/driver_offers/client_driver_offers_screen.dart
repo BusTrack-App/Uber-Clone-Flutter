@@ -6,6 +6,7 @@ import 'package:uber_clone/src/domain/utils/resource.dart';
 import 'package:uber_clone/src/presentation/screens/client/driver_offers/bloc/client_driver_offers_bloc.dart';
 import 'package:uber_clone/src/presentation/screens/client/driver_offers/bloc/client_driver_offers_event.dart';
 import 'package:uber_clone/src/presentation/screens/client/driver_offers/bloc/client_driver_offers_state.dart';
+import 'package:uber_clone/src/presentation/screens/client/driver_offers/client_driver_offers_item.dart';
 
 class ClientDriverOffersScreen extends StatefulWidget {
   const ClientDriverOffersScreen({super.key});
@@ -53,11 +54,11 @@ class _ClientDriverOffersScreenState extends State<ClientDriverOffersScreen> {
               return ListView.builder(
                 itemCount: driverTripRequest.length,
                 itemBuilder: (context, index) {
-                  return Text(driverTripRequest[index].id.toString());
+                  return ClientDriverOffersItem(driverTripRequest[index]);
                 },
               );
             } else {
-              return Center(child: Text('Error'));
+              return Center(child: Text('Esperando solicitudes'));
             }
           },
         ),
