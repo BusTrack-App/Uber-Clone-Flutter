@@ -3,6 +3,7 @@
 import 'package:uber_clone/src/data/dataSource/remote/services/client_request_service.dart';
 import 'package:uber_clone/src/domain/models/client_request.dart';
 import 'package:uber_clone/src/domain/models/client_request_response.dart';
+import 'package:uber_clone/src/domain/models/status_trip.dart';
 import 'package:uber_clone/src/domain/models/time_and_distance_values.dart';
 import 'package:uber_clone/src/domain/repository/client_request_repository.dart';
 import 'package:uber_clone/src/domain/utils/resource.dart';
@@ -42,6 +43,11 @@ class ClientRequestsRepositoryImpl implements ClientRequestsRepository {
   @override
   Future<Resource<ClientRequestResponse>> getByClientRequest(int idClientRequest) {
     return clientRequestsService.getByClientRequest(idClientRequest);
+  }
+
+  @override
+  Future<Resource<bool>> updateStatus(int idClientRequest, StatusTrip statusTrip) {
+    return clientRequestsService.updateStatus(idClientRequest, statusTrip);
   }
 
 }

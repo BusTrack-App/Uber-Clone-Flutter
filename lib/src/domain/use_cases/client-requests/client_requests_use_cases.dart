@@ -5,6 +5,7 @@ import 'package:uber_clone/src/domain/use_cases/client-requests/get_by_client_re
 import 'package:uber_clone/src/domain/use_cases/client-requests/get_nearby_trip_request_use_case.dart';
 import 'package:uber_clone/src/domain/use_cases/client-requests/get_time_and_distance_use_case.dart';
 import 'package:uber_clone/src/domain/use_cases/client-requests/update_driver_assigned_use_case.dart';
+import 'package:uber_clone/src/domain/use_cases/client-requests/update_status_client_request_use_case.dart';
 
 class ClientRequestsUseCases {
 
@@ -15,6 +16,7 @@ class ClientRequestsUseCases {
 
   // Updates
   UpdateDriverAssignedUseCase updateDriverAssigned;
+  UpdateStatusClientRequestUseCase updateStatusClientRequest;
 
 
 
@@ -24,6 +26,7 @@ class ClientRequestsUseCases {
     required this.getNearbyTripRequest,
     required this.updateDriverAssigned,
     required this.getByClientRequest,
+    required this.updateStatusClientRequest,
   });
 
 }

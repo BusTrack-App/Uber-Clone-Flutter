@@ -5,6 +5,7 @@ import 'package:http/http.dart' as http;
 import 'package:uber_clone/src/data/api/api_config.dart';
 import 'package:uber_clone/src/domain/models/client_request.dart';
 import 'package:uber_clone/src/domain/models/client_request_response.dart';
+import 'package:uber_clone/src/domain/models/status_trip.dart';
 import 'package:uber_clone/src/domain/models/time_and_distance_values.dart';
 import 'package:uber_clone/src/domain/utils/list_to_string.dart';
 import 'package:uber_clone/src/domain/utils/resource.dart';
@@ -128,6 +129,32 @@ class ClientRequestsService {
     }
   }
 
+  // Cambio de estado del client request
+  Future<Resource<bool>> updateStatus(
+      int idClientRequest, StatusTrip statusTrip) async {
+    try {
+      Uri url =
+          Uri.http(ApiConfig.API_PROJECT, '/client-requests/update_status');
+      Map<String, String> headers = {
+        'Content-Type': 'application/json',
+        'Authorization': await token
+      };
+      String body = json.encode({
+        'id_client_request': idClientRequest,
+        'status': statusTrip.name,
+      });
+      final response = await http.put(url, headers: headers, body: body);
+      final data = json.decode(response.body);
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        return Success(true);
+      } else {
+        return ErrorData(listToString(data['message']));
+      }
+    } catch (e) {
+      debugPrint('Error: $e');
+      return ErrorData(e.toString());
+    }
+  }
 
   // Obtener todos los datos de una sola oferta
   Future<Resource<ClientRequestResponse>> getByClientRequest(

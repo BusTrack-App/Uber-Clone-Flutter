@@ -37,6 +37,7 @@ import 'package:uber_clone/src/domain/use_cases/client-requests/get_by_client_re
 import 'package:uber_clone/src/domain/use_cases/client-requests/get_nearby_trip_request_use_case.dart';
 import 'package:uber_clone/src/domain/use_cases/client-requests/get_time_and_distance_use_case.dart';
 import 'package:uber_clone/src/domain/use_cases/client-requests/update_driver_assigned_use_case.dart';
+import 'package:uber_clone/src/domain/use_cases/client-requests/update_status_client_request_use_case.dart';
 import 'package:uber_clone/src/domain/use_cases/driver-car-info/driver_car_info_use_cases.dart';
 import 'package:uber_clone/src/domain/use_cases/driver-car-info/create_driver_car_info_use_case.dart';
 import 'package:uber_clone/src/domain/use_cases/driver-car-info/get_driver_car_info_use_case.dart';
@@ -189,7 +190,8 @@ abstract class AppModule {
     getTimeAndDistance: GetTimeAndDistanceUseCase(clientRequestsRepository),
     getNearbyTripRequest: GetNearbyTripRequestUseCase(clientRequestsRepository),
     updateDriverAssigned: UpdateDriverAssignedUseCase(clientRequestsRepository),
-    getByClientRequest: GetByClientRequestUseCase(clientRequestsRepository)
+    getByClientRequest: GetByClientRequestUseCase(clientRequestsRepository),
+    updateStatusClientRequest: UpdateStatusClientRequestUseCase(clientRequestsRepository)
   );
 
   // ===================================================================

@@ -5,7 +5,9 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import 'package:geolocator/geolocator.dart' as geolocator;
 import 'package:uber_clone/bloc_socket_io/bloc_socket_io.dart';
+import 'package:uber_clone/main.dart';
 import 'package:uber_clone/src/domain/models/client_request_response.dart';
+import 'package:uber_clone/src/domain/models/status_trip.dart';
 import 'package:uber_clone/src/domain/use_cases/client-requests/client_requests_use_cases.dart';
 import 'package:uber_clone/src/domain/use_cases/geolocator/geolocator_use_cases.dart';
 import 'package:uber_clone/src/domain/utils/resource.dart';
@@ -165,35 +167,35 @@ class DriverMapTripBloc extends Bloc<DriverMapTripEvent, DriverMapTripState> {
     });
 
     on<UpdateStatusToArrived>((event, emit) async {
-      // Resource response = await clientRequestsUseCases.updateStatusClientRequest
-      //     .run(state.clientRequestResponse!.id, StatusTrip.ARRIVED);
-      // if (response is Success) {
-      //   add(AddPolyline(
-      //     idPolyline: "destination_polyline",
-      //     originLat: state.position!.latitude,
-      //     originLng: state.position!.longitude,
-      //     destinationLat: state.clientRequestResponse!.destinationPosition.y,
-      //     destinationLng: state.clientRequestResponse!.destinationPosition.x,
-      //   ));
-      //   add(AddMarkerDestination(
-      //       lat: state.clientRequestResponse!.destinationPosition.y,
-      //       lng: state.clientRequestResponse!.destinationPosition.x));
-      //   add(RemoveMarker(idMarker: 'pickup'));
-      //   emit(state.copyWith(statusTrip: StatusTrip.ARRIVED));
-      //   add(EmitUpdateStatusSocketIO());
-      // }
+      Resource response = await clientRequestsUseCases.updateStatusClientRequest
+          .run(state.clientRequestResponse!.id, StatusTrip.ARRIVED);
+      if (response is Success) {
+        add(AddPolyline(
+          idPolyline: "destination_polyline",
+          originLat: state.position!.latitude,
+          originLng: state.position!.longitude,
+          destinationLat: state.clientRequestResponse!.destinationPosition.y,
+          destinationLng: state.clientRequestResponse!.destinationPosition.x,
+        ));
+        add(AddMarkerDestination(
+            lat: state.clientRequestResponse!.destinationPosition.y,
+            lng: state.clientRequestResponse!.destinationPosition.x));
+        add(RemoveMarker(idMarker: 'pickup'));
+        emit(state.copyWith(statusTrip: StatusTrip.ARRIVED));
+        add(EmitUpdateStatusSocketIO());
+      }
     });
 
     on<UpdateStatusToFinished>((event, emit) async {
-      // Resource response = await clientRequestsUseCases.updateStatusClientRequest
-      //     .run(state.clientRequestResponse!.id, StatusTrip.FINISHED);
-      // if (response is Success) {
-      //   emit(state.copyWith(statusTrip: StatusTrip.FINISHED));
-      //   add(EmitUpdateStatusSocketIO());
-      //   navigatorKey.currentState?.pushNamedAndRemoveUntil(
-      //       'driver/rating/trip', (route) => false,
-      //       arguments: state.clientRequestResponse);
-      // }
+      Resource response = await clientRequestsUseCases.updateStatusClientRequest
+          .run(state.clientRequestResponse!.id, StatusTrip.FINISHED);
+      if (response is Success) {
+        emit(state.copyWith(statusTrip: StatusTrip.FINISHED));
+        add(EmitUpdateStatusSocketIO());
+        // navigatorKey.currentState?.pushNamedAndRemoveUntil(
+        //     'driver/rating/trip', (route) => false,
+        //     arguments: state.clientRequestResponse);
+      }
     });
   }
 }
