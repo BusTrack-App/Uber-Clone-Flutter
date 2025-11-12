@@ -4,12 +4,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:uber_clone/bloc_socket_io/bloc_socket_io.dart';
+import 'package:uber_clone/main.dart';
+import 'package:uber_clone/src/domain/models/auth_response.dart';
+import 'package:uber_clone/src/domain/models/client_request_response.dart';
+import 'package:uber_clone/src/domain/models/status_trip.dart';
+// ignore: library_prefixes
+import 'package:uber_clone/src/domain/models/time_and_distance_values.dart' as TD;
 import 'package:uber_clone/src/domain/use_cases/auth/auth_use_case.dart';
 import 'package:uber_clone/src/domain/use_cases/client-requests/client_requests_use_cases.dart';
 import 'package:uber_clone/src/domain/use_cases/geolocator/geolocator_use_cases.dart';
 import 'package:uber_clone/src/domain/utils/resource.dart';
 import 'package:uber_clone/src/presentation/screens/client/map_trip/bloc/client_map_trip_event.dart';
 import 'package:uber_clone/src/presentation/screens/client/map_trip/bloc/client_map_trip_state.dart';
+import 'package:uber_clone/src/presentation/utils/calculate_rotation.dart';
 
 
 class ClientMapTripBloc extends Bloc<ClientMapTripEvent, ClientMapTripState> {
@@ -22,10 +29,11 @@ class ClientMapTripBloc extends Bloc<ClientMapTripEvent, ClientMapTripState> {
   ClientMapTripBloc(this.blocSocketIO, this.clientRequestsUseCases,
       this.geolocatorUseCases, this.authUseCases)
       : super(ClientMapTripState()) {
-    //
-    //
-    //
-   on<InitClientMapTripEvent>((event, emit) async {
+
+
+
+        
+    on<InitClientMapTripEvent>((event, emit) async {
       Completer<GoogleMapController> controller =
           Completer<GoogleMapController>();
       emit(state.copyWith(
@@ -33,25 +41,9 @@ class ClientMapTripBloc extends Bloc<ClientMapTripEvent, ClientMapTripState> {
       ));
     });
 
-    on<GetClientRequest>((event, emit) async {
-      Resource response = await clientRequestsUseCases.getByClientRequest.run(event.idClientRequest);
-      emit(state.copyWith(responseGetClientRequest: response));
-    });
 
 
-    on<GetTimeAndDistanceValues>((event, emit) async {
-      // Resource response = await clientRequestsUseCases.getTimeAndDistance.run(
-      //   event.driverLat,
-      //   event.driverLng,
-      //   state.clientRequestResponse!.pickupPosition.y,
-      //   state.clientRequestResponse!.pickupPosition.x,
-      // );
-      // if (response is Success) {
-      //   final data = response.data as TD.TimeAndDistanceValues;
-      //   print('Time and Distance: ${data.toJson()}');
-      //   emit(state.copyWith(timeAndDistanceValues: data));
-      // }
-    });
+
 
     on<AddMarkerPickup>((event, emit) async {
       BitmapDescriptor pickUpDescriptor = await geolocatorUseCases.createMarker
@@ -66,6 +58,15 @@ class ClientMapTripBloc extends Bloc<ClientMapTripEvent, ClientMapTripState> {
       emit(state.copyWith(
           markers: Map.of(state.markers)
             ..[markerPickUp.markerId] = markerPickUp));
+    });
+
+    on<AddMarkerDestination>((event, emit) async {
+      BitmapDescriptor destinationDescriptor =
+          await geolocatorUseCases.createMarker.run('assets/img/red_flag.png');
+      Marker marker = geolocatorUseCases.getMarker.run('destination', event.lat,
+          event.lng, 'Lugar de destino', '', destinationDescriptor);
+      emit(state.copyWith(
+          markers: Map.of(state.markers)..[marker.markerId] = marker));
     });
 
     on<AddMarkerDriver>((event, emit) async {
@@ -95,15 +96,42 @@ class ClientMapTripBloc extends Bloc<ClientMapTripEvent, ClientMapTripState> {
       }
     });
 
-    on<AddMarkerDestination>((event, emit) async {
-      BitmapDescriptor destinationDescriptor =
-          await geolocatorUseCases.createMarker.run('assets/img/red_flag.png');
-      Marker marker = geolocatorUseCases.getMarker.run('destination', event.lat,
-          event.lng, 'Lugar de destino', '', destinationDescriptor);
-      emit(state.copyWith(
-          markers: Map.of(state.markers)..[marker.markerId] = marker));
-    });
 
+
+
+    on<AnimateMarkerMovement>((event, emit) async {
+      const int animationDuration =
+          1000; // Duración de la animación en milisegundos
+      const int frameRate = 60; // Cuántos frames por segundo
+      int frameCount = (animationDuration / (1000 / frameRate)).round();
+
+      for (int i = 1; i <= frameCount; i++) {
+        double lat = event.from.latitude +
+            (event.to.latitude - event.from.latitude) * (i / frameCount);
+        double lng = event.from.longitude +
+            (event.to.longitude - event.from.longitude) * (i / frameCount);
+
+        LatLng newPosition = LatLng(lat, lng);
+
+        // Rotar el marcador según la dirección
+        double rotation = calculateRotation(event.from, event.to);
+
+        Marker? existingMarker = state.markers[event.markerId];
+        if (existingMarker != null) {
+          Marker updatedMarker = existingMarker.copyWith(
+            positionParam: newPosition,
+            rotationParam: rotation,
+          );
+
+          emit(state.copyWith(
+            markers: Map.of(state.markers)..[event.markerId] = updatedMarker,
+          ));
+        }
+
+        await Future.delayed(
+            Duration(milliseconds: (1000 / frameRate).round()));
+      }
+    });
 
     on<AddPolyline>((event, emit) async {
       List<LatLng> polylineCoordinates = await geolocatorUseCases.getPolyline
@@ -118,7 +146,6 @@ class ClientMapTripBloc extends Bloc<ClientMapTripEvent, ClientMapTripState> {
       emit(state.copyWith(polylines: {id: polyline}, isRouteDrawed: true));
     });
 
-
     on<ChangeMapCameraPosition>((event, emit) async {
       try {
         GoogleMapController googleMapController =
@@ -131,6 +158,122 @@ class ClientMapTripBloc extends Bloc<ClientMapTripEvent, ClientMapTripState> {
       }
     });
 
+    on<GetClientRequest>((event, emit) async {
+      Resource response = await clientRequestsUseCases.getByClientRequest
+          .run(event.idClientRequest);
+      emit(state.copyWith(responseGetClientRequest: response));
+      if (response is Success) {
+        final data = response.data as ClientRequestResponse;
+        emit(state.copyWith(clientRequestResponse: data));
+        add(ListenUpdateStatusClientRequestSocketIO());
+      }
+    });
+
+    on<GetTimeAndDistanceValues>((event, emit) async {
+      Resource response = await clientRequestsUseCases.getTimeAndDistance.run(
+        event.driverLat,
+        event.driverLng,
+        state.clientRequestResponse!.pickupPosition.y,
+        state.clientRequestResponse!.pickupPosition.x,
+      );
+      if (response is Success) {
+        final data = response.data as TD.TimeAndDistanceValues;
+        debugPrint('Time and Distance: ${data.toJson()}');
+        emit(state.copyWith(timeAndDistanceValues: data));
+      }
+    });
+
+    on<SetDriverLatLng>((event, emit) {
+      LatLng driverPosition = LatLng(event.lat, event.lng);
+      emit(state.copyWith(driverLatLng: driverPosition));
+      add(AddMarkerDriver(
+          lat: state.driverLatLng!.latitude,
+          lng: state.driverLatLng!.longitude));
+      if (!state.isRouteDrawed) {
+        add(AddPolyline(
+          driverLat: state.driverLatLng!.latitude,
+          driverLng: state.driverLatLng!.longitude,
+          destinationLat: state.clientRequestResponse!.pickupPosition.y,
+          destinationLng: state.clientRequestResponse!.pickupPosition.x,
+        ));
+        add(GetTimeAndDistanceValues(
+            driverLat: state.driverLatLng!.latitude,
+            driverLng: state.driverLatLng!.longitude));
+        timer = Timer.periodic(Duration(minutes: 1), (timer) {
+          add(GetTimeAndDistanceValues(
+              driverLat: state.driverLatLng!.latitude,
+              driverLng: state.driverLatLng!.longitude));
+        });
+      } else {
+        add(UpdatePolyline(driverPosition: driverPosition));
+      }
+    });
+
+    on<UpdatePolyline>((event, emit) {
+      if (state.polylines.isNotEmpty) {
+        PolylineId id = PolylineId("MyRoute");
+        Polyline? polyline = state.polylines[id];
+
+        if (polyline != null) {
+          List<LatLng> updatedPoints = List.from(polyline.points);
+
+          // Filtrar los puntos ya alcanzados (basado en una distancia mínima)
+
+          int index = updatedPoints.indexWhere(
+              (point) => distanceBetween(event.driverPosition, point) < 20);
+          if (index != -1) {
+            updatedPoints = updatedPoints.sublist(index + 1);
+          }
+
+          if (updatedPoints.isEmpty) {
+            emit(state.copyWith(polylines: {})); // Elimina la polilínea
+          } else {
+            emit(state.copyWith(polylines: {
+              id: polyline.copyWith(pointsParam: updatedPoints)
+            }));
+          }
+        }
+      }
+    });
+
+    on<ListenTripNewDriverPosition>((event, emit) async {
+      AuthResponse authResponse = await authUseCases.getUserSession.run();
+      blocSocketIO.state.socket
+          ?.on('trip_new_driver_position/${authResponse.user.id}', (data) {
+        add(SetDriverLatLng(
+            lat: data['lat'] as double, lng: data['lng'] as double));
+      });
+    });
+
+    on<ListenUpdateStatusClientRequestSocketIO>((event, emit) {
+      blocSocketIO.state.socket
+          ?.on('new_status_trip/${state.clientRequestResponse!.id}', (data) {
+        String statusTrip = data['status'] as String;
+        if (statusTrip == StatusTrip.ARRIVED.name) {
+          timer?.cancel();
+          add(AddPolyline(
+              driverLat: state.driverLatLng!.latitude,
+              driverLng: state.driverLatLng!.longitude,
+              destinationLat:
+                  state.clientRequestResponse!.destinationPosition.y,
+              destinationLng:
+                  state.clientRequestResponse!.destinationPosition.x));
+          add(RemoveMarker(idMarker: 'pickup'));
+          add(AddMarkerDestination(
+              lat: state.clientRequestResponse!.destinationPosition.y,
+              lng: state.clientRequestResponse!.destinationPosition.x));
+        } else if (statusTrip == StatusTrip.FINISHED.name) {
+          navigatorKey.currentState?.pushNamedAndRemoveUntil(
+              'client/rating/trip', (route) => false,
+              arguments: state.clientRequestResponse);
+        }
+      });
+    });
+
+    on<RemoveMarker>((event, emit) {
+      emit(state.copyWith(
+          markers: Map.of(state.markers)..remove(MarkerId(event.idMarker))));
+    });
   }
 }
 

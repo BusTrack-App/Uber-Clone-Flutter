@@ -61,7 +61,7 @@ class _DriverClientRequestScreenState extends State<DriverClientRequestScreen> {
                   return DriverClientRequestsItem(state, clientRequests[index]);
                 });
           }
-          return Container();
+          return Center(child: Text('No hay solicitudes'),);
         }),
       ),
     );

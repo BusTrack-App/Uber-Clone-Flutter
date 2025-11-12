@@ -7,6 +7,7 @@ import 'package:uber_clone/src/presentation/screens/client/map_trip/bloc/client_
 import 'package:uber_clone/src/presentation/screens/client/map_trip/bloc/client_map_trip_state.dart';
 import 'package:uber_clone/src/presentation/widgets/default_image_url.dart';
 
+
 class ClientMapTripContent extends StatelessWidget {
   ClientMapTripState state;
   ClientRequestResponse? clientRequest;
@@ -135,6 +136,7 @@ class ClientMapTripContent extends StatelessWidget {
           ],
         ));
   }
+
 
   Widget _googleMaps(BuildContext context) {
     return SizedBox(

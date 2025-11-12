@@ -8,6 +8,7 @@ import 'package:uber_clone/src/presentation/screens/client/map_trip/bloc/client_
 import 'package:uber_clone/src/presentation/screens/client/map_trip/bloc/client_map_trip_state.dart';
 import 'package:uber_clone/src/presentation/screens/client/map_trip/client_map_trip_content.dart';
 
+
 class ClientMapTripScreen extends StatefulWidget {
   const ClientMapTripScreen({super.key});
 
@@ -17,62 +18,44 @@ class ClientMapTripScreen extends StatefulWidget {
 
 class _ClientMapTripScreenState extends State<ClientMapTripScreen> {
   int? idClientRequest;
-  bool _isInitialized = false;
 
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    
-    // Solo ejecutar una vez
-    if (!_isInitialized) {
-      _isInitialized = true;
-      
-      // Leer el argumento de la ruta
-      idClientRequest = ModalRoute.of(context)?.settings.arguments as int?;
-      
-      debugPrint('ID Client Request: $idClientRequest');
-      
-      // Inicializar el bloc
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       if (idClientRequest != null) {
         context.read<ClientMapTripBloc>().add(InitClientMapTripEvent());
-        context.read<ClientMapTripBloc>().add(
-          GetClientRequest(idClientRequest: idClientRequest!),
-        );
+        context.read<ClientMapTripBloc>().add(GetClientRequest(idClientRequest: idClientRequest!));
+        context.read<ClientMapTripBloc>().add(ListenTripNewDriverPosition());
       }
-    }
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    
+    idClientRequest = ModalRoute.of(context)?.settings.arguments as int;
     return Scaffold(
       body: BlocListener<ClientMapTripBloc, ClientMapTripState>(
         listener: (context, state) {
           final responseClientRequest = state.responseGetClientRequest;
-
+          
           if (responseClientRequest is Success) {
-            final data = responseClientRequest.data as ClientRequestResponse;
-            debugPrint('ClientRequestResponse: ${data.toJson()}');
-          } else if (responseClientRequest is ErrorData) {
-            Fluttertoast.showToast(
-              msg: responseClientRequest.message,
-              toastLength: Toast.LENGTH_LONG,
-            );
+            // final data = responseClientRequest.data as ClientRequestResponse;
+            
+          }
+          else if (responseClientRequest is ErrorData) {
+            Fluttertoast.showToast(msg: responseClientRequest.message, toastLength: Toast.LENGTH_LONG);
           }
         },
         child: BlocBuilder<ClientMapTripBloc, ClientMapTripState>(
           builder: (context, state) {
             final responseClientRequest = state.responseGetClientRequest;
-            
             if (responseClientRequest is Success) {
               final data = responseClientRequest.data as ClientRequestResponse;
+              
               return ClientMapTripContent(state, data);
             }
-            
-            // Mostrar loading mientras carga
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
+            return Container();
           },
         ),
       ),

@@ -16,7 +16,6 @@ class DriverMapTripScreen extends StatefulWidget {
 }
 
 class _DriverMapTripScreenState extends State<DriverMapTripScreen> {
-
   int? idClientRequest;
 
   @override
@@ -25,7 +24,9 @@ class _DriverMapTripScreenState extends State<DriverMapTripScreen> {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       if (idClientRequest != null) {
         context.read<DriverMapTripBloc>().add(InitDriverMapTripEvent());
-        context.read<DriverMapTripBloc>().add(GetClientRequest(idClientRequest: idClientRequest!));
+        context.read<DriverMapTripBloc>().add(
+          GetClientRequest(idClientRequest: idClientRequest!),
+        );
       }
     });
   }
@@ -39,9 +40,12 @@ class _DriverMapTripScreenState extends State<DriverMapTripScreen> {
           final responseClientRequest = state.responseGetClientRequest;
           if (responseClientRequest is Success) {
             final data = responseClientRequest.data as ClientRequestResponse;
-          }
-          else if (responseClientRequest is ErrorData) {
-            Fluttertoast.showToast(msg: responseClientRequest.message, toastLength: Toast.LENGTH_LONG);
+            debugPrint('${data.toJson()}');
+          } else if (responseClientRequest is ErrorData) {
+            Fluttertoast.showToast(
+              msg: responseClientRequest.message,
+              toastLength: Toast.LENGTH_LONG,
+            );
           }
         },
         child: BlocBuilder<DriverMapTripBloc, DriverMapTripState>(
