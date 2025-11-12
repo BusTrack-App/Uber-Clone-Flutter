@@ -192,9 +192,9 @@ class DriverMapTripBloc extends Bloc<DriverMapTripEvent, DriverMapTripState> {
       if (response is Success) {
         emit(state.copyWith(statusTrip: StatusTrip.FINISHED));
         add(EmitUpdateStatusSocketIO());
-        // navigatorKey.currentState?.pushNamedAndRemoveUntil(
-        //     'driver/rating/trip', (route) => false,
-        //     arguments: state.clientRequestResponse);
+        navigatorKey.currentState?.pushNamedAndRemoveUntil(
+            'driver/rating/trip', (route) => false,
+            arguments: state.clientRequestResponse);
       }
     });
   }

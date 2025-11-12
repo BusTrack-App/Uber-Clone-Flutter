@@ -9,8 +9,10 @@ import 'package:uber_clone/src/presentation/screens/client/driver_offers/client_
 import 'package:uber_clone/src/presentation/screens/client/home/client_home_screen.dart';
 import 'package:uber_clone/src/presentation/screens/client/map_booking_info/client_map_booking_info_screen.dart';
 import 'package:uber_clone/src/presentation/screens/client/map_trip/client_map_trip_screen.dart';
+import 'package:uber_clone/src/presentation/screens/client/ratingTrip/client_rating_trip_screen.dart';
 import 'package:uber_clone/src/presentation/screens/driver/home/driver_home_screen.dart';
 import 'package:uber_clone/src/presentation/screens/driver/map_trip/driver_map_trip_screen.dart';
+import 'package:uber_clone/src/presentation/screens/driver/ratingTrip/driver_rating_trip_screen.dart';
 import 'package:uber_clone/src/presentation/screens/profile/update/profile_update_screen.dart';
 import 'package:uber_clone/src/presentation/screens/roles/roles_screen.dart';
 
@@ -55,6 +57,11 @@ class MyApp extends StatelessWidget {
           // Maps Trip
           'client/map/trip': (BuildContext context) => ClientMapTripScreen(),
           'driver/map/trip': (BuildContext context) => DriverMapTripScreen(),
+
+
+          // Rating Trio
+          'client/rating/trip': (BuildContext context) => ClientRatingTripScreen(),
+          'driver/rating/trip': (BuildContext context) => DriverRatingTripScreen(),
 
         },
       ),
