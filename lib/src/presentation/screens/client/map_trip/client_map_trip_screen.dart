@@ -44,7 +44,6 @@ class _ClientMapTripScreenState extends State<ClientMapTripScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // ✅ Ya NO lees idClientRequest aquí
     
     return Scaffold(
       body: BlocListener<ClientMapTripBloc, ClientMapTripState>(
