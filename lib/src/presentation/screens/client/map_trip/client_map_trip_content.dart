@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:uber_clone/src/domain/models/client_request_response.dart';
-import 'package:uber_clone/src/presentation/screens/client/map_trip/bloc/client_map_trip_bloc.dart';
-import 'package:uber_clone/src/presentation/screens/client/map_trip/bloc/client_map_trip_event.dart';
 import 'package:uber_clone/src/presentation/screens/client/map_trip/bloc/client_map_trip_state.dart';
 import 'package:uber_clone/src/presentation/widgets/default_image_url.dart';
 
