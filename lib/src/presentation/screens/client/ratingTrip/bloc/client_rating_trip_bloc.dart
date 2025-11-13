@@ -1,7 +1,9 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:uber_clone/src/domain/use_cases/client-requests/client_requests_use_cases.dart';
+import 'package:uber_clone/src/domain/utils/resource.dart';
 import 'package:uber_clone/src/presentation/screens/client/ratingTrip/bloc/client_rating_trip_event.dart';
 import 'package:uber_clone/src/presentation/screens/client/ratingTrip/bloc/client_rating_trip_state.dart';
+
 
 
 class ClientRatingTripBloc extends Bloc<ClientRatingTripEvent, ClientRatingTripState> {
@@ -17,6 +19,12 @@ class ClientRatingTripBloc extends Bloc<ClientRatingTripEvent, ClientRatingTripS
     });
 
     on<UpdateRating>((event, emit) async {
+      Resource response = await clientRequestsUseCases.updateDriverRating.run(event.idClientRequest, state.rating);
+      emit(
+        state.copyWith(
+          response: response
+        )
+      );
     });
   }
 }

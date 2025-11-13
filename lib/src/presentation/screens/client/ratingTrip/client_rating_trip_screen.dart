@@ -34,7 +34,16 @@ class _ClientRatingTripScreenState extends State<ClientRatingTripScreen> {
         },
         child: BlocBuilder<ClientRatingTripBloc, ClientRatingTripState>(
           builder: (context, state) {
-            return ClientRatingTripContent(state, clientRequestResponse);
+            return Container(
+                decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                        begin: Alignment.topRight,
+                        end: Alignment.bottomLeft,
+                        colors: [
+                      Color.fromARGB(255, 12, 38, 145),
+                      Color.fromARGB(255, 34, 156, 249),
+                    ])),
+                child: ClientRatingTripContent(state, clientRequestResponse));
           },
         ),
       ),

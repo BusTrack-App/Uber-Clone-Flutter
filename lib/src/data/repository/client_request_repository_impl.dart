@@ -33,13 +33,12 @@ class ClientRequestsRepositoryImpl implements ClientRequestsRepository {
   Future<Resource<List<ClientRequestResponse>>> getNearbyTripRequest(double driverLat, double driverLng) {
     return clientRequestsService.getNearbyTripRequest(driverLat, driverLng);
   }
-
+  
   @override
   Future<Resource<bool>> updateDriverAssigned(int idClientRequest, int idDriver, double fareAssigned) {
     return clientRequestsService.updateDriverAssigned(idClientRequest, idDriver, fareAssigned);
   }
-
-
+  
   @override
   Future<Resource<ClientRequestResponse>> getByClientRequest(int idClientRequest) {
     return clientRequestsService.getByClientRequest(idClientRequest);
@@ -48,6 +47,16 @@ class ClientRequestsRepositoryImpl implements ClientRequestsRepository {
   @override
   Future<Resource<bool>> updateStatus(int idClientRequest, StatusTrip statusTrip) {
     return clientRequestsService.updateStatus(idClientRequest, statusTrip);
+  }
+  
+  @override
+  Future<Resource<bool>> updateClientRating(int idClientRequest, double rating) {
+    return clientRequestsService.updateClientRating(idClientRequest, rating);
+  }
+  
+  @override
+  Future<Resource<bool>> updateDriverRating(int idClientRequest, double rating) {
+    return clientRequestsService.updateDriverRating(idClientRequest, rating);
   }
 
 }

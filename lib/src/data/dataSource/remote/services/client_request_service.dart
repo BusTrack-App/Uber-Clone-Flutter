@@ -67,6 +67,61 @@ class ClientRequestsService {
     }
   }
 
+  // Rating Trip
+  Future<Resource<bool>> updateClientRating(
+      int idClientRequest, double rating) async {
+    try {
+      Uri url = Uri.http(
+          ApiConfig.API_PROJECT, '/client-requests/update_client_rating');
+      Map<String, String> headers = {
+        'Content-Type': 'application/json',
+        'Authorization': await token
+      };
+      String body = json.encode({
+        'id': idClientRequest,
+        'client_rating': rating,
+      });
+      final response = await http.put(url, headers: headers, body: body);
+      final data = json.decode(response.body);
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        return Success(true);
+      } else {
+        return ErrorData(listToString(data['message']));
+      }
+    } catch (e) {
+      debugPrint('Error: $e');
+      return ErrorData(e.toString());
+    }
+  }
+
+  Future<Resource<bool>> updateDriverRating(
+      int idClientRequest, double rating) async {
+    try {
+      Uri url = Uri.http(
+          ApiConfig.API_PROJECT, '/client-requests/update_driver_rating');
+      Map<String, String> headers = {
+        'Content-Type': 'application/json',
+        'Authorization': await token
+      };
+      String body = json.encode({
+        'id': idClientRequest,
+        'driver_rating': rating,
+      });
+      final response = await http.put(url, headers: headers, body: body);
+      final data = json.decode(response.body);
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        return Success(true);
+      } else {
+        return ErrorData(listToString(data['message']));
+      }
+    } catch (e) {
+      debugPrint('Error: $e');
+      return ErrorData(e.toString());
+    }
+  }
+
+
+
   // Actualizacion de datos y estatus ----------------------------------------------------------------------------
   Future<Resource<bool>> updateDriverAssigned(
       int idClientRequest, int idDriver, double fareAssigned) async {
@@ -110,6 +165,7 @@ class ClientRequestsService {
         'Content-Type': 'application/json',
         'Authorization': await token,
       };
+      debugPrint('updateDriverAssigned:');
       final response = await http.get(url, headers: headers);
       final data = json.decode(response.body);
       if (response.statusCode == 200 || response.statusCode == 201) {
@@ -140,14 +196,17 @@ class ClientRequestsService {
         'Authorization': await token
       };
       String body = json.encode({
-        'id_client_request': idClientRequest,
+        'id': idClientRequest,
         'status': statusTrip.name,
       });
+      debugPrint('updateStatus: ');
+      debugPrint('Body: $body');
       final response = await http.put(url, headers: headers, body: body);
       final data = json.decode(response.body);
       if (response.statusCode == 200 || response.statusCode == 201) {
         return Success(true);
       } else {
+        debugPrint('Error en updateStatus: $body');
         return ErrorData(listToString(data['message']));
       }
     } catch (e) {
