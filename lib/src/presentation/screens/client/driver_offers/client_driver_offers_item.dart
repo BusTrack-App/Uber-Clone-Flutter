@@ -86,27 +86,53 @@ class ClientDriverOffersItem extends StatelessWidget {
     );
   }
 
-  Widget _imageUser() {
-    return SizedBox(
-        width: 60,
-        // margin: EdgeInsets.only(top: 25, bottom: 15),
-        child: AspectRatio(
-          aspectRatio: 1,
-          child: ClipOval(
-            child: driverTripRequest != null 
-            ? driverTripRequest!.driver!.image != null 
-              ? FadeInImage.assetNetwork(
-                placeholder: 'assets/img/user_image.png', 
-                image: driverTripRequest!.driver!.image!,
-                fit: BoxFit.cover,
-                fadeInDuration: Duration(seconds: 1),
-              )
-              : Image.asset(
-                'assets/img/user_image.png',
-              )
-            : Container(),
-          ),
-        ),
-      );
+Widget _imageUser() {
+  // Validar si la URL es válida
+  bool isValidUrl(String? url) {
+    if (url == null || url.isEmpty || url == 'null') {
+      return false;
+    }
+    try {
+      final uri = Uri.parse(url);
+      return uri.hasScheme && uri.host.isNotEmpty;
+    } catch (e) {
+      return false;
+    }
   }
+
+  // Obtener la URL de la imagen del driver
+  final imageUrl = driverTripRequest?.driver?.image;
+  final hasValidUrl = isValidUrl(imageUrl);
+
+  return SizedBox(
+    width: 60,
+    child: AspectRatio(
+      aspectRatio: 1,
+      child: ClipOval(
+        child: driverTripRequest != null
+            ? hasValidUrl
+                ? FadeInImage.assetNetwork(
+                    placeholder: 'assets/img/user_image.png',
+                    image: imageUrl!,
+                    fit: BoxFit.cover,
+                    fadeInDuration: Duration(seconds: 1),
+                    imageErrorBuilder: (context, error, stackTrace) {
+                      return Image.asset(
+                        'assets/img/user_image.png',
+                        fit: BoxFit.cover,
+                      );
+                    },
+                  )
+                : Image.asset(
+                    'assets/img/user_image.png',
+                    fit: BoxFit.cover,
+                  )
+            : Image.asset(
+                'assets/img/user_image.png',
+                fit: BoxFit.cover,
+              ),
+      ),
+    ),
+  );
+}
 }
