@@ -23,12 +23,6 @@ y en message poner 'change_driver_position' y enviar un json asi
 
 
 
-Hay un error en la pantalla de cliente, al querer seleccionar una ubicacion mientras se mueve el mapa
-I/flutter (26550): Error: PlatformException(IO_ERROR, gcaa: UNAVAILABLE, null, null)
-I/flutter (26550): OnCameraIdle Error: type 'Null' is not a subtype of type 'PlacemarkData'
-
-
-
 // NOTA DE USO
 Al solicitar un viaje, en el cliente no se mostrara la ruta al inicio, se mostrara una ves la informacion de la ubicacion de conductor se actualice
 Entonces se debe modificar la ubicacion del dispositivo del conductor para ver la ruta y el tiempo

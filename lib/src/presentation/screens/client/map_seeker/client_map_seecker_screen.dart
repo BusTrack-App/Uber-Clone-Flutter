@@ -7,6 +7,7 @@ import 'package:uber_clone/src/presentation/screens/client/map_seeker/bloc/clien
 import 'package:uber_clone/src/presentation/screens/client/map_seeker/bloc/client_map_seeker_state.dart';
 import 'package:uber_clone/src/presentation/widgets/custom_button.dart';
 import 'package:uber_clone/src/presentation/widgets/google_places_auto_complete.dart';
+import 'package:uber_clone/src/presentation/utils/map_styles.dart'; // Importar map styles
 
 class ClientMapSeeckerScreen extends StatefulWidget {
   const ClientMapSeeckerScreen({super.key});
@@ -19,7 +20,7 @@ class ClientMapSeeckerScreenState extends State<ClientMapSeeckerScreen> {
   TextEditingController pickUpController = TextEditingController();
   TextEditingController destinationController = TextEditingController();
   
-  // SOLUCIÓN: Flag para controlar cuándo actualizar el texto del input
+  // Flag para controlar cuándo actualizar el texto del input
   bool _isSelectingFromAutocomplete = false;
 
   @override
@@ -55,11 +56,13 @@ class ClientMapSeeckerScreenState extends State<ClientMapSeeckerScreen> {
                     context.read<ClientMapSeekerBloc>().add(OnCameraIdle());
                     
                     // Esperar a que el estado se actualice
-                    await Future.delayed(Duration(milliseconds: 100));
+                    await Future.delayed(const Duration(milliseconds: 100));
                     
-                    // Actualizar el texto solo si no hay un pickUpDescription ya seleccionado
-                    if (state.pickUpDescription.isEmpty && state.placemarkData != null) {
-                      pickUpController.text = state.placemarkData?.address ?? '';
+                    // SOLUCIÓN: Actualizar SIEMPRE el texto cuando se mueve el mapa manualmente
+                    if (state.placemarkData != null && state.placemarkData!.address.isNotEmpty) {
+                      pickUpController.text = state.placemarkData!.address;
+                      
+                      // Actualizar el estado con la nueva dirección
                       // ignore: use_build_context_synchronously
                       context.read<ClientMapSeekerBloc>().add(OnAutoCompletedPickUpSelected(
                         lat: state.placemarkData!.lat, 
@@ -73,10 +76,9 @@ class ClientMapSeeckerScreenState extends State<ClientMapSeeckerScreen> {
                   _isSelectingFromAutocomplete = false;
                 },
                 onMapCreated: (GoogleMapController controller) {
-                  // ignore: deprecated_member_use
-                  controller.setMapStyle(
-                    '[ { "featureType": "all", "elementType": "labels.text.fill", "stylers": [ { "color": "#ffffff" } ] }, { "featureType": "all", "elementType": "labels.text.stroke", "stylers": [ { "color": "#000000" }, { "lightness": 13 } ] }, { "featureType": "administrative", "elementType": "geometry.fill", "stylers": [ { "color": "#000000" } ] }, { "featureType": "administrative", "elementType": "geometry.stroke", "stylers": [ { "color": "#144b53" }, { "lightness": 14 }, { "weight": 1.4 } ] }, { "featureType": "landscape", "elementType": "all", "stylers": [ { "color": "#08304b" } ] }, { "featureType": "poi", "elementType": "geometry", "stylers": [ { "color": "#0c4152" }, { "lightness": 5 } ] }, { "featureType": "road.highway", "elementType": "geometry.fill", "stylers": [ { "color": "#000000" } ] }, { "featureType": "road.highway", "elementType": "geometry.stroke", "stylers": [ { "color": "#0b434f" }, { "lightness": 25 } ] }, { "featureType": "road.arterial", "elementType": "geometry.fill", "stylers": [ { "color": "#000000" } ] }, { "featureType": "road.arterial", "elementType": "geometry.stroke", "stylers": [ { "color": "#0b3d51" }, { "lightness": 16 } ] }, { "featureType": "road.local", "elementType": "geometry", "stylers": [ { "color": "#000000" } ] }, { "featureType": "transit", "elementType": "all", "stylers": [ { "color": "#146474" } ] }, { "featureType": "water", "elementType": "all", "stylers": [ { "color": "#021019" } ] } ]',
-                  );
+                  // Aplicar el estilo del mapa
+                  controller.setMapStyle(MapStyles.darkMapStyle);
+                  
                   if (state.controller != null) {
                     if (!state.controller!.isCompleted) {
                       state.controller?.complete(controller);
@@ -86,14 +88,14 @@ class ClientMapSeeckerScreenState extends State<ClientMapSeeckerScreen> {
               ),
               Container(
                 height: 120,
-                margin: EdgeInsets.only(left: 30, right: 30, top: 30),
+                margin: const EdgeInsets.only(left: 30, right: 30, top: 30),
                 child: _googlePlacesAutocomplete()
               ),
               _iconMyLocation(),
               Container(
                 alignment: Alignment.bottomCenter,
                 child: CustomButton(
-                  margin: EdgeInsets.only(bottom: 30, left: 60, right: 60),
+                  margin: const EdgeInsets.only(bottom: 30, left: 60, right: 60),
                   text: 'REVISAR VIAJE', 
                   iconData: Icons.check_circle,
                   onPressed: () {
@@ -167,7 +169,7 @@ class ClientMapSeeckerScreenState extends State<ClientMapSeeckerScreen> {
 
   Widget _iconMyLocation() {
     return Container(
-      margin: EdgeInsets.only(bottom: 25),
+      margin: const EdgeInsets.only(bottom: 25),
       alignment: Alignment.center,
       child: Image.asset('assets/img/location_blue.png', width: 50, height: 50),
     );
