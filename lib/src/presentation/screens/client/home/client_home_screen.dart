@@ -27,30 +27,40 @@ class _ClientHomeScreenState extends State<ClientHomeScreen> {
     RolesScreen(),
   ];
 
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          'Menu de opciones',
-        ),
-        // flexibleSpace: Container(
-        //   decoration: BoxDecoration(
-        //     gradient: LinearGradient(
-        //       begin: Alignment.topRight,
-        //       end: Alignment.bottomLeft,
-        //       colors: [
-        //         Color.fromARGB(255, 12, 38, 145),
-        //         Color.fromARGB(255, 34, 156, 249),
-        //       ]
-        //     ),
-        //   )
-        // ),
-      ),
-      body: BlocBuilder<ClientHomeBloc, ClientHomeState>(
-        builder: (context, state) {
-          return pageList[state.pageIndex];
-        },
+      key: _scaffoldKey,
+      body: Stack(
+        children: [
+          // Contenido principal
+          BlocBuilder<ClientHomeBloc, ClientHomeState>(
+            builder: (context, state) {
+              return pageList[state.pageIndex];
+            },
+          ),
+
+          // Botón flotante para abrir el drawer (arriba a la izquierda)
+          Positioned(
+            top: MediaQuery.of(context).padding.top + 16, // Respeta el notch/status bar
+            left: 16,
+            child: FloatingActionButton(
+              mini: true,
+              backgroundColor: Colors.white,
+              elevation: 6,
+              child: const Icon(
+                Icons.menu,
+                color: Colors.black87,
+                size: 20,
+              ),
+              onPressed: () {
+                _scaffoldKey.currentState?.openDrawer();
+              },
+            ),
+          ),
+        ],
       ),
       drawer: BlocBuilder<ClientHomeBloc, ClientHomeState>(
         builder: (context, state) {
@@ -66,13 +76,13 @@ class _ClientHomeScreenState extends State<ClientHomeScreen> {
                       colors: [
                         Color.fromARGB(255, 12, 38, 145),
                         Color.fromARGB(255, 34, 156, 249),
-                      ]
+                      ],
                     ),
                   ),
                   child: Text(
                     'Menu del cliente',
                     style: TextStyle(color: Colors.white),
-                  )
+                  ),
                 ),
                 ListTile(
                   title: Text('Mapa de busqueda'),
@@ -86,9 +96,7 @@ class _ClientHomeScreenState extends State<ClientHomeScreen> {
                   title: Text('Historial de viajes'),
                   selected: state.pageIndex == 1,
                   onTap: () {
-                    context
-                        .read<ClientHomeBloc>()
-                        .add(ChangeDrawerPage(pageIndex: 1));
+                    context.read<ClientHomeBloc>().add(ChangeDrawerPage(pageIndex: 1));
                     Navigator.pop(context);
                   },
                 ),
@@ -96,9 +104,7 @@ class _ClientHomeScreenState extends State<ClientHomeScreen> {
                   title: Text('Perfil del usuario'),
                   selected: state.pageIndex == 2,
                   onTap: () {
-                    context
-                        .read<ClientHomeBloc>()
-                        .add(ChangeDrawerPage(pageIndex: 2));
+                    context.read<ClientHomeBloc>().add(ChangeDrawerPage(pageIndex: 2));
                     Navigator.pop(context);
                   },
                 ),
@@ -106,9 +112,7 @@ class _ClientHomeScreenState extends State<ClientHomeScreen> {
                   title: Text('Roles de usuario'),
                   selected: state.pageIndex == 3,
                   onTap: () {
-                    context
-                        .read<ClientHomeBloc>()
-                        .add(ChangeDrawerPage(pageIndex: 3));
+                    context.read<ClientHomeBloc>().add(ChangeDrawerPage(pageIndex: 3));
                     Navigator.pop(context);
                   },
                 ),
@@ -118,12 +122,12 @@ class _ClientHomeScreenState extends State<ClientHomeScreen> {
                     context.read<ClientHomeBloc>().add(Logout());
                     context.read<BlocSocketIO>().add(DisconnectSocketIO());
                     Navigator.pushAndRemoveUntil(
-                      context, 
-                      MaterialPageRoute(builder: (context) => MyApp()), 
-                      (route) => false
+                      context,
+                      MaterialPageRoute(builder: (context) => MyApp()),
+                      (route) => false,
                     );
                   },
-                )
+                ),
               ],
             ),
           );
