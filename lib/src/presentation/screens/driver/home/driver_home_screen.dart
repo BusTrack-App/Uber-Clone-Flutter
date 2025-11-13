@@ -5,12 +5,14 @@ import 'package:uber_clone/bloc_socket_io/bloc_socket_io_event.dart';
 import 'package:uber_clone/main.dart';
 import 'package:uber_clone/src/presentation/screens/driver/carinfo/driver_car_info_screen.dart';
 import 'package:uber_clone/src/presentation/screens/driver/client_request/driver_client_request_screen.dart';
+import 'package:uber_clone/src/presentation/screens/driver/history_trip/driver_history_trip_screen.dart';
 import 'package:uber_clone/src/presentation/screens/driver/home/bloc/driver_home_bloc.dart';
 import 'package:uber_clone/src/presentation/screens/driver/home/bloc/driver_home_event.dart';
 import 'package:uber_clone/src/presentation/screens/driver/home/bloc/driver_home_state.dart';
 import 'package:uber_clone/src/presentation/screens/driver/map_seeker/driver_map_location_screen.dart';
 import 'package:uber_clone/src/presentation/screens/profile/info/profile_info_screen.dart';
 import 'package:uber_clone/src/presentation/screens/roles/roles_screen.dart';
+
 
 class DriverHomeScreen extends StatefulWidget {
   const DriverHomeScreen({super.key});
@@ -24,6 +26,7 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
     DriverMapLocationScreen(),
     DriverClientRequestScreen(),
     DriverCarInfoScreen(),
+    DriverHistoryTripScreen(),
     ProfileInfoScreen(),
     RolesScreen(),
   ];
@@ -31,7 +34,23 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Menu del conductor')),
+      appBar: AppBar(
+        title: Text(
+          'Menu de opciones',
+        ),
+        // flexibleSpace: Container(
+        //   decoration: BoxDecoration(
+        //     gradient: LinearGradient(
+        //       begin: Alignment.topRight,
+        //       end: Alignment.bottomLeft,
+        //       colors: [
+        //         Color.fromARGB(255, 12, 38, 145),
+        //         Color.fromARGB(255, 34, 156, 249),
+        //       ]
+        //     ),
+        //   )
+        // ),
+      ),
       body: BlocBuilder<DriverHomeBloc, DriverHomeState>(
         builder: (context, state) {
           return pageList[state.pageIndex];
@@ -51,21 +70,19 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
                       colors: [
                         Color.fromARGB(255, 12, 38, 145),
                         Color.fromARGB(255, 34, 156, 249),
-                      ],
+                      ]
                     ),
                   ),
                   child: Text(
-                    'Menu del',
+                    'Menu del Conductor',
                     style: TextStyle(color: Colors.white),
-                  ),
+                  )
                 ),
                 ListTile(
                   title: Text('Mapa de localizacion'),
                   selected: state.pageIndex == 0,
                   onTap: () {
-                    context.read<DriverHomeBloc>().add(
-                      ChangeDrawerPage(pageIndex: 0),
-                    );
+                    context.read<DriverHomeBloc>().add(ChangeDrawerPage(pageIndex: 0));
                     Navigator.pop(context);
                   },
                 ),
@@ -73,39 +90,45 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
                   title: Text('Solicitudes de viaje'),
                   selected: state.pageIndex == 1,
                   onTap: () {
-                    context.read<DriverHomeBloc>().add(
-                      ChangeDrawerPage(pageIndex: 1),
-                    );
+                    context.read<DriverHomeBloc>().add(ChangeDrawerPage(pageIndex: 1));
                     Navigator.pop(context);
                   },
                 ),
                 ListTile(
-                  title: Text('Mi vehiculo'),
+                  title: Text('Mi Vehiculo'),
                   selected: state.pageIndex == 2,
                   onTap: () {
-                    context.read<DriverHomeBloc>().add(
-                      ChangeDrawerPage(pageIndex: 2),
-                    );
+                    context.read<DriverHomeBloc>().add(ChangeDrawerPage(pageIndex: 2));
+                    Navigator.pop(context);
+                  },
+                ),
+                ListTile(
+                  title: Text('Historial de viajes'),
+                  selected: state.pageIndex == 3,
+                  onTap: () {
+                    context
+                        .read<DriverHomeBloc>()
+                        .add(ChangeDrawerPage(pageIndex: 3));
                     Navigator.pop(context);
                   },
                 ),
                 ListTile(
                   title: Text('Perfil del usuario'),
-                  selected: state.pageIndex == 3,
-                  onTap: () {
-                    context.read<DriverHomeBloc>().add(
-                      ChangeDrawerPage(pageIndex: 3),
-                    );
-                    Navigator.pop(context);
-                  },
-                ),
-                ListTile(
-                  title: Text('Roles de usuario'),
                   selected: state.pageIndex == 4,
                   onTap: () {
                     context
                         .read<DriverHomeBloc>()
                         .add(ChangeDrawerPage(pageIndex: 4));
+                    Navigator.pop(context);
+                  },
+                ),
+                ListTile(
+                  title: Text('Roles de usuario'),
+                  selected: state.pageIndex == 5,
+                  onTap: () {
+                    context
+                        .read<DriverHomeBloc>()
+                        .add(ChangeDrawerPage(pageIndex: 5));
                     Navigator.pop(context);
                   },
                 ),

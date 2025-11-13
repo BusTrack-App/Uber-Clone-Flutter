@@ -14,6 +14,7 @@ import 'package:uber_clone/src/presentation/screens/auth/login/bloc/login_event.
 import 'package:uber_clone/src/presentation/screens/auth/register/bloc/register_bloc.dart';
 import 'package:uber_clone/src/presentation/screens/auth/register/bloc/register_event.dart';
 import 'package:uber_clone/src/presentation/screens/client/driver_offers/bloc/client_driver_offers_bloc.dart';
+import 'package:uber_clone/src/presentation/screens/client/history_trip/bloc/client_history_trip_bloc.dart';
 import 'package:uber_clone/src/presentation/screens/client/home/bloc/client_home_bloc.dart';
 import 'package:uber_clone/src/presentation/screens/client/map_booking_info/bloc/client_map_booking_info_bloc.dart';
 import 'package:uber_clone/src/presentation/screens/client/map_seeker/bloc/client_map_seeker_bloc.dart.dart';
@@ -21,6 +22,7 @@ import 'package:uber_clone/src/presentation/screens/client/map_trip/bloc/client_
 import 'package:uber_clone/src/presentation/screens/client/ratingTrip/bloc/client_rating_trip_bloc.dart';
 import 'package:uber_clone/src/presentation/screens/driver/carinfo/bloc/driver_car_info_bloc.dart';
 import 'package:uber_clone/src/presentation/screens/driver/client_request/bloc/driver_client_request_bloc.dart';
+import 'package:uber_clone/src/presentation/screens/driver/history_trip/bloc/driver_history_trip_bloc.dart';
 import 'package:uber_clone/src/presentation/screens/driver/home/bloc/driver_home_bloc.dart';
 import 'package:uber_clone/src/presentation/screens/driver/map_seeker/bloc/driver_map_location_bloc.dart';
 import 'package:uber_clone/src/presentation/screens/driver/map_trip/bloc/driver_map_trip_bloc.dart';
@@ -145,5 +147,18 @@ List<BlocProvider> blocProviders = [
   BlocProvider<ClientRatingTripBloc>(
     create: (context) =>
         ClientRatingTripBloc(locator<ClientRequestsUseCases>()),
+  ),
+
+  BlocProvider<DriverHistoryTripBloc>(
+    create: (context) => DriverHistoryTripBloc(
+      locator<ClientRequestsUseCases>(),
+      locator<AuthUseCases>(),
+    ),
+  ),
+  BlocProvider<ClientHistoryTripBloc>(
+    create: (context) => ClientHistoryTripBloc(
+      locator<ClientRequestsUseCases>(),
+      locator<AuthUseCases>(),
+    ),
   ),
 ];

@@ -33,7 +33,9 @@ import 'package:uber_clone/src/domain/use_cases/auth/register_use_case.dart';
 import 'package:uber_clone/src/domain/use_cases/auth/save_session_user_use_case.dart';
 import 'package:uber_clone/src/domain/use_cases/client-requests/client_requests_use_cases.dart';
 import 'package:uber_clone/src/domain/use_cases/client-requests/create_client_request_use_case.dart';
+import 'package:uber_clone/src/domain/use_cases/client-requests/get_by_client_assigned_use_case.dart';
 import 'package:uber_clone/src/domain/use_cases/client-requests/get_by_client_request_use_case.dart';
+import 'package:uber_clone/src/domain/use_cases/client-requests/get_by_driver_assigned_use_case.dart';
 import 'package:uber_clone/src/domain/use_cases/client-requests/get_nearby_trip_request_use_case.dart';
 import 'package:uber_clone/src/domain/use_cases/client-requests/get_time_and_distance_use_case.dart';
 import 'package:uber_clone/src/domain/use_cases/client-requests/update_client_rating_use_case.dart';
@@ -94,7 +96,6 @@ abstract class AppModule {
     connect: ConnectSocketUseCase(socketRepository),
     disconnect: DisconnectSocketUseCase(socketRepository),
   );
-
 
   // ===================================================================
   // =========================== TOKEN =================================
@@ -167,9 +168,13 @@ abstract class AppModule {
   @injectable
   DriversPositionUseCases get driversPositionUseCases =>
       DriversPositionUseCases(
-        createDriverPosition: CreateDriverPositionUseCase(driversPositionRepository),
-        deleteDriverPosition: DeleteDriverPositionUseCase(driversPositionRepository),
-        getDriverPosition: GetDriverPositionUseCase(driversPositionRepository)
+        createDriverPosition: CreateDriverPositionUseCase(
+          driversPositionRepository,
+        ),
+        deleteDriverPosition: DeleteDriverPositionUseCase(
+          driversPositionRepository,
+        ),
+        getDriverPosition: GetDriverPositionUseCase(driversPositionRepository),
       );
 
   // ===================================================================
@@ -193,9 +198,11 @@ abstract class AppModule {
     getNearbyTripRequest: GetNearbyTripRequestUseCase(clientRequestsRepository),
     updateDriverAssigned: UpdateDriverAssignedUseCase(clientRequestsRepository),
     getByClientRequest: GetByClientRequestUseCase(clientRequestsRepository),
-    updateStatusClientRequest: UpdateStatusClientRequestUseCase(clientRequestsRepository),
+    updateStatusClientRequest: UpdateStatusClientRequestUseCase(clientRequestsRepository,),
     updateClientRating: UpdateClientRatingUseCase(clientRequestsRepository),
     updateDriverRating: UpdateDriverRatingUseCase(clientRequestsRepository),
+    getByClientAssigned: GetByClientAssignedUseCase(clientRequestsRepository),
+    getByDriverAssigned: GetByDriverAssignedUseCase(clientRequestsRepository),
   );
 
   // ===================================================================
@@ -213,8 +220,9 @@ abstract class AppModule {
   // Use Cases
   @injectable
   DriverCarInfoUseCases get driverCarInfoUseCases => DriverCarInfoUseCases(
-      createDriverCarInfo: CreateDriverCarInfoUseCase(driverCarInfoRepository),
-      getDriverCarInfo: GetDriverCarInfoUseCase(driverCarInfoRepository));
+    createDriverCarInfo: CreateDriverCarInfoUseCase(driverCarInfoRepository),
+    getDriverCarInfo: GetDriverCarInfoUseCase(driverCarInfoRepository),
+  );
 
   // ===================================================================
   // =================== DRIVER TRIP REQUESTS ==========================
@@ -233,12 +241,14 @@ abstract class AppModule {
   @injectable
   DriverTripRequestUseCases get driverTripRequestUseCases =>
       DriverTripRequestUseCases(
-          createDriverTripRequest:
-              CreateDriverTripRequestUseCase(driverTripRequestsRepository),
-          getDriverTripOffersByClientRequest:
-              GetDriverTripOffersByClientRequestUseCase(
-                  driverTripRequestsRepository));
-
+        createDriverTripRequest: CreateDriverTripRequestUseCase(
+          driverTripRequestsRepository,
+        ),
+        getDriverTripOffersByClientRequest:
+            GetDriverTripOffersByClientRequestUseCase(
+              driverTripRequestsRepository,
+            ),
+      );
 
   // ===================================================================
   // ========================= GEOLOCATOR ==============================

@@ -3,12 +3,14 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:uber_clone/bloc_socket_io/bloc_socket_io.dart';
 import 'package:uber_clone/bloc_socket_io/bloc_socket_io_event.dart';
 import 'package:uber_clone/main.dart';
+import 'package:uber_clone/src/presentation/screens/client/history_trip/client_history_trip_screen.dart';
 import 'package:uber_clone/src/presentation/screens/client/home/bloc/client_home_bloc.dart';
 import 'package:uber_clone/src/presentation/screens/client/home/bloc/client_home_event.dart';
 import 'package:uber_clone/src/presentation/screens/client/home/bloc/client_home_state.dart';
 import 'package:uber_clone/src/presentation/screens/client/map_seeker/client_map_seecker_screen.dart';
 import 'package:uber_clone/src/presentation/screens/profile/info/profile_info_screen.dart';
 import 'package:uber_clone/src/presentation/screens/roles/roles_screen.dart';
+
 
 class ClientHomeScreen extends StatefulWidget {
   const ClientHomeScreen({super.key});
@@ -20,17 +22,31 @@ class ClientHomeScreen extends StatefulWidget {
 class _ClientHomeScreenState extends State<ClientHomeScreen> {
   List<Widget> pageList = <Widget>[
     ClientMapSeeckerScreen(),
-    // ClientHistoryTripPage(),
+    ClientHistoryTripScreen(),
     ProfileInfoScreen(),
     RolesScreen(),
-
-    // RolesPage(),
   ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Menu')),
+      appBar: AppBar(
+        title: Text(
+          'Menu de opciones',
+        ),
+        // flexibleSpace: Container(
+        //   decoration: BoxDecoration(
+        //     gradient: LinearGradient(
+        //       begin: Alignment.topRight,
+        //       end: Alignment.bottomLeft,
+        //       colors: [
+        //         Color.fromARGB(255, 12, 38, 145),
+        //         Color.fromARGB(255, 34, 156, 249),
+        //       ]
+        //     ),
+        //   )
+        // ),
+      ),
       body: BlocBuilder<ClientHomeBloc, ClientHomeState>(
         builder: (context, state) {
           return pageList[state.pageIndex];
@@ -50,31 +66,39 @@ class _ClientHomeScreenState extends State<ClientHomeScreen> {
                       colors: [
                         Color.fromARGB(255, 12, 38, 145),
                         Color.fromARGB(255, 34, 156, 249),
-                      ],
+                      ]
                     ),
                   ),
                   child: Text(
-                    'Menu del',
+                    'Menu del cliente',
                     style: TextStyle(color: Colors.white),
-                  ),
+                  )
                 ),
                 ListTile(
                   title: Text('Mapa de busqueda'),
                   selected: state.pageIndex == 0,
                   onTap: () {
-                    context.read<ClientHomeBloc>().add(
-                      ChangeDrawerPage(pageIndex: 0),
-                    );
+                    context.read<ClientHomeBloc>().add(ChangeDrawerPage(pageIndex: 0));
+                    Navigator.pop(context);
+                  },
+                ),
+                ListTile(
+                  title: Text('Historial de viajes'),
+                  selected: state.pageIndex == 1,
+                  onTap: () {
+                    context
+                        .read<ClientHomeBloc>()
+                        .add(ChangeDrawerPage(pageIndex: 1));
                     Navigator.pop(context);
                   },
                 ),
                 ListTile(
                   title: Text('Perfil del usuario'),
-                  selected: state.pageIndex == 1,
+                  selected: state.pageIndex == 2,
                   onTap: () {
-                    context.read<ClientHomeBloc>().add(
-                      ChangeDrawerPage(pageIndex: 1),
-                    );
+                    context
+                        .read<ClientHomeBloc>()
+                        .add(ChangeDrawerPage(pageIndex: 2));
                     Navigator.pop(context);
                   },
                 ),
@@ -84,7 +108,7 @@ class _ClientHomeScreenState extends State<ClientHomeScreen> {
                   onTap: () {
                     context
                         .read<ClientHomeBloc>()
-                        .add(ChangeDrawerPage(pageIndex: 2));
+                        .add(ChangeDrawerPage(pageIndex: 3));
                     Navigator.pop(context);
                   },
                 ),

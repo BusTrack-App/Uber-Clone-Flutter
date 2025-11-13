@@ -22,7 +22,7 @@ abstract class ClientRequestsRepository {
 
   Future<Resource<bool>> updateStatus(int idClientRequest, StatusTrip statusTrip);
 
-  // Rating
+  // Rating trip
   Future<Resource<bool>> updateDriverRating(int idClientRequest, double rating);
   Future<Resource<bool>> updateClientRating(int idClientRequest, double rating);
 
@@ -31,5 +31,8 @@ abstract class ClientRequestsRepository {
 
   Future<Resource<ClientRequestResponse>> getByClientRequest(int idClientRequest);
 
+  // Obtener Historial
+  Future<Resource<List<ClientRequestResponse>>> getByDriverAssigned(int idDriver);
+  Future<Resource<List<ClientRequestResponse>>> getByClientAssigned(int idClient);
 
 }
