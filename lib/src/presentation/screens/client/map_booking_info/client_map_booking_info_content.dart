@@ -80,7 +80,7 @@ class ClientMapBookingInfoContent extends StatelessWidget {
           ),
           const SizedBox(height: 40),
           CustomButton(
-            text: 'BUSCAR CONDUCTOR',
+            text: 'Search Driver',
             onPressed: () {
               // Obtenemos el valor actual del campo desde el estado del BLoC
               final fareOffered = state.fareOffered.value;
@@ -99,7 +99,6 @@ class ClientMapBookingInfoContent extends StatelessWidget {
               // Si pasa la validación, enviamos el evento
               context.read<ClientMapBookingInfoBloc>().add(CreateClientRequest());
             },
-            iconData: Icons.search,
           ),
         ],
       ),

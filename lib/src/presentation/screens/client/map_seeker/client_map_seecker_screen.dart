@@ -5,9 +5,10 @@ import 'package:google_places_flutter/model/prediction.dart';
 import 'package:uber_clone/src/presentation/screens/client/map_seeker/bloc/client_map_seeker_bloc.dart.dart';
 import 'package:uber_clone/src/presentation/screens/client/map_seeker/bloc/client_map_seeker_event.dart.dart';
 import 'package:uber_clone/src/presentation/screens/client/map_seeker/bloc/client_map_seeker_state.dart';
+import 'package:uber_clone/src/presentation/utils/colors.dart';
 import 'package:uber_clone/src/presentation/widgets/custom_button.dart';
 import 'package:uber_clone/src/presentation/widgets/google_places_auto_complete.dart';
-import 'package:uber_clone/src/presentation/utils/map_styles.dart'; // Importar map styles
+import 'package:uber_clone/src/presentation/utils/map_styles.dart';
 
 class ClientMapSeeckerScreen extends StatefulWidget {
   const ClientMapSeeckerScreen({super.key});
@@ -73,7 +74,7 @@ class ClientMapSeeckerScreenState extends State<ClientMapSeeckerScreen> {
                 },
               ),
 
-              // Icono de ubicación centrado (sin cambios)
+              // Icono de ubicación centrado
               _iconMyLocation(),
 
               // Modal inferior con autocompletados y botón
@@ -90,16 +91,9 @@ class ClientMapSeeckerScreenState extends State<ClientMapSeeckerScreen> {
 
   Widget _bottomCard(BuildContext context, ClientMapSeekerState state) {
     return Container(
-      height: MediaQuery.of(context).size.height * 0.28,
+      height: MediaQuery.of(context).size.height * 0.37,
       decoration: const BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topRight,
-          end: Alignment.bottomLeft,
-          colors: [
-            Color.fromARGB(255, 255, 255, 255),
-            Color.fromARGB(255, 186, 186, 186),
-          ],
-        ),
+        color: AppColors.background,
         borderRadius: BorderRadius.only(
           topLeft: Radius.circular(30),
           topRight: Radius.circular(30),
@@ -112,73 +106,146 @@ class ClientMapSeeckerScreenState extends State<ClientMapSeeckerScreen> {
             width: 50,
             height: 5,
             decoration: BoxDecoration(
-              color: Colors.grey[400],
+              color: AppColors.greyMedium,
               borderRadius: BorderRadius.circular(10),
             ),
           ),
           const SizedBox(height: 20),
 
-          // Autocompletado de recogida
+          // Card contenedor de ambos autocompletados
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20),
-            child: GooglePlacesAutoComplete(
-              pickUpController,
-              'Recoger en',
-              (Prediction prediction) {
-                _isSelectingFromAutocomplete = true;
-                pickUpController.text = prediction.description ?? '';
-                context.read<ClientMapSeekerBloc>().add(ChangeMapCameraPosition(
-                  lat: double.parse(prediction.lat!),
-                  lng: double.parse(prediction.lng!),
-                ));
-                context.read<ClientMapSeekerBloc>().add(OnAutoCompletedPickUpSelected(
-                  lat: double.parse(prediction.lat!),
-                  lng: double.parse(prediction.lng!),
-                  pickUpDescription: prediction.description ?? '',
-                ));
-              },
-            ),
-          ),
+            child: Container(
+              decoration: BoxDecoration(
+                color: AppColors.backgroundLight,
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: Column(
+                children: [
+                  // Pick Up
+                  _buildLocationRow(
+                    context: context,
+                    label: 'Pick Up',
+                    icon: Icons.radio_button_checked,
+                    controller: pickUpController,
+                    hint: 'Recoger en',
+                    onPredictionSelected: (Prediction prediction) {
+                      _isSelectingFromAutocomplete = true;
+                      pickUpController.text = prediction.description ?? '';
+                      context.read<ClientMapSeekerBloc>().add(ChangeMapCameraPosition(
+                        lat: double.parse(prediction.lat!),
+                        lng: double.parse(prediction.lng!),
+                      ));
+                      context.read<ClientMapSeekerBloc>().add(OnAutoCompletedPickUpSelected(
+                        lat: double.parse(prediction.lat!),
+                        lng: double.parse(prediction.lng!),
+                        pickUpDescription: prediction.description ?? '',
+                      ));
+                    },
+                  ),
 
-          const SizedBox(height: 12),
+                  // Línea divisoria
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: Container(
+                      height: 1,
+                      color: AppColors.greyMedium,
+                    ),
+                  ),
 
-          // Autocompletado de destino
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
-            child: GooglePlacesAutoComplete(
-              destinationController,
-              'Dejar en',
-              (Prediction prediction) {
-                destinationController.text = prediction.description ?? '';
-                context.read<ClientMapSeekerBloc>().add(OnAutoCompletedDestinationSelected(
-                  lat: double.parse(prediction.lat!),
-                  lng: double.parse(prediction.lng!),
-                  destinationDescription: prediction.description ?? '',
-                ));
-              },
+                  // Destination
+                  _buildLocationRow(
+                    context: context,
+                    label: 'Destination',
+                    icon: Icons.location_on,
+                    controller: destinationController,
+                    hint: 'Dejar en',
+                    onPredictionSelected: (Prediction prediction) {
+                      destinationController.text = prediction.description ?? '';
+                      context.read<ClientMapSeekerBloc>().add(OnAutoCompletedDestinationSelected(
+                        lat: double.parse(prediction.lat!),
+                        lng: double.parse(prediction.lng!),
+                        destinationDescription: prediction.description ?? '',
+                      ));
+                    },
+                  ),
+                ],
+              ),
             ),
           ),
 
           const Spacer(),
 
           // Botón Revisar Viaje
-          Padding(
-            padding: const EdgeInsets.only(left: 40, right: 40, bottom: 30),
-            child: CustomButton(
-              text: 'REVISAR VIAJE',
-              iconData: Icons.check_circle,
-              onPressed: () {
-                Navigator.pushNamed(
-                  context,
-                  'client/map/booking',
-                  arguments: {
-                    'pickUpLatLng': state.pickUpLatLng,
-                    'destinationLatLng': state.destinationLatLng,
-                    'pickUpDescription': state.pickUpDescription,
-                    'destinationDescription': state.destinationDescription,
-                  },
-                );
-              },
+          CustomButton(
+            text: 'View Route',
+            onPressed: () {
+              Navigator.pushNamed(
+                context,
+                'client/map/booking',
+                arguments: {
+                  'pickUpLatLng': state.pickUpLatLng,
+                  'destinationLatLng': state.destinationLatLng,
+                  'pickUpDescription': state.pickUpDescription,
+                  'destinationDescription': state.destinationDescription,
+                },
+              );
+            },
+          ),
+          const SizedBox(height: 20),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildLocationRow({
+    required BuildContext context,
+    required String label,
+    required IconData icon,
+    required TextEditingController controller,
+    required String hint,
+    required Function(Prediction) onPredictionSelected,
+  }) {
+    return Padding(
+      padding: const EdgeInsets.all(10),
+      child: Row(
+        children: [
+          // Icono con fondo gris oscuro
+          Container(
+            width: 44,
+            height: 44,
+            decoration: BoxDecoration(
+              color: AppColors.greyLight,
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Icon(
+              icon,
+              color: AppColors.backgroundDark,
+              size: 24,
+            ),
+          ),
+          const SizedBox(width: 12),
+          
+          // Columna con label y autocomplete
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  label,
+                  style: TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.backgroundDark,
+                    letterSpacing: 0.5,
+                  ),
+                ),
+                GooglePlacesAutoComplete(
+                  controller,
+                  hint,
+                  onPredictionSelected,
+                ),
+              ],
             ),
           ),
         ],

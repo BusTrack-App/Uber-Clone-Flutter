@@ -17,7 +17,7 @@ class CustomButton extends StatelessWidget {
     required this.onPressed,
     this.textColor = AppColors.backgroundDark,
     this.margin = const EdgeInsets.only(bottom: 20, left: 40, right: 40),
-    this.height = 45,
+    this.height = 60,
     this.width,
     this.iconData,
     this.iconColor = AppColors.backgroundDark
@@ -38,7 +38,7 @@ class CustomButton extends StatelessWidget {
           backgroundColor: AppColors.yellow,
           elevation: 0,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(15),
+            borderRadius: BorderRadius.circular(20),
           )
         ),
         child: Row(
@@ -57,7 +57,7 @@ class CustomButton extends StatelessWidget {
               style: TextStyle(
                 color: textColor,
                 fontSize: 18,
-                fontWeight: FontWeight.bold
+                fontWeight: FontWeight.w400
               ),
             ),
           ],
