@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:uber_clone/src/presentation/utils/colors.dart';
 
 class CustomButton extends StatelessWidget {
 
@@ -21,7 +22,7 @@ class CustomButton extends StatelessWidget {
     this.height = 45,
     this.width,
     this.iconData,
-    this.iconColor = Colors.blueAccent
+    this.iconColor = AppColors.backgroundDark
   });
 
   @override
@@ -36,7 +37,8 @@ class CustomButton extends StatelessWidget {
           onPressed();
         }, 
         style: ElevatedButton.styleFrom(
-          backgroundColor: color,
+          backgroundColor: AppColors.yellow,
+          elevation: 0,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(15),
           )

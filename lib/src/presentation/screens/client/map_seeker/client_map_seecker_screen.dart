@@ -20,7 +20,6 @@ class ClientMapSeeckerScreenState extends State<ClientMapSeeckerScreen> {
   TextEditingController pickUpController = TextEditingController();
   TextEditingController destinationController = TextEditingController();
   
-  // Flag para controlar cuándo actualizar el texto del input
   bool _isSelectingFromAutocomplete = false;
 
   @override
@@ -42,6 +41,7 @@ class ClientMapSeeckerScreenState extends State<ClientMapSeeckerScreen> {
           return Stack(
             children: [
               GoogleMap(
+                style: MapStyles.darkMapStyle,
                 mapType: MapType.normal,
                 initialCameraPosition: state.cameraPosition,
                 markers: Set<Marker>.of(state.markers.values),
@@ -51,18 +51,11 @@ class ClientMapSeeckerScreenState extends State<ClientMapSeeckerScreen> {
                   );
                 },
                 onCameraIdle: () async {
-                  // SOLUCIÓN: Solo actualizar si NO estamos seleccionando desde el autocompletado
                   if (!_isSelectingFromAutocomplete) {
                     context.read<ClientMapSeekerBloc>().add(OnCameraIdle());
-                    
-                    // Esperar a que el estado se actualice
                     await Future.delayed(const Duration(milliseconds: 100));
-                    
-                    // SOLUCIÓN: Actualizar SIEMPRE el texto cuando se mueve el mapa manualmente
                     if (state.placemarkData != null && state.placemarkData!.address.isNotEmpty) {
                       pickUpController.text = state.placemarkData!.address;
-                      
-                      // Actualizar el estado con la nueva dirección
                       // ignore: use_build_context_synchronously
                       context.read<ClientMapSeekerBloc>().add(OnAutoCompletedPickUpSelected(
                         lat: state.placemarkData!.lat, 
@@ -71,47 +64,23 @@ class ClientMapSeeckerScreenState extends State<ClientMapSeeckerScreen> {
                       ));
                     }
                   }
-                  
-                  // Reset el flag después de procesar
                   _isSelectingFromAutocomplete = false;
                 },
                 onMapCreated: (GoogleMapController controller) {
-                  // Aplicar el estilo del mapa
-                  controller.setMapStyle(MapStyles.darkMapStyle);
-                  
-                  if (state.controller != null) {
-                    if (!state.controller!.isCompleted) {
-                      state.controller?.complete(controller);
-                    }
+                  if (state.controller != null && !state.controller!.isCompleted) {
+                    state.controller?.complete(controller);
                   }
                 },
               ),
-              Container(
-                height: 120,
-                margin: const EdgeInsets.only(left: 30, right: 30, top: 30),
-                child: _googlePlacesAutocomplete()
-              ),
+
+              // Icono de ubicación centrado (sin cambios)
               _iconMyLocation(),
-              Container(
+
+              // Modal inferior con autocompletados y botón
+              Align(
                 alignment: Alignment.bottomCenter,
-                child: CustomButton(
-                  margin: const EdgeInsets.only(bottom: 30, left: 60, right: 60),
-                  text: 'REVISAR VIAJE', 
-                  iconData: Icons.check_circle,
-                  onPressed: () {
-                    Navigator.pushNamed(
-                      context, 
-                      'client/map/booking',
-                      arguments: {
-                        'pickUpLatLng': state.pickUpLatLng,
-                        'destinationLatLng': state.destinationLatLng,
-                        'pickUpDescription': state.pickUpDescription,
-                        'destinationDescription': state.destinationDescription,
-                      }
-                    );
-                  }
-                )
-              )
+                child: _bottomCard(context, state),
+              ),
             ],
           );
         },
@@ -119,49 +88,99 @@ class ClientMapSeeckerScreenState extends State<ClientMapSeeckerScreen> {
     );
   }
 
-  Widget _googlePlacesAutocomplete() {
-    return Card(
-      surfaceTintColor: Colors.white,
+  Widget _bottomCard(BuildContext context, ClientMapSeekerState state) {
+    return Container(
+      height: MediaQuery.of(context).size.height * 0.28,
+      decoration: const BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topRight,
+          end: Alignment.bottomLeft,
+          colors: [
+            Color.fromARGB(255, 255, 255, 255),
+            Color.fromARGB(255, 186, 186, 186),
+          ],
+        ),
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(30),
+          topRight: Radius.circular(30),
+        ),
+      ),
       child: Column(
         children: [
-          GooglePlacesAutoComplete(
-            pickUpController, 
-            'Recoger en', 
-            (Prediction prediction) {
-              // SOLUCIÓN: Activar el flag antes de cambiar la cámara
-              _isSelectingFromAutocomplete = true;
-              
-              // Actualizar el texto del controller inmediatamente
-              pickUpController.text = prediction.description ?? '';
-              
-              context.read<ClientMapSeekerBloc>().add(ChangeMapCameraPosition(
-                lat: double.parse(prediction.lat!), 
-                lng: double.parse(prediction.lng!),
-              ));
-              context.read<ClientMapSeekerBloc>().add(OnAutoCompletedPickUpSelected(
-                lat: double.parse(prediction.lat!), 
-                lng: double.parse(prediction.lng!),
-                pickUpDescription: prediction.description ?? ''
-              ));
-            }
+          const SizedBox(height: 12),
+          Container(
+            width: 50,
+            height: 5,
+            decoration: BoxDecoration(
+              color: Colors.grey[400],
+              borderRadius: BorderRadius.circular(10),
+            ),
           ),
-          Divider(
-            color: Colors.grey[200],
+          const SizedBox(height: 20),
+
+          // Autocompletado de recogida
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            child: GooglePlacesAutoComplete(
+              pickUpController,
+              'Recoger en',
+              (Prediction prediction) {
+                _isSelectingFromAutocomplete = true;
+                pickUpController.text = prediction.description ?? '';
+                context.read<ClientMapSeekerBloc>().add(ChangeMapCameraPosition(
+                  lat: double.parse(prediction.lat!),
+                  lng: double.parse(prediction.lng!),
+                ));
+                context.read<ClientMapSeekerBloc>().add(OnAutoCompletedPickUpSelected(
+                  lat: double.parse(prediction.lat!),
+                  lng: double.parse(prediction.lng!),
+                  pickUpDescription: prediction.description ?? '',
+                ));
+              },
+            ),
           ),
-          GooglePlacesAutoComplete(
-            destinationController, 
-            'Dejar en', 
-            (Prediction prediction) {
-              // Actualizar el texto del controller inmediatamente
-              destinationController.text = prediction.description ?? '';
-              
-              context.read<ClientMapSeekerBloc>().add(OnAutoCompletedDestinationSelected(
-                lat: double.parse(prediction.lat!), 
-                lng: double.parse(prediction.lng!),
-                destinationDescription: prediction.description ?? ''
-              ));
-            }
-          )
+
+          const SizedBox(height: 12),
+
+          // Autocompletado de destino
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            child: GooglePlacesAutoComplete(
+              destinationController,
+              'Dejar en',
+              (Prediction prediction) {
+                destinationController.text = prediction.description ?? '';
+                context.read<ClientMapSeekerBloc>().add(OnAutoCompletedDestinationSelected(
+                  lat: double.parse(prediction.lat!),
+                  lng: double.parse(prediction.lng!),
+                  destinationDescription: prediction.description ?? '',
+                ));
+              },
+            ),
+          ),
+
+          const Spacer(),
+
+          // Botón Revisar Viaje
+          Padding(
+            padding: const EdgeInsets.only(left: 40, right: 40, bottom: 30),
+            child: CustomButton(
+              text: 'REVISAR VIAJE',
+              iconData: Icons.check_circle,
+              onPressed: () {
+                Navigator.pushNamed(
+                  context,
+                  'client/map/booking',
+                  arguments: {
+                    'pickUpLatLng': state.pickUpLatLng,
+                    'destinationLatLng': state.destinationLatLng,
+                    'pickUpDescription': state.pickUpDescription,
+                    'destinationDescription': state.destinationDescription,
+                  },
+                );
+              },
+            ),
+          ),
         ],
       ),
     );
@@ -169,7 +188,7 @@ class ClientMapSeeckerScreenState extends State<ClientMapSeeckerScreen> {
 
   Widget _iconMyLocation() {
     return Container(
-      margin: const EdgeInsets.only(bottom: 25),
+      margin: const EdgeInsets.only(bottom: 55),
       alignment: Alignment.center,
       child: Image.asset('assets/img/location_blue.png', width: 50, height: 50),
     );
