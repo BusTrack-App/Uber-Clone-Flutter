@@ -190,7 +190,7 @@ class ClientMapSeeckerScreenState extends State<ClientMapSeeckerScreen> {
     return Container(
       margin: const EdgeInsets.only(bottom: 55),
       alignment: Alignment.center,
-      child: Image.asset('assets/img/location_blue.png', width: 50, height: 50),
+      child: Image.asset('assets/img/pin_white.png', width: 50, height: 50),
     );
   }
 }
