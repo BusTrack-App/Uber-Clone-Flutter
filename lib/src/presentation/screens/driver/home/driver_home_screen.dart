@@ -11,7 +11,11 @@ import 'package:uber_clone/src/presentation/screens/driver/home/bloc/driver_home
 import 'package:uber_clone/src/presentation/screens/driver/home/bloc/driver_home_state.dart';
 import 'package:uber_clone/src/presentation/screens/driver/map_seeker/driver_map_location_screen.dart';
 import 'package:uber_clone/src/presentation/screens/profile/info/profile_info_screen.dart';
+import 'package:uber_clone/src/presentation/screens/profile/info/bloc/profile_info_bloc.dart';
+import 'package:uber_clone/src/presentation/screens/profile/info/bloc/profile_info_state.dart';
+import 'package:uber_clone/src/presentation/screens/profile/info/bloc/profile_info_event.dart';
 import 'package:uber_clone/src/presentation/screens/roles/roles_screen.dart';
+import 'package:uber_clone/src/presentation/utils/colors.dart';
 
 class DriverHomeScreen extends StatefulWidget {
   const DriverHomeScreen({super.key});
@@ -21,18 +25,25 @@ class DriverHomeScreen extends StatefulWidget {
 }
 
 class _DriverHomeScreenState extends State<DriverHomeScreen> {
-  // Lista de páginas (mantén el orden que quieras mostrar)
   final List<Widget> pageList = <Widget>[
+    const ProfileInfoScreen(),
     const DriverMapLocationScreen(),
     const DriverClientRequestScreen(),
     const DriverCarInfoScreen(),
     const DriverHistoryTripScreen(),
-    const ProfileInfoScreen(),
     const RolesScreen(),
   ];
 
-  // Key para controlar el Drawer desde el FAB
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
+  @override
+  void initState() {
+    super.initState();
+    // Cargar datos del usuario al iniciar
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<ProfileInfoBloc>().add(GetUserInfo());
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -40,16 +51,13 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
       key: _scaffoldKey,
       body: Stack(
         children: [
-          // Contenido principal (cambia según el índice del Bloc)
           BlocBuilder<DriverHomeBloc, DriverHomeState>(
             builder: (context, state) {
               return pageList[state.pageIndex];
             },
           ),
-
-          // Botón flotante para abrir el drawer (arriba izquierda)
           Positioned(
-            top: MediaQuery.of(context).padding.top + 16, // Respeta notch/status bar
+            top: MediaQuery.of(context).padding.top + 16,
             left: 16,
             child: FloatingActionButton(
               mini: true,
@@ -68,112 +76,279 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
         ],
       ),
       drawer: BlocBuilder<DriverHomeBloc, DriverHomeState>(
-        builder: (context, state) {
+        builder: (context, driverState) {
           return Drawer(
-            child: ListView(
-              padding: EdgeInsets.zero,
-              children: [
-                DrawerHeader(
-                  decoration: const BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.topRight,
-                      end: Alignment.bottomLeft,
-                      colors: [
-                        Color.fromARGB(255, 12, 38, 145),
-                        Color.fromARGB(255, 34, 156, 249),
+            child: Container(
+              color: Colors.white,
+              child: ListView(
+                padding: EdgeInsets.zero,
+                children: [
+                  // Header con información del usuario
+                  Container(
+                    padding: EdgeInsets.only(
+                      top: MediaQuery.of(context).padding.top + 20,
+                      bottom: 20,
+                      left: 16,
+                      right: 16,
+                    ),
+                    child: BlocBuilder<ProfileInfoBloc, ProfileInfoState>(
+                      builder: (context, profileState) {
+                        final user = profileState.user;
+
+                        return GestureDetector(
+                          onTap: () {
+                            context
+                                .read<DriverHomeBloc>()
+                                .add(ChangeDrawerPage(pageIndex: 4));
+                            Navigator.pop(context);
+                          },
+                          child: Container(
+                            padding: const EdgeInsets.all(16),
+                            decoration: BoxDecoration(
+                              color: AppColors.greyMedium,
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: Row(
+                              children: [
+                                // Foto de perfil
+                                Container(
+                                  width: 60,
+                                  height: 60,
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    border: Border.all(
+                                      color: Colors.white,
+                                      width: 2,
+                                    ),
+                                  ),
+                                  child: ClipOval(
+                                    child: user != null
+                                        ? user.image != null
+                                            ? FadeInImage.assetNetwork(
+                                                placeholder: 'assets/img/user_image.png',
+                                                image: user.image!,
+                                                fit: BoxFit.cover,
+                                                fadeInDuration: const Duration(milliseconds: 500),
+                                                imageErrorBuilder: (context, error, stackTrace) {
+                                                  return Image.asset(
+                                                    'assets/img/user_image.png',
+                                                    fit: BoxFit.cover,
+                                                  );
+                                                },
+                                              )
+                                            : Image.asset(
+                                                'assets/img/user_image.png',
+                                                fit: BoxFit.cover,
+                                              )
+                                        : Image.asset(
+                                            'assets/img/user_image.png',
+                                            fit: BoxFit.cover,
+                                          ),
+                                  ),
+                                ),
+                                const SizedBox(width: 16),
+                                // Nombre y teléfono
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        user != null
+                                            ? '${user.name} ${user.lastname}'
+                                            : 'Usuario',
+                                        style: const TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                      const SizedBox(height: 4),
+                                      Text(
+                                        user?.phone ?? '',
+                                        style: const TextStyle(
+                                          color: Colors.white70,
+                                          fontSize: 13,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+
+                  // Opciones del menú
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: Column(
+                      children: [
+                        _buildMenuItem(
+                          context: context,
+                          title: 'Mapa de localización',
+                          icon: Icons.map_outlined,
+                          isSelected: driverState.pageIndex == 0,
+                          onTap: () {
+                            context
+                                .read<DriverHomeBloc>()
+                                .add(ChangeDrawerPage(pageIndex: 0));
+                            Navigator.pop(context);
+                          },
+                        ),
+                        const SizedBox(height: 8),
+                        _buildMenuItem(
+                          context: context,
+                          title: 'Solicitudes de viaje',
+                          icon: Icons.directions_car_outlined,
+                          isSelected: driverState.pageIndex == 1,
+                          onTap: () {
+                            context
+                                .read<DriverHomeBloc>()
+                                .add(ChangeDrawerPage(pageIndex: 1));
+                            Navigator.pop(context);
+                          },
+                        ),
+                        const SizedBox(height: 8),
+                        _buildMenuItem(
+                          context: context,
+                          title: 'Mi Vehículo',
+                          icon: Icons.time_to_leave_outlined,
+                          isSelected: driverState.pageIndex == 2,
+                          onTap: () {
+                            context
+                                .read<DriverHomeBloc>()
+                                .add(ChangeDrawerPage(pageIndex: 2));
+                            Navigator.pop(context);
+                          },
+                        ),
+                        const SizedBox(height: 8),
+                        _buildMenuItem(
+                          context: context,
+                          title: 'Historial de viajes',
+                          icon: Icons.history,
+                          isSelected: driverState.pageIndex == 3,
+                          onTap: () {
+                            context
+                                .read<DriverHomeBloc>()
+                                .add(ChangeDrawerPage(pageIndex: 3));
+                            Navigator.pop(context);
+                          },
+                        ),
+                        const SizedBox(height: 8),
+                        _buildMenuItem(
+                          context: context,
+                          title: 'Perfil del usuario',
+                          icon: Icons.person_outline,
+                          isSelected: driverState.pageIndex == 4,
+                          onTap: () {
+                            context
+                                .read<DriverHomeBloc>()
+                                .add(ChangeDrawerPage(pageIndex: 4));
+                            Navigator.pop(context);
+                          },
+                        ),
+                        const SizedBox(height: 8),
+                        _buildMenuItem(
+                          context: context,
+                          title: 'Roles de usuario',
+                          icon: Icons.admin_panel_settings_outlined,
+                          isSelected: driverState.pageIndex == 5,
+                          onTap: () {
+                            context
+                                .read<DriverHomeBloc>()
+                                .add(ChangeDrawerPage(pageIndex: 5));
+                            Navigator.pop(context);
+                          },
+                        ),
+                        const SizedBox(height: 16),
+                        const Divider(),
+                        const SizedBox(height: 8),
+                        _buildMenuItem(
+                          context: context,
+                          title: 'Cerrar sesión',
+                          icon: Icons.logout,
+                          isSelected: false,
+                          isLogout: true,
+                          onTap: () {
+                            context.read<DriverHomeBloc>().add(Logout());
+                            context.read<BlocSocketIO>().add(DisconnectSocketIO());
+                            Navigator.pushAndRemoveUntil(
+                              context,
+                              MaterialPageRoute(builder: (context) => const MyApp()),
+                              (route) => false,
+                            );
+                          },
+                        ),
+                        const SizedBox(height: 20),
                       ],
                     ),
                   ),
-                  child: const Text(
-                    'Menú del Conductor',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 20,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                ),
-                ListTile(
-                  title: const Text('Mapa de localización'),
-                  selected: state.pageIndex == 0,
-                  onTap: () {
-                    context
-                        .read<DriverHomeBloc>()
-                        .add(ChangeDrawerPage(pageIndex: 0));
-                    Navigator.pop(context);
-                  },
-                ),
-                ListTile(
-                  title: const Text('Solicitudes de viaje'),
-                  selected: state.pageIndex == 1,
-                  onTap: () {
-                    context
-                        .read<DriverHomeBloc>()
-                        .add(ChangeDrawerPage(pageIndex: 1));
-                    Navigator.pop(context);
-                  },
-                ),
-                ListTile(
-                  title: const Text('Mi Vehículo'),
-                  selected: state.pageIndex == 2,
-                  onTap: () {
-                    context
-                        .read<DriverHomeBloc>()
-                        .add(ChangeDrawerPage(pageIndex: 2));
-                    Navigator.pop(context);
-                  },
-                ),
-                ListTile(
-                  title: const Text('Historial de viajes'),
-                  selected: state.pageIndex == 3,
-                  onTap: () {
-                    context
-                        .read<DriverHomeBloc>()
-                        .add(ChangeDrawerPage(pageIndex: 3));
-                    Navigator.pop(context);
-                  },
-                ),
-                ListTile(
-                  title: const Text('Perfil del usuario'),
-                  selected: state.pageIndex == 4,
-                  onTap: () {
-                    context
-                        .read<DriverHomeBloc>()
-                        .add(ChangeDrawerPage(pageIndex: 4));
-                    Navigator.pop(context);
-                  },
-                ),
-                ListTile(
-                  title: const Text('Roles de usuario'),
-                  selected: state.pageIndex == 5,
-                  onTap: () {
-                    context
-                        .read<DriverHomeBloc>()
-                        .add(ChangeDrawerPage(pageIndex: 5));
-                    Navigator.pop(context);
-                  },
-                ),
-                const Divider(),
-                ListTile(
-                  leading: const Icon(Icons.logout, color: Colors.redAccent),
-                  title: const Text(
-                    'Cerrar sesión',
-                    style: TextStyle(color: Colors.redAccent),
-                  ),
-                  onTap: () {
-                    context.read<DriverHomeBloc>().add(Logout());
-                    context.read<BlocSocketIO>().add(DisconnectSocketIO());
-                    Navigator.pushAndRemoveUntil(
-                      context,
-                      MaterialPageRoute(builder: (context) => const MyApp()),
-                      (route) => false,
-                    );
-                  },
-                ),
-              ],
+                ],
+              ),
             ),
           );
         },
+      ),
+    );
+  }
+
+  Widget _buildMenuItem({
+    required BuildContext context,
+    required String title,
+    required IconData icon,
+    required bool isSelected,
+    required VoidCallback onTap,
+    bool isLogout = false,
+  }) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+        decoration: BoxDecoration(
+          color: isSelected ? AppColors.yellow : Colors.transparent,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(
+            color: isLogout
+                ? Colors.redAccent
+                : isSelected
+                    ? AppColors.yellow
+                    : Colors.grey.shade300,
+            width: 1,
+          ),
+        ),
+        child: Row(
+          children: [
+            Icon(
+              icon,
+              color: isLogout
+                  ? Colors.redAccent
+                  : isSelected
+                      ? AppColors.backgroundDark
+                      : Colors.grey.shade700,
+              size: 22,
+            ),
+            const SizedBox(width: 16),
+            Expanded(
+              child: Text(
+                title,
+                style: TextStyle(
+                  color: isLogout
+                      ? Colors.redAccent
+                      : isSelected
+                          ? AppColors.backgroundDark
+                          : Colors.black87,
+                  fontSize: 15,
+                  fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
