@@ -9,5 +9,7 @@ class AppColors {
   // Colores de fondo
   static const Color background = Color(0xFFF1F1F1);
   static const Color backgroundLight = Color(0xFFFDFDFD);
-  static const Color backgroundDark = Color(0xFFF0F0F0);
+  static const Color backgroundDark = Color(0xFF0B0B0B);
+
+  static const Color red = Color(0xFFF1331B);
 }

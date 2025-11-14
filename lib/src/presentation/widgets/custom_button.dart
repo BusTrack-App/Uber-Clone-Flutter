@@ -5,7 +5,6 @@ class CustomButton extends StatelessWidget {
 
   Function() onPressed;
   String text;
-  Color color;
   Color textColor;
   EdgeInsetsGeometry margin;
   double? width;
@@ -16,8 +15,7 @@ class CustomButton extends StatelessWidget {
   CustomButton({super.key, 
     required this.text,
     required this.onPressed,
-    this.color = Colors.white,
-    this.textColor = Colors.black,
+    this.textColor = AppColors.backgroundDark,
     this.margin = const EdgeInsets.only(bottom: 20, left: 40, right: 40),
     this.height = 45,
     this.width,

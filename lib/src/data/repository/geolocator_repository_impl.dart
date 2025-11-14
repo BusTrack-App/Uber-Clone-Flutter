@@ -183,6 +183,7 @@ class GeolocatorRepositoryImpl implements GeolocatorRepository {
   Future<List<LatLng>> getPolyline(LatLng pickUpLatLng, LatLng destinationLatLng) async {
     try {
       PolylineResult result = await PolylinePoints(apiKey: API_KEY_GOOGLE).getRouteBetweenCoordinates(
+        // ignore: deprecated_member_use
         request: PolylineRequest(
           origin: PointLatLng(pickUpLatLng.latitude, pickUpLatLng.longitude),
           destination: PointLatLng(destinationLatLng.latitude, destinationLatLng.longitude),

@@ -75,7 +75,6 @@ class ClientDriverOffersItem extends StatelessWidget {
                 width: 120,
                 height: 40,
                 margin: EdgeInsets.only(right: 20, bottom: 15),
-                color: Colors.blueAccent,
                 textColor: Colors.white,
               )
             ],
