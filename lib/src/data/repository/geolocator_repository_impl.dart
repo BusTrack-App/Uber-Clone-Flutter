@@ -36,15 +36,14 @@ class GeolocatorRepositoryImpl implements GeolocatorRepository {
     return await Geolocator.getCurrentPosition();
   }
 
-  @override
-  Future<BitmapDescriptor> createMarkerFromAsset(String path) async {
-    ImageConfiguration configuration = const ImageConfiguration();
-    BitmapDescriptor descriptor = await BitmapDescriptor.asset(
-      configuration,
-      path,
-    );
-    return descriptor;
-  }
+@override
+Future<BitmapDescriptor> createMarkerFromAsset(String path) async {
+  final ImageConfiguration configuration = ImageConfiguration(
+    size: const Size(50, 50), 
+  );
+
+  return await BitmapDescriptor.asset(configuration, path);
+}
 
   @override
   Marker getMarker(
