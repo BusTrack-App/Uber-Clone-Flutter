@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:uber_clone/src/domain/models/user.dart';
+import 'package:uber_clone/src/presentation/utils/colors.dart';
+import 'package:uber_clone/src/presentation/widgets/custom_button.dart'; 
+import 'package:uber_clone/src/presentation/widgets/default_image_url.dart';
 
 class ProfileInfoContent extends StatelessWidget {
-  User? user;
+  final User? user;
 
-  ProfileInfoContent(this.user, {super.key});
+  const ProfileInfoContent(this.user, {super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -13,70 +16,99 @@ class ProfileInfoContent extends StatelessWidget {
         Column(
           children: [
             _headerProfile(context),
-            Spacer(),
-            _actionProfile('EDITAR PERFIL', Icons.edit, () { 
-              Navigator.pushNamed(context, 'profile/update', arguments: user);
-             }),
-            _actionProfile('CERRAR SESION', Icons.settings_power, () {}),
-            SizedBox(height: 35,)
+            const Spacer(),
+            CustomButton(
+              text: 'EDITAR PERFIL',
+              iconData: Icons.edit,
+              onPressed: () {
+                Navigator.pushNamed(context, 'profile/update', arguments: user);
+              },
+            ),
+            CustomButton(
+              text: 'CERRAR SESIÓN',
+              iconData: Icons.logout,
+              onPressed: () {},
+            ),
+            const SizedBox(height: 35),
           ],
         ),
-        _cardUserInfo(context)
+        _cardUserInfo(context),
       ],
     );
   }
 
+  // === HEADER CON FONDO OSCURO ===
+  Widget _headerProfile(BuildContext context) {
+    return Container(
+      alignment: Alignment.topCenter,
+      padding: const EdgeInsets.fromLTRB(0, 80, 0, 0),
+      height: MediaQuery.of(context).size.height * 0.33,
+      width: MediaQuery.of(context).size.width,
+      decoration: const BoxDecoration(
+        color: AppColors.backgroundDark,
+      ),
+      child: const Text(
+        'PERFIL DE USUARIO',
+        style: TextStyle(
+          color: Colors.white,
+          fontWeight: FontWeight.bold,
+          fontSize: 19,
+          letterSpacing: 0.8,
+        ),
+      ),
+    );
+  }
 
+  // === TARJETA DE INFORMACIÓN DEL USUARIO ===
   Widget _cardUserInfo(BuildContext context) {
     return Container(
-      margin: EdgeInsets.only(left: 35, right: 35, top: 100),
+      margin: const EdgeInsets.only(left: 35, right: 35, top: 160),
       width: MediaQuery.of(context).size.width,
       height: 250,
       child: Card(
-        color: Colors.white,
-        surfaceTintColor: Colors.white,
+        color: AppColors.background,
+        elevation: 0,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(40)),
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            // Imagen de perfil
             Container(
-              width: 115,
-              margin: EdgeInsets.only(top: 25, bottom: 15),
-              child: AspectRatio(
-                aspectRatio: 1,
-                child: ClipOval(
-                  child: user != null 
-                  ? user!.image != null 
-                    ? FadeInImage.assetNetwork(
-                      placeholder: 'assets/img/user_image.png', 
-                      image: user!.image!,
-                      fit: BoxFit.cover,
-                      fadeInDuration: Duration(seconds: 1),
-                    )
-                    : Image.asset(
-                      'assets/img/user_image.png',
-                    )
-                  : Image.asset(
-                    'assets/img/user_image.png',
-                  ),
-                ),
+              margin: const EdgeInsets.only(top: 25, bottom: 15),
+              child: DefaultImageUrl(
+                url: user?.image,
+                width: 115,
               ),
             ),
+
+            // Nombre completo
             Text(
-              '${user?.name} ${user?.lastname}',
-              style: TextStyle(
+              '${user?.name ?? ''} ${user?.lastname ?? ''}'.trim(),
+              style: const TextStyle(
                 fontWeight: FontWeight.bold,
-                fontSize: 16
+                fontSize: 16,
+                color: AppColors.backgroundDark,
+              ),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 6),
+
+            // Email
+            Text(
+              user?.email ?? 'Sin correo',
+              style: const TextStyle(
+                fontSize: 14,
+                color: AppColors.backgroundDark,
               ),
             ),
+            const SizedBox(height: 4),
+
+            // Teléfono
             Text(
-              user?.email ?? '',
-              style: TextStyle(
-                color: Colors.grey[700]
-              ),
-            ),
-            Text(
-              user?.phone ?? '',
-              style: TextStyle(
-                color: Colors.grey[700]
+              user?.phone ?? 'Sin teléfono',
+              style: const TextStyle(
+                fontSize: 14,
+                color: AppColors.backgroundDark,
               ),
             ),
           ],
@@ -85,67 +117,4 @@ class ProfileInfoContent extends StatelessWidget {
     );
   }
 
-  Widget _actionProfile(String option, IconData icon, Function() function) {
-    return GestureDetector(
-      onTap: () {
-        function();
-      },
-      child: Container(
-        margin: EdgeInsets.only(left: 20, right: 20, top: 15),
-        child: ListTile(
-          title: Text(
-            option,
-            style: TextStyle(
-              fontWeight: FontWeight.bold
-            ),
-          ),
-          leading: Container(
-            padding: EdgeInsets.all(10),
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topRight,
-                end: Alignment.bottomLeft,
-                colors: [
-                  Color.fromARGB(255, 19, 58, 213),
-                  Color.fromARGB(255, 65, 173, 255),
-                ]
-              ),
-              borderRadius: BorderRadius.all(Radius.circular(50))
-            ),
-            child: Icon(
-              icon,
-              color: Colors.white,
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _headerProfile(BuildContext context) {
-    return Container(
-      alignment: Alignment.topCenter,
-      padding: EdgeInsets.only(top: 40),
-      height: MediaQuery.of(context).size.height * 0.33,
-      width: MediaQuery.of(context).size.width,
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topRight,
-          end: Alignment.bottomLeft,
-          colors: [
-            Color.fromARGB(255, 19, 58, 213),
-                Color.fromARGB(255, 65, 173, 255),
-          ]
-        ),
-      ),
-      child: Text(
-        'PERFIL DE USUARIO',
-        style: TextStyle(
-          color: Colors.white,
-          fontWeight: FontWeight.bold,
-          fontSize: 19
-        ),
-      ),
-    );
-  }
 }

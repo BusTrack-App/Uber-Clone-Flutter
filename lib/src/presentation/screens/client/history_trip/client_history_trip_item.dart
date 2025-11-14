@@ -96,7 +96,7 @@ class ClientHistoryTripItem extends StatelessWidget {
                       _buildDateRow(
                         Icons.check_circle_outline,
                         'Fin',
-                        _formatDate(clientRequest.updatedAt?.toString()),
+                        _formatDate(clientRequest.updatedAt.toString()),
                       ),
                     ],
                   ),
@@ -289,13 +289,13 @@ class ClientHistoryTripItem extends StatelessWidget {
   }
 
   String _calculateDuration() {
-    if (clientRequest.createdAt == null || clientRequest.updatedAt == null) {
+    if (clientRequest.createdAt == null) {
       return 'N/A';
     }
 
     try {
       final DateTime start = DateTime.parse(clientRequest.createdAt!.toString());
-      final DateTime end = DateTime.parse(clientRequest.updatedAt!.toString());
+      final DateTime end = DateTime.parse(clientRequest.updatedAt.toString());
       final Duration duration = end.difference(start);
 
       if (duration.inHours > 0) {
