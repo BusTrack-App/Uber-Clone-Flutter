@@ -26,11 +26,11 @@ class DriverHomeScreen extends StatefulWidget {
 
 class _DriverHomeScreenState extends State<DriverHomeScreen> {
   final List<Widget> pageList = <Widget>[
-    const ProfileInfoScreen(),
     const DriverMapLocationScreen(),
     const DriverClientRequestScreen(),
     const DriverCarInfoScreen(),
     const DriverHistoryTripScreen(),
+    const ProfileInfoScreen(),
     const RolesScreen(),
   ];
 
@@ -61,12 +61,12 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
             left: 16,
             child: FloatingActionButton(
               mini: true,
-              backgroundColor: Colors.white,
+              backgroundColor: AppColors.yellow,
               elevation: 6,
               child: const Icon(
                 Icons.menu,
-                color: Colors.black87,
-                size: 20,
+                color: AppColors.backgroundDark,
+                size: 30,
               ),
               onPressed: () {
                 _scaffoldKey.currentState?.openDrawer();
@@ -105,8 +105,8 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
                           child: Container(
                             padding: const EdgeInsets.all(16),
                             decoration: BoxDecoration(
-                              color: AppColors.greyMedium,
-                              borderRadius: BorderRadius.circular(12),
+                              color: AppColors.greyLight,
+                              borderRadius: BorderRadius.circular(16),
                             ),
                             child: Row(
                               children: [
@@ -117,7 +117,7 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
                                   decoration: BoxDecoration(
                                     shape: BoxShape.circle,
                                     border: Border.all(
-                                      color: Colors.white,
+                                      color: AppColors.backgroundDark,
                                       width: 2,
                                     ),
                                   ),
@@ -157,7 +157,7 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
                                             ? '${user.name} ${user.lastname}'
                                             : 'Usuario',
                                         style: const TextStyle(
-                                          color: Colors.white,
+                                          color: AppColors.backgroundDark,
                                           fontSize: 16,
                                           fontWeight: FontWeight.bold,
                                         ),
@@ -168,7 +168,7 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
                                       Text(
                                         user?.phone ?? '',
                                         style: const TextStyle(
-                                          color: Colors.white70,
+                                          color: AppColors.backgroundDark,
                                           fontSize: 13,
                                         ),
                                       ),

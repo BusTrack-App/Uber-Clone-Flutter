@@ -25,9 +25,9 @@ class ClientHomeScreen extends StatefulWidget {
 class _ClientHomeScreenState extends State<ClientHomeScreen> {
   // Lista ordenada de páginas
   final List<Widget> pageList = <Widget>[
-    const ProfileInfoScreen(),           // Index 0
     const ClientMapSeeckerScreen(),      // Index 1
     const ClientHistoryTripScreen(),     // Index 2
+    const ProfileInfoScreen(),           // Index 0
     const RolesScreen(),                 // Index 3
   ];
 
@@ -58,12 +58,12 @@ class _ClientHomeScreenState extends State<ClientHomeScreen> {
             left: 16,
             child: FloatingActionButton(
               mini: true,
-              backgroundColor: Colors.white,
-              elevation: 6,
+              backgroundColor: AppColors.yellow,
+              elevation: 0,
               child: const Icon(
                 Icons.menu,
-                color: Colors.black87,
-                size: 20,
+                color: AppColors.backgroundDark,
+                size: 30,
               ),
               onPressed: () {
                 _scaffoldKey.currentState?.openDrawer();
@@ -102,8 +102,8 @@ class _ClientHomeScreenState extends State<ClientHomeScreen> {
                           child: Container(
                             padding: const EdgeInsets.all(16),
                             decoration: BoxDecoration(
-                              color: AppColors.greyMedium,
-                              borderRadius: BorderRadius.circular(12),
+                              color: AppColors.greyLight,
+                              borderRadius: BorderRadius.circular(16),
                             ),
                             child: Row(
                               children: [
@@ -114,7 +114,7 @@ class _ClientHomeScreenState extends State<ClientHomeScreen> {
                                   decoration: BoxDecoration(
                                     shape: BoxShape.circle,
                                     border: Border.all(
-                                      color: Colors.white,
+                                      color: AppColors.backgroundDark,
                                       width: 2,
                                     ),
                                   ),
@@ -154,7 +154,7 @@ class _ClientHomeScreenState extends State<ClientHomeScreen> {
                                             ? '${user.name} ${user.lastname}'
                                             : 'Usuario',
                                         style: const TextStyle(
-                                          color: Colors.white,
+                                          color: AppColors.backgroundDark,
                                           fontSize: 16,
                                           fontWeight: FontWeight.bold,
                                         ),
@@ -165,7 +165,7 @@ class _ClientHomeScreenState extends State<ClientHomeScreen> {
                                       Text(
                                         user?.phone ?? '',
                                         style: const TextStyle(
-                                          color: Colors.white70,
+                                          color: AppColors.backgroundDark,
                                           fontSize: 13,
                                         ),
                                       ),
@@ -185,10 +185,11 @@ class _ClientHomeScreenState extends State<ClientHomeScreen> {
                     padding: const EdgeInsets.symmetric(horizontal: 16),
                     child: Column(
                       children: [
+                        const SizedBox(height: 8),
                         _buildMenuItem(
                           context: context,
-                          title: 'Perfil del usuario',
-                          icon: Icons.person_outline,
+                          title: 'Mapa de búsqueda',
+                          icon: Icons.map_outlined,
                           isSelected: clientState.pageIndex == 0,
                           onTap: () {
                             context
@@ -200,8 +201,8 @@ class _ClientHomeScreenState extends State<ClientHomeScreen> {
                         const SizedBox(height: 8),
                         _buildMenuItem(
                           context: context,
-                          title: 'Mapa de búsqueda',
-                          icon: Icons.map_outlined,
+                          title: 'Historial de viajes',
+                          icon: Icons.history,
                           isSelected: clientState.pageIndex == 1,
                           onTap: () {
                             context
@@ -213,8 +214,8 @@ class _ClientHomeScreenState extends State<ClientHomeScreen> {
                         const SizedBox(height: 8),
                         _buildMenuItem(
                           context: context,
-                          title: 'Historial de viajes',
-                          icon: Icons.history,
+                          title: 'Perfil del usuario',
+                          icon: Icons.person_outline,
                           isSelected: clientState.pageIndex == 2,
                           onTap: () {
                             context
@@ -282,7 +283,7 @@ class _ClientHomeScreenState extends State<ClientHomeScreen> {
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
         decoration: BoxDecoration(
           color: isSelected ? AppColors.yellow : Colors.transparent,
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(16),
           border: Border.all(
             color: isLogout
                 ? Colors.redAccent.withValues(alpha: 0.3)
