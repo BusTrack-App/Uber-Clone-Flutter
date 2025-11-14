@@ -32,6 +32,7 @@ class _DriverClientRequestScreenState extends State<DriverClientRequestScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: AppColors.background,
       body: BlocListener<DriverClientRequestsBloc, DriverClientRequestsState>(
         listener: (context, state) {
           final responseCreateTripRequest =
