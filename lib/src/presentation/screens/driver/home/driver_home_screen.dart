@@ -12,10 +12,11 @@ import 'package:uber_clone/src/presentation/screens/driver/home/bloc/driver_home
 import 'package:uber_clone/src/presentation/screens/driver/map_seeker/driver_map_location_screen.dart';
 import 'package:uber_clone/src/presentation/screens/profile/info/profile_info_screen.dart';
 import 'package:uber_clone/src/presentation/screens/profile/info/bloc/profile_info_bloc.dart';
-import 'package:uber_clone/src/presentation/screens/profile/info/bloc/profile_info_state.dart';
 import 'package:uber_clone/src/presentation/screens/profile/info/bloc/profile_info_event.dart';
 import 'package:uber_clone/src/presentation/screens/roles/roles_screen.dart';
 import 'package:uber_clone/src/presentation/utils/colors.dart';
+import 'package:uber_clone/src/presentation/utils/menu_drawer_item.dart';
+import 'package:uber_clone/src/presentation/utils/profile_card.dart';
 
 class DriverHomeScreen extends StatefulWidget {
   const DriverHomeScreen({super.key});
@@ -84,103 +85,13 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
                 padding: EdgeInsets.zero,
                 children: [
                   // Header con información del usuario
-                  Container(
-                    padding: EdgeInsets.only(
-                      top: MediaQuery.of(context).padding.top + 20,
-                      bottom: 20,
-                      left: 16,
-                      right: 16,
-                    ),
-                    child: BlocBuilder<ProfileInfoBloc, ProfileInfoState>(
-                      builder: (context, profileState) {
-                        final user = profileState.user;
-
-                        return GestureDetector(
-                          onTap: () {
-                            context
-                                .read<DriverHomeBloc>()
-                                .add(ChangeDrawerPage(pageIndex: 4));
-                            Navigator.pop(context);
-                          },
-                          child: Container(
-                            padding: const EdgeInsets.all(16),
-                            decoration: BoxDecoration(
-                              color: AppColors.greyLight,
-                              borderRadius: BorderRadius.circular(16),
-                            ),
-                            child: Row(
-                              children: [
-                                // Foto de perfil
-                                Container(
-                                  width: 60,
-                                  height: 60,
-                                  decoration: BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    border: Border.all(
-                                      color: AppColors.backgroundDark,
-                                      width: 2,
-                                    ),
-                                  ),
-                                  child: ClipOval(
-                                    child: user != null
-                                        ? user.image != null
-                                            ? FadeInImage.assetNetwork(
-                                                placeholder: 'assets/img/user_image.png',
-                                                image: user.image!,
-                                                fit: BoxFit.cover,
-                                                fadeInDuration: const Duration(milliseconds: 500),
-                                                imageErrorBuilder: (context, error, stackTrace) {
-                                                  return Image.asset(
-                                                    'assets/img/user_image.png',
-                                                    fit: BoxFit.cover,
-                                                  );
-                                                },
-                                              )
-                                            : Image.asset(
-                                                'assets/img/user_image.png',
-                                                fit: BoxFit.cover,
-                                              )
-                                        : Image.asset(
-                                            'assets/img/user_image.png',
-                                            fit: BoxFit.cover,
-                                          ),
-                                  ),
-                                ),
-                                const SizedBox(width: 16),
-                                // Nombre y teléfono
-                                Expanded(
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        user != null
-                                            ? '${user.name} ${user.lastname}'
-                                            : 'Usuario',
-                                        style: const TextStyle(
-                                          color: AppColors.backgroundDark,
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                        maxLines: 1,
-                                        overflow: TextOverflow.ellipsis,
-                                      ),
-                                      const SizedBox(height: 4),
-                                      Text(
-                                        user?.phone ?? '',
-                                        style: const TextStyle(
-                                          color: AppColors.backgroundDark,
-                                          fontSize: 13,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        );
-                      },
-                    ),
+                  ProfileCard(
+                    onTap: () {
+                      context
+                          .read<DriverHomeBloc>()
+                          .add(ChangeDrawerPage(pageIndex: 0));
+                      Navigator.pop(context);
+                    },
                   ),
 
                   // Opciones del menú
@@ -188,8 +99,7 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
                     padding: const EdgeInsets.symmetric(horizontal: 16),
                     child: Column(
                       children: [
-                        _buildMenuItem(
-                          context: context,
+                        MenuDrawerItem(
                           title: 'Mapa de localización',
                           icon: Icons.map_outlined,
                           isSelected: driverState.pageIndex == 0,
@@ -201,8 +111,7 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
                           },
                         ),
                         const SizedBox(height: 8),
-                        _buildMenuItem(
-                          context: context,
+                        MenuDrawerItem(
                           title: 'Solicitudes de viaje',
                           icon: Icons.directions_car_outlined,
                           isSelected: driverState.pageIndex == 1,
@@ -214,8 +123,7 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
                           },
                         ),
                         const SizedBox(height: 8),
-                        _buildMenuItem(
-                          context: context,
+                        MenuDrawerItem(
                           title: 'Mi Vehículo',
                           icon: Icons.time_to_leave_outlined,
                           isSelected: driverState.pageIndex == 2,
@@ -227,8 +135,7 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
                           },
                         ),
                         const SizedBox(height: 8),
-                        _buildMenuItem(
-                          context: context,
+                        MenuDrawerItem(
                           title: 'Historial de viajes',
                           icon: Icons.history,
                           isSelected: driverState.pageIndex == 3,
@@ -240,8 +147,7 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
                           },
                         ),
                         const SizedBox(height: 8),
-                        _buildMenuItem(
-                          context: context,
+                        MenuDrawerItem(
                           title: 'Perfil del usuario',
                           icon: Icons.person_outline,
                           isSelected: driverState.pageIndex == 4,
@@ -253,8 +159,7 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
                           },
                         ),
                         const SizedBox(height: 8),
-                        _buildMenuItem(
-                          context: context,
+                        MenuDrawerItem(
                           title: 'Roles de usuario',
                           icon: Icons.admin_panel_settings_outlined,
                           isSelected: driverState.pageIndex == 5,
@@ -268,8 +173,7 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
                         const SizedBox(height: 16),
                         const Divider(),
                         const SizedBox(height: 8),
-                        _buildMenuItem(
-                          context: context,
+                        MenuDrawerItem(
                           title: 'Cerrar sesión',
                           icon: Icons.logout,
                           isSelected: false,
@@ -297,59 +201,4 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
     );
   }
 
-  Widget _buildMenuItem({
-    required BuildContext context,
-    required String title,
-    required IconData icon,
-    required bool isSelected,
-    required VoidCallback onTap,
-    bool isLogout = false,
-  }) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-        decoration: BoxDecoration(
-          color: isSelected ? AppColors.yellow : Colors.transparent,
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(
-            color: isLogout
-                ? Colors.redAccent
-                : isSelected
-                    ? AppColors.yellow
-                    : Colors.grey.shade300,
-            width: 1,
-          ),
-        ),
-        child: Row(
-          children: [
-            Icon(
-              icon,
-              color: isLogout
-                  ? Colors.redAccent
-                  : isSelected
-                      ? AppColors.backgroundDark
-                      : Colors.grey.shade700,
-              size: 22,
-            ),
-            const SizedBox(width: 16),
-            Expanded(
-              child: Text(
-                title,
-                style: TextStyle(
-                  color: isLogout
-                      ? Colors.redAccent
-                      : isSelected
-                          ? AppColors.backgroundDark
-                          : Colors.black87,
-                  fontSize: 15,
-                  fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
 }
