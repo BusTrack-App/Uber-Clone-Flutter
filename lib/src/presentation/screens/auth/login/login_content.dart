@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:uber_clone/src/presentation/screens/auth/login/bloc/login_bloc.dart';
 import 'package:uber_clone/src/presentation/screens/auth/login/bloc/login_event.dart';
 import 'package:uber_clone/src/presentation/screens/auth/login/bloc/login_state.dart';
+import 'package:uber_clone/src/presentation/utils/colors.dart';
 import 'package:uber_clone/src/presentation/widgets/custom_button.dart';
 import 'package:uber_clone/src/presentation/widgets/custom_text_field.dart';
 
@@ -20,7 +21,7 @@ class LoginContent extends StatelessWidget {
           Container(
             height: MediaQuery.of(context).size.height,
             width: MediaQuery.of(context).size.width,
-            color: Colors.blueAccent,
+            color: AppColors.backgroundDark,
             padding: const EdgeInsets.all(12),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -76,7 +77,7 @@ class LoginContent extends StatelessWidget {
                   Align(
                     alignment: Alignment.centerRight,
                     child: Image.asset(
-                      'assets/img/car.png',
+                      'assets/img/car_white.png',
                       width: 150,
                       height: 150,
                     ),
