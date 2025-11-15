@@ -42,26 +42,34 @@ class DriverClientRequestsItem extends StatelessWidget {
                   .fareOffered
                   .value
                   .isNotEmpty) {
-            context.read<DriverClientRequestsBloc>().add(CreateDriverTripRequest(
+            context.read<DriverClientRequestsBloc>().add(
+              CreateDriverTripRequest(
                 driverTripRequest: DriverTripRequest(
                   idDriver: state.idDriver!,
                   idClientRequest: clientRequest!.id,
-                  fareOffered: double.parse(context
-                      .read<DriverClientRequestsBloc>()
-                      .state
-                      .fareOffered
-                      .value),
-                  time: clientRequest!.googleDistanceMatrix!.duration.value
+                  fareOffered: double.parse(
+                    context
+                        .read<DriverClientRequestsBloc>()
+                        .state
+                        .fareOffered
+                        .value,
+                  ),
+                  time:
+                      clientRequest!.googleDistanceMatrix!.duration.value
                           .toDouble() /
                       60,
-                  distance: clientRequest!.googleDistanceMatrix!.distance.value
+                  distance:
+                      clientRequest!.googleDistanceMatrix!.distance.value
                           .toDouble() /
                       1000,
-                )));
+                ),
+              ),
+            );
           } else {
             Fluttertoast.showToast(
-                msg: 'No se puede enviar la oferta',
-                toastLength: Toast.LENGTH_LONG);
+              msg: 'No se puede enviar la oferta',
+              toastLength: Toast.LENGTH_LONG,
+            );
           }
         });
       },
@@ -142,10 +150,7 @@ class DriverClientRequestsItem extends StatelessWidget {
                   ),
                   Container(
                     padding: const EdgeInsets.symmetric(vertical: 20),
-                    child: Container(
-                      height: 1,
-                      color: AppColors.greyMedium,
-                    ),
+                    child: Container(height: 1, color: AppColors.greyMedium),
                   ),
                   _buildLocationRow(
                     Icons.location_on,
@@ -154,10 +159,7 @@ class DriverClientRequestsItem extends StatelessWidget {
                   ),
 
                   const SizedBox(height: 16),
-                  Container(
-                    height: 1,
-                    color: AppColors.greyLight,
-                  ),
+                  Container(height: 1, color: AppColors.greyLight),
                   const SizedBox(height: 16),
 
                   // Metrics
@@ -232,15 +234,15 @@ class DriverClientRequestsItem extends StatelessWidget {
   }
 
   Widget _imageUser() {
-    final imageUrl = clientRequest?.client.image != null &&
+    final imageUrl =
+        clientRequest?.client.image != null &&
             clientRequest!.client.image!.isNotEmpty
-        ? 'http://${ApiConfig.API_PROJECT}${clientRequest!.client.image!}'
+        ? clientRequest!.client.image!
         : null;
+    debugPrint('imageUrl');
+    debugPrint(imageUrl);
 
-    return DefaultImageUrl(
-      url: imageUrl,
-      width: 52,
-    );
+    return DefaultImageUrl(url: imageUrl, width: 52);
   }
 
   // ignore: non_constant_identifier_names
@@ -249,9 +251,7 @@ class DriverClientRequestsItem extends StatelessWidget {
       context: context,
       barrierDismissible: true,
       builder: (BuildContext context) => Dialog(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         child: Container(
           padding: const EdgeInsets.all(24),
           decoration: BoxDecoration(
@@ -290,10 +290,8 @@ class DriverClientRequestsItem extends StatelessWidget {
                 onChanged: (text) {
                   debugPrint('Tarifa del viaje: $text');
                   context.read<DriverClientRequestsBloc>().add(
-                        FareOfferedChange(
-                          fareOffered: BlocFormItem(value: text),
-                        ),
-                      );
+                    FareOfferedChange(fareOffered: BlocFormItem(value: text)),
+                  );
                 },
               ),
               const SizedBox(height: 20),
