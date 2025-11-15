@@ -27,6 +27,9 @@ class ClientMapBookingInfoBloc
     this.clientRequestsUseCases,
     this.authUseCases,
   ) : super(ClientMapBookingInfoState()) {
+    //
+    //
+    //
     on<ClientMapBookingInfoInitEvent>((event, emit) async {
       Completer<GoogleMapController> controller =
           Completer<GoogleMapController>();

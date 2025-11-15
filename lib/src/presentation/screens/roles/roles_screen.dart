@@ -4,6 +4,7 @@ import 'package:uber_clone/src/domain/models/role.dart';
 import 'package:uber_clone/src/presentation/screens/roles/bloc/roles_bloc.dart';
 import 'package:uber_clone/src/presentation/screens/roles/bloc/roles_state.dart';
 import 'package:uber_clone/src/presentation/screens/roles/roles_item.dart';
+import 'package:uber_clone/src/presentation/utils/colors.dart';
 
 class RolesScreen extends StatefulWidget {
   const RolesScreen({super.key});
@@ -23,14 +24,7 @@ class _RolesScreenState extends State<RolesScreen> {
               height: MediaQuery.of(context).size.height,
               alignment: Alignment.center,
               decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topRight,
-                  end: Alignment.bottomLeft,
-                  colors: [
-                    Color.fromARGB(255, 12, 38, 145),
-                    Color.fromARGB(255, 34, 156, 249),
-                  ]
-                )
+                color: AppColors.greyMedium
               ),
               child: ListView(
                 shrinkWrap: true,

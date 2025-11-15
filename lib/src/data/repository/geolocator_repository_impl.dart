@@ -36,14 +36,14 @@ class GeolocatorRepositoryImpl implements GeolocatorRepository {
     return await Geolocator.getCurrentPosition();
   }
 
-  @override
-  Future<BitmapDescriptor> createMarkerFromAsset(String path) async {
-    ImageConfiguration configuration = ImageConfiguration();
-    BitmapDescriptor descriptor =
-        // ignore: deprecated_member_use
-        await BitmapDescriptor.fromAssetImage(configuration, path);
-    return descriptor;
-  }
+@override
+Future<BitmapDescriptor> createMarkerFromAsset(String path) async {
+  final ImageConfiguration configuration = ImageConfiguration(
+    size: const Size(50, 50), 
+  );
+
+  return await BitmapDescriptor.asset(configuration, path);
+}
 
   @override
   Marker getMarker(
@@ -65,51 +65,143 @@ class GeolocatorRepositoryImpl implements GeolocatorRepository {
   }
 
   @override
-  Future<PlacemarkData?> getPlacemarkData(CameraPosition cameraPosition) async {
+  Future<PlacemarkData> getPlacemarkData(CameraPosition cameraPosition) async {
     try {
       double lat = cameraPosition.target.latitude;
       double lng = cameraPosition.target.longitude;
-      List<Placemark> placemarkList = await placemarkFromCoordinates(lat, lng);
-      // ignore: unnecessary_null_comparison
-      if (placemarkList != null) {
-        // ignore: prefer_is_empty
-        if (placemarkList.length > 0) {
-          String direction = placemarkList[0].thoroughfare!;
-          String street = placemarkList[0].subThoroughfare!;
-          String city = placemarkList[0].locality!;
-          String department = placemarkList[0].administrativeArea!;
-          PlacemarkData placemarkData = PlacemarkData(
-            address: '$direction, $street, $city, $department',
-            lat: lat,
-            lng: lng,
-          );
-          return placemarkData;
-        }
+      
+      debugPrint('🔍 Obteniendo placemark para: $lat, $lng');
+      
+      List<Placemark> placemarkList = await placemarkFromCoordinates(
+        lat, 
+        lng
+      ).timeout(
+        const Duration(seconds: 10),
+        onTimeout: () {
+          debugPrint('⏱️ Timeout obteniendo placemark');
+          return [];
+        },
+      );
+
+      if (placemarkList.isEmpty) {
+        debugPrint('⚠️ No se encontraron placemarks, usando coordenadas');
+        return PlacemarkData(
+          address: 'Lat: ${lat.toStringAsFixed(6)}, Lng: ${lng.toStringAsFixed(6)}',
+          lat: lat,
+          lng: lng,
+        );
       }
-      return null;
+
+      Placemark placemark = placemarkList[0];
+      
+      // SOLUCIÓN: Construir dirección de forma segura manejando nulls
+      String address = _buildAddressSafely(placemark);
+      
+      debugPrint('✅ Dirección obtenida: $address');
+      
+      // Si después de construir la dirección está vacía, usar coordenadas
+      if (address.trim().isEmpty || address.replaceAll(RegExp(r'[,\s]'), '').isEmpty) {
+        debugPrint('⚠️ Dirección vacía, usando coordenadas');
+        address = 'Lat: ${lat.toStringAsFixed(6)}, Lng: ${lng.toStringAsFixed(6)}';
+      }
+
+      return PlacemarkData(
+        address: address,
+        lat: lat,
+        lng: lng,
+      );
+      
     } catch (e) {
-      debugPrint('Error: $e');
-      return null;
+      debugPrint('❌ Error en getPlacemarkData: $e');
+      
+      // En lugar de retornar null, retornar PlacemarkData con coordenadas
+      return PlacemarkData(
+        address: 'Lat: ${cameraPosition.target.latitude.toStringAsFixed(6)}, Lng: ${cameraPosition.target.longitude.toStringAsFixed(6)}',
+        lat: cameraPosition.target.latitude,
+        lng: cameraPosition.target.longitude,
+      );
     }
   }
 
-  @override
-  Future<List<LatLng>> getPolyline( LatLng pickUpLatLng, LatLng destinationLatLng) async {
-    PolylineResult result = await PolylinePoints(apiKey: API_KEY_GOOGLE).getRouteBetweenCoordinates(
-        // ignore: deprecated_member_use
-        request: PolylineRequest(
-            origin: PointLatLng(pickUpLatLng.latitude, pickUpLatLng.longitude),
-            destination: PointLatLng(destinationLatLng.latitude, destinationLatLng.longitude),
-            mode: TravelMode.driving,
-            wayPoints: [PolylineWayPoint(location: "Bogota, Colombia")]),
-        );
-    List<LatLng> polylineCoordinates = [];
-    if (result.points.isNotEmpty) {
-      for (var point in result.points) {
-        polylineCoordinates.add(LatLng(point.latitude, point.longitude));
+  // Método helper para construir dirección de forma segura
+  String _buildAddressSafely(Placemark placemark) {
+    List<String> parts = [];
+
+    // El orden típico en Colombia es: Calle/Carrera, Número, Barrio, Ciudad, Departamento
+    
+    // 1. Calle principal (thoroughfare)
+    if (placemark.thoroughfare != null && placemark.thoroughfare!.isNotEmpty) {
+      parts.add(placemark.thoroughfare!);
+    }
+
+    // 2. Número de calle (subThoroughfare)
+    if (placemark.subThoroughfare != null && placemark.subThoroughfare!.isNotEmpty) {
+      if (parts.isNotEmpty) {
+        // Concatenar con la calle si existe
+        parts[parts.length - 1] = '${parts.last} ${placemark.subThoroughfare}';
+      } else {
+        parts.add(placemark.subThoroughfare!);
       }
     }
-    return polylineCoordinates;
+
+    // 3. Barrio o sub-localidad (subLocality)
+    if (placemark.subLocality != null && placemark.subLocality!.isNotEmpty) {
+      parts.add(placemark.subLocality!);
+    }
+
+    // 4. Ciudad (locality)
+    if (placemark.locality != null && placemark.locality!.isNotEmpty) {
+      parts.add(placemark.locality!);
+    }
+
+    // 5. Departamento/Estado (administrativeArea)
+    if (placemark.administrativeArea != null && placemark.administrativeArea!.isNotEmpty) {
+      parts.add(placemark.administrativeArea!);
+    }
+
+    // 6. País (country) - opcional, solo si es necesario
+    // if (placemark.country != null && placemark.country!.isNotEmpty) {
+    //   parts.add(placemark.country!);
+    // }
+
+    // Unir todas las partes con comas
+    String address = parts.join(', ');
+
+    debugPrint('📍 Componentes de dirección:');
+    debugPrint('  - Thoroughfare: ${placemark.thoroughfare}');
+    debugPrint('  - SubThoroughfare: ${placemark.subThoroughfare}');
+    debugPrint('  - SubLocality: ${placemark.subLocality}');
+    debugPrint('  - Locality: ${placemark.locality}');
+    debugPrint('  - AdministrativeArea: ${placemark.administrativeArea}');
+    debugPrint('  - Dirección final: $address');
+
+    return address;
+  }
+
+  @override
+  Future<List<LatLng>> getPolyline(LatLng pickUpLatLng, LatLng destinationLatLng) async {
+    try {
+      PolylineResult result = await PolylinePoints(apiKey: API_KEY_GOOGLE).getRouteBetweenCoordinates(
+        // ignore: deprecated_member_use
+        request: PolylineRequest(
+          origin: PointLatLng(pickUpLatLng.latitude, pickUpLatLng.longitude),
+          destination: PointLatLng(destinationLatLng.latitude, destinationLatLng.longitude),
+          mode: TravelMode.driving,
+          wayPoints: [PolylineWayPoint(location: "Bogota, Colombia")],
+        ),
+      );
+      
+      List<LatLng> polylineCoordinates = [];
+      if (result.points.isNotEmpty) {
+        for (var point in result.points) {
+          polylineCoordinates.add(LatLng(point.latitude, point.longitude));
+        }
+      }
+      return polylineCoordinates;
+    } catch (e) {
+      debugPrint('Error getting polyline: $e');
+      return [];
+    }
   }
   
   @override

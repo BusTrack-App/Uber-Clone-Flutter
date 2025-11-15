@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:uber_clone/src/presentation/utils/colors.dart';
 
 class CustomButton extends StatelessWidget {
 
   Function() onPressed;
   String text;
-  Color color;
   Color textColor;
   EdgeInsetsGeometry margin;
   double? width;
@@ -15,13 +15,12 @@ class CustomButton extends StatelessWidget {
   CustomButton({super.key, 
     required this.text,
     required this.onPressed,
-    this.color = Colors.white,
-    this.textColor = Colors.black,
+    this.textColor = AppColors.backgroundDark,
     this.margin = const EdgeInsets.only(bottom: 20, left: 40, right: 40),
-    this.height = 45,
+    this.height = 60,
     this.width,
     this.iconData,
-    this.iconColor = Colors.blueAccent
+    this.iconColor = AppColors.backgroundDark
   });
 
   @override
@@ -36,9 +35,10 @@ class CustomButton extends StatelessWidget {
           onPressed();
         }, 
         style: ElevatedButton.styleFrom(
-          backgroundColor: color,
+          backgroundColor: AppColors.yellow,
+          elevation: 0,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(15),
+            borderRadius: BorderRadius.circular(20),
           )
         ),
         child: Row(
@@ -57,7 +57,7 @@ class CustomButton extends StatelessWidget {
               style: TextStyle(
                 color: textColor,
                 fontSize: 18,
-                fontWeight: FontWeight.bold
+                fontWeight: FontWeight.w400
               ),
             ),
           ],

@@ -72,6 +72,7 @@ class ClientMapSeekerBloc
 
     on<OnCameraIdle>((event, emit) async {
       try {
+        // Ahora getPlacemarkData SIEMPRE retorna un PlacemarkData válido
         PlacemarkData placemarkData = await geolocatorUseCases.getPlacemarkData
             .run(state.cameraPosition);
         
@@ -86,6 +87,7 @@ class ClientMapSeekerBloc
         emit(state.copyWith(placemarkData: placemarkData));
       } catch (e) {
         debugPrint('OnCameraIdle Error: $e');
+        // No emitir nada si hay error, mantener el estado actual
       }
     });
 

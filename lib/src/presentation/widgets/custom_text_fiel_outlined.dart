@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:uber_clone/src/presentation/utils/colors.dart';
 
 class CustomTextFielOutlined extends StatelessWidget {
 
@@ -37,20 +38,20 @@ class CustomTextFielOutlined extends StatelessWidget {
           label: Text(
             text,
             style: TextStyle(
-              color: Colors.black
+              color: AppColors.backgroundDark
             ),
           ),
           
           // border: InputBorder.none,
           focusedBorder: OutlineInputBorder(
             borderSide: BorderSide(
-              color: Color.fromARGB(255, 35, 161, 183),
+              color: AppColors.yellow,
               width: 2
             )
           ),
           enabledBorder: OutlineInputBorder(
             borderSide: BorderSide(
-              color: Color.fromARGB(255, 34, 101, 202),
+              color: AppColors.backgroundDark,
               width: 2
             )
           ),

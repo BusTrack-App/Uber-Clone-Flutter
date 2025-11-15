@@ -4,6 +4,7 @@ import 'package:uber_clone/src/presentation/screens/auth/register/bloc/register_
 import 'package:uber_clone/src/presentation/screens/auth/register/bloc/register_event.dart';
 import 'package:uber_clone/src/presentation/screens/auth/register/bloc/register_state.dart';
 import 'package:uber_clone/src/presentation/utils/bloc_form_item.dart';
+import 'package:uber_clone/src/presentation/utils/colors.dart';
 import 'package:uber_clone/src/presentation/widgets/custom_button.dart';
 import 'package:uber_clone/src/presentation/widgets/custom_text_fiel_outlined.dart';
 
@@ -25,14 +26,7 @@ class RegisterContent extends StatelessWidget {
             width: MediaQuery.of(context).size.width,
             padding: EdgeInsets.only(left: 12),
             decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topRight,
-                end: Alignment.bottomLeft,
-                colors: [
-                  Color.fromARGB(255, 12, 38, 145),
-                  Color.fromARGB(255, 34, 156, 249),
-                ]
-              )
+              color: AppColors.backgroundDark
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start, // HORIZONTAL
@@ -52,18 +46,10 @@ class RegisterContent extends StatelessWidget {
                 topLeft: Radius.circular(35),
                 bottomLeft: Radius.circular(35)
               ),
-              gradient: LinearGradient(
-                begin: Alignment.topRight,
-                end: Alignment.bottomLeft,
-                colors: const [
-                  Color.fromARGB(255, 14, 29, 106),
-                  Color.fromARGB(255, 30, 112, 227),
-                ]
-              )
+              color: AppColors.greyLight
             ),
             child: Stack(
               children: [
-                _imageBackground(context),
                 SingleChildScrollView(
                   child: Column(
                     children: [
@@ -160,19 +146,6 @@ class RegisterContent extends StatelessWidget {
     );
   }
 
-  Widget _imageBackground(BuildContext context) {
-    return Container(
-      alignment: Alignment.bottomCenter,
-      margin: EdgeInsets.only(bottom: 50),
-      child: Image.asset(
-        'assets/img/destination.png',
-        width: MediaQuery.of(context).size.width * 0.6,
-        height: MediaQuery.of(context).size.height * 0.4,
-        opacity: AlwaysStoppedAnimation(0.3),
-      ),
-    );
-  }
-
   Widget _textIAlreadyHaveAccount(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
@@ -180,7 +153,7 @@ class RegisterContent extends StatelessWidget {
         Text(
           'Ya tienes cuenta?',
           style: TextStyle(
-            color: Colors.grey[100],
+            color: AppColors.backgroundDark,
             fontSize: 16
           ),
         ),
@@ -192,7 +165,7 @@ class RegisterContent extends StatelessWidget {
           child: Text(
             'Inicia sesion',
             style: TextStyle(
-              color: Colors.white,
+              color: AppColors.backgroundDark,
               fontWeight: FontWeight.bold,
               fontSize: 16
             ),

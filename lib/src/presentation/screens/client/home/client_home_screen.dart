@@ -9,8 +9,12 @@ import 'package:uber_clone/src/presentation/screens/client/home/bloc/client_home
 import 'package:uber_clone/src/presentation/screens/client/home/bloc/client_home_state.dart';
 import 'package:uber_clone/src/presentation/screens/client/map_seeker/client_map_seecker_screen.dart';
 import 'package:uber_clone/src/presentation/screens/profile/info/profile_info_screen.dart';
+import 'package:uber_clone/src/presentation/screens/profile/info/bloc/profile_info_bloc.dart';
+import 'package:uber_clone/src/presentation/screens/profile/info/bloc/profile_info_event.dart';
 import 'package:uber_clone/src/presentation/screens/roles/roles_screen.dart';
-
+import 'package:uber_clone/src/presentation/utils/colors.dart';
+import 'package:uber_clone/src/presentation/utils/menu_drawer_item.dart';
+import 'package:uber_clone/src/presentation/utils/profile_card.dart';
 
 class ClientHomeScreen extends StatefulWidget {
   const ClientHomeScreen({super.key});
@@ -20,111 +24,154 @@ class ClientHomeScreen extends StatefulWidget {
 }
 
 class _ClientHomeScreenState extends State<ClientHomeScreen> {
-  List<Widget> pageList = <Widget>[
-    ClientMapSeeckerScreen(),
-    ClientHistoryTripScreen(),
-    ProfileInfoScreen(),
-    RolesScreen(),
+  // Lista ordenada de páginas
+  final List<Widget> pageList = <Widget>[
+    const ClientMapSeeckerScreen(), // Index 1
+    const ClientHistoryTripScreen(), // Index 2
+    const ProfileInfoScreen(), // Index 0
+    const RolesScreen(), // Index 3
   ];
+
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
+  @override
+  void initState() {
+    super.initState();
+    // Cargar datos del usuario al iniciar
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<ProfileInfoBloc>().add(GetUserInfo());
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          'Menu de opciones',
-        ),
-        // flexibleSpace: Container(
-        //   decoration: BoxDecoration(
-        //     gradient: LinearGradient(
-        //       begin: Alignment.topRight,
-        //       end: Alignment.bottomLeft,
-        //       colors: [
-        //         Color.fromARGB(255, 12, 38, 145),
-        //         Color.fromARGB(255, 34, 156, 249),
-        //       ]
-        //     ),
-        //   )
-        // ),
-      ),
-      body: BlocBuilder<ClientHomeBloc, ClientHomeState>(
-        builder: (context, state) {
-          return pageList[state.pageIndex];
-        },
+      key: _scaffoldKey,
+      body: Stack(
+        children: [
+          BlocBuilder<ClientHomeBloc, ClientHomeState>(
+            builder: (context, state) {
+              return pageList[state.pageIndex];
+            },
+          ),
+          Positioned(
+            top: MediaQuery.of(context).padding.top + 16,
+            left: 16,
+            child: FloatingActionButton(
+              mini: true,
+              backgroundColor: AppColors.yellow,
+              elevation: 0,
+              child: const Icon(
+                Icons.menu,
+                color: AppColors.backgroundDark,
+                size: 30,
+              ),
+              onPressed: () {
+                _scaffoldKey.currentState?.openDrawer();
+              },
+            ),
+          ),
+        ],
       ),
       drawer: BlocBuilder<ClientHomeBloc, ClientHomeState>(
-        builder: (context, state) {
+        builder: (context, clientState) {
           return Drawer(
-            child: ListView(
-              padding: EdgeInsets.zero,
-              children: [
-                DrawerHeader(
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.topRight,
-                      end: Alignment.bottomLeft,
-                      colors: [
-                        Color.fromARGB(255, 12, 38, 145),
-                        Color.fromARGB(255, 34, 156, 249),
-                      ]
+            child: Container(
+              color: Colors.white,
+              child: ListView(
+                padding: EdgeInsets.zero,
+                children: [
+                  // Header con información del usuario
+                  ProfileCard(
+                    onTap: () {
+                      context.read<ClientHomeBloc>().add(
+                        ChangeDrawerPage(pageIndex: 0),
+                      );
+                      Navigator.pop(context);
+                    },
+                  ),
+
+                  // Opciones del menú
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: Column(
+                      children: [
+                        const SizedBox(height: 8),
+                        MenuDrawerItem(
+                          title: 'Mapa de búsqueda',
+                          icon: Icons.map_outlined,
+                          isSelected: clientState.pageIndex == 0,
+                          onTap: () {
+                            context.read<ClientHomeBloc>().add(
+                              ChangeDrawerPage(pageIndex: 0),
+                            );
+                            Navigator.pop(context);
+                          },
+                        ),
+                        const SizedBox(height: 8),
+                        MenuDrawerItem(
+                          title: 'Historial de viajes',
+                          icon: Icons.history,
+                          isSelected: clientState.pageIndex == 1,
+                          onTap: () {
+                            context.read<ClientHomeBloc>().add(
+                              ChangeDrawerPage(pageIndex: 1),
+                            );
+                            Navigator.pop(context);
+                          },
+                        ),
+                        const SizedBox(height: 8),
+                        MenuDrawerItem(
+                          title: 'Perfil del usuario',
+                          icon: Icons.person_outline,
+                          isSelected: clientState.pageIndex == 2,
+                          onTap: () {
+                            context.read<ClientHomeBloc>().add(
+                              ChangeDrawerPage(pageIndex: 2),
+                            );
+                            Navigator.pop(context);
+                          },
+                        ),
+                        const SizedBox(height: 8),
+                        MenuDrawerItem(
+                          title: 'Roles de usuario',
+                          icon: Icons.admin_panel_settings_outlined,
+                          isSelected: clientState.pageIndex == 3,
+                          onTap: () {
+                            context.read<ClientHomeBloc>().add(
+                              ChangeDrawerPage(pageIndex: 3),
+                            );
+                            Navigator.pop(context);
+                          },
+                        ),
+                        const SizedBox(height: 16),
+                        const Divider(),
+                        const SizedBox(height: 8),
+                        MenuDrawerItem(
+                          title: 'Cerrar sesión',
+                          icon: Icons.logout,
+                          isSelected: false,
+                          isLogout: true,
+                          onTap: () {
+                            context.read<ClientHomeBloc>().add(Logout());
+                            context.read<BlocSocketIO>().add(
+                              DisconnectSocketIO(),
+                            );
+                            Navigator.pushAndRemoveUntil(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const MyApp(),
+                              ),
+                              (route) => false,
+                            );
+                          },
+                        ),
+                        const SizedBox(height: 20),
+                      ],
                     ),
                   ),
-                  child: Text(
-                    'Menu del cliente',
-                    style: TextStyle(color: Colors.white),
-                  )
-                ),
-                ListTile(
-                  title: Text('Mapa de busqueda'),
-                  selected: state.pageIndex == 0,
-                  onTap: () {
-                    context.read<ClientHomeBloc>().add(ChangeDrawerPage(pageIndex: 0));
-                    Navigator.pop(context);
-                  },
-                ),
-                ListTile(
-                  title: Text('Historial de viajes'),
-                  selected: state.pageIndex == 1,
-                  onTap: () {
-                    context
-                        .read<ClientHomeBloc>()
-                        .add(ChangeDrawerPage(pageIndex: 1));
-                    Navigator.pop(context);
-                  },
-                ),
-                ListTile(
-                  title: Text('Perfil del usuario'),
-                  selected: state.pageIndex == 2,
-                  onTap: () {
-                    context
-                        .read<ClientHomeBloc>()
-                        .add(ChangeDrawerPage(pageIndex: 2));
-                    Navigator.pop(context);
-                  },
-                ),
-                ListTile(
-                  title: Text('Roles de usuario'),
-                  selected: state.pageIndex == 3,
-                  onTap: () {
-                    context
-                        .read<ClientHomeBloc>()
-                        .add(ChangeDrawerPage(pageIndex: 3));
-                    Navigator.pop(context);
-                  },
-                ),
-                ListTile(
-                  title: Text('Cerrar sesion'),
-                  onTap: () {
-                    context.read<ClientHomeBloc>().add(Logout());
-                    context.read<BlocSocketIO>().add(DisconnectSocketIO());
-                    Navigator.pushAndRemoveUntil(
-                      context, 
-                      MaterialPageRoute(builder: (context) => MyApp()), 
-                      (route) => false
-                    );
-                  },
-                )
-              ],
+                ],
+              ),
             ),
           );
         },

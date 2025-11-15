@@ -5,6 +5,7 @@ import 'package:uber_clone/src/domain/models/client_request_response.dart';
 import 'package:uber_clone/src/presentation/screens/client/map_trip/bloc/client_map_trip_bloc.dart';
 import 'package:uber_clone/src/presentation/screens/client/map_trip/bloc/client_map_trip_event.dart';
 import 'package:uber_clone/src/presentation/screens/client/map_trip/bloc/client_map_trip_state.dart';
+import 'package:uber_clone/src/presentation/utils/map_styles.dart';
 import 'package:uber_clone/src/presentation/widgets/default_image_url.dart';
 
 
@@ -28,7 +29,7 @@ class ClientMapTripContent extends StatelessWidget {
 
   Widget _cardBookingInfo(BuildContext context) {
     return Container(
-        height: MediaQuery.of(context).size.height * 0.46,
+        height: MediaQuery.of(context).size.height * 0.55,
         padding: EdgeInsets.only(left: 20, right: 20),
         decoration: BoxDecoration(
             gradient: LinearGradient(
@@ -140,16 +141,14 @@ class ClientMapTripContent extends StatelessWidget {
 
   Widget _googleMaps(BuildContext context) {
     return SizedBox(
-      height: MediaQuery.of(context).size.height * 0.555,
+      height: MediaQuery.of(context).size.height * 0.545,
       child: GoogleMap(
         mapType: MapType.normal,
+        style: MapStyles.darkMapStyle,
         initialCameraPosition: state.cameraPosition,
         markers: Set<Marker>.of(state.markers.values),
         polylines: Set<Polyline>.of(state.polylines.values),
         onMapCreated: (GoogleMapController controller) {
-          // ignore: deprecated_member_use
-          controller.setMapStyle(
-              '[ { "featureType": "all", "elementType": "labels.text.fill", "stylers": [ { "color": "#ffffff" } ] }, { "featureType": "all", "elementType": "labels.text.stroke", "stylers": [ { "color": "#000000" }, { "lightness": 13 } ] }, { "featureType": "administrative", "elementType": "geometry.fill", "stylers": [ { "color": "#000000" } ] }, { "featureType": "administrative", "elementType": "geometry.stroke", "stylers": [ { "color": "#144b53" }, { "lightness": 14 }, { "weight": 1.4 } ] }, { "featureType": "landscape", "elementType": "all", "stylers": [ { "color": "#08304b" } ] }, { "featureType": "poi", "elementType": "geometry", "stylers": [ { "color": "#0c4152" }, { "lightness": 5 } ] }, { "featureType": "road.highway", "elementType": "geometry.fill", "stylers": [ { "color": "#000000" } ] }, { "featureType": "road.highway", "elementType": "geometry.stroke", "stylers": [ { "color": "#0b434f" }, { "lightness": 25 } ] }, { "featureType": "road.arterial", "elementType": "geometry.fill", "stylers": [ { "color": "#000000" } ] }, { "featureType": "road.arterial", "elementType": "geometry.stroke", "stylers": [ { "color": "#0b3d51" }, { "lightness": 16 } ] }, { "featureType": "road.local", "elementType": "geometry", "stylers": [ { "color": "#000000" } ] }, { "featureType": "transit", "elementType": "all", "stylers": [ { "color": "#146474" } ] }, { "featureType": "water", "elementType": "all", "stylers": [ { "color": "#021019" } ] } ]');
           if (state.controller != null) {
             if (!state.controller!.isCompleted) {
               state.controller?.complete(controller);

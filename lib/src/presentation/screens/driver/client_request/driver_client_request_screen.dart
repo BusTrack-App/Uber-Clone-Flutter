@@ -7,6 +7,7 @@ import 'package:uber_clone/src/presentation/screens/driver/client_request/bloc/d
 import 'package:uber_clone/src/presentation/screens/driver/client_request/bloc/driver_client_request_event.dart';
 import 'package:uber_clone/src/presentation/screens/driver/client_request/bloc/driver_client_request_state.dart';
 import 'package:uber_clone/src/presentation/screens/driver/client_request/driver_client_request_item.dart';
+import 'package:uber_clone/src/presentation/utils/colors.dart';
 
 class DriverClientRequestScreen extends StatefulWidget {
   const DriverClientRequestScreen({super.key});
@@ -32,6 +33,7 @@ class _DriverClientRequestScreenState extends State<DriverClientRequestScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: AppColors.background,
       body: BlocListener<DriverClientRequestsBloc, DriverClientRequestsState>(
         listener: (context, state) {
           final responseCreateTripRequest =
