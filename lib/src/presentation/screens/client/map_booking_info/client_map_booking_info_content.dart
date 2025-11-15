@@ -42,7 +42,7 @@ class ClientMapBookingInfoContent extends StatelessWidget {
 
   Widget _cardBookingInfo(BuildContext context) {
     return Container(
-      height: MediaQuery.of(context).size.height * 0.49,
+      height: MediaQuery.of(context).size.height * 0.54,
       padding: EdgeInsets.only(left: 20, right: 20),
       decoration: BoxDecoration(
         gradient: LinearGradient(
