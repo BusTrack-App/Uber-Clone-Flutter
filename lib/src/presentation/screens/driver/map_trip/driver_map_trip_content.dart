@@ -32,7 +32,7 @@ class DriverMapTripContent extends StatelessWidget {
 
   Widget _cardBookingInfo(BuildContext context) {
     return Container(
-        height: MediaQuery.of(context).size.height * 0.45,
+        height: MediaQuery.of(context).size.height * 0.55,
         padding: EdgeInsets.only(left: 20, right: 20),
         decoration: BoxDecoration(
             gradient: LinearGradient(

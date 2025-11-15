@@ -5,6 +5,7 @@ import 'package:uber_clone/src/domain/models/client_request_response.dart';
 import 'package:uber_clone/src/presentation/screens/client/ratingTrip/bloc/client_rating_trip_bloc.dart';
 import 'package:uber_clone/src/presentation/screens/client/ratingTrip/bloc/client_rating_trip_event.dart';
 import 'package:uber_clone/src/presentation/screens/client/ratingTrip/bloc/client_rating_trip_state.dart';
+import 'package:uber_clone/src/presentation/utils/colors.dart';
 import 'package:uber_clone/src/presentation/widgets/custom_button.dart';
 
 
@@ -49,7 +50,7 @@ class ClientRatingTripContent extends StatelessWidget {
       style: TextStyle(
         fontWeight: FontWeight.bold,
         fontSize: 35,
-        color: Colors.yellow
+        color: AppColors.yellow
       ),
     );
   }
@@ -60,7 +61,7 @@ class ClientRatingTripContent extends StatelessWidget {
       style: TextStyle(
         fontWeight: FontWeight.bold,
         fontSize: 18,
-        color: Colors.white
+        color: AppColors.backgroundDark
       ),
     );
   }
@@ -71,7 +72,7 @@ class ClientRatingTripContent extends StatelessWidget {
       style: TextStyle(
         fontWeight: FontWeight.bold,
         fontSize: 18,
-        color: Colors.white
+        color: AppColors.backgroundDark
       ),
     );
   }
@@ -86,7 +87,7 @@ class ClientRatingTripContent extends StatelessWidget {
       itemCount: 5,
       direction: Axis.horizontal,
       allowHalfRating: true,
-      unratedColor: Colors.grey[300],
+      unratedColor: Colors.grey[400],
       onRatingUpdate: (rating) {
         context.read<ClientRatingTripBloc>().add(RatingChanged(rating: rating));
       }
@@ -95,18 +96,18 @@ class ClientRatingTripContent extends StatelessWidget {
 
   Widget _listTileDestination() {
     return ListTile(
-      leading: Icon(Icons.flag, color: Colors.white,),
+      leading: Icon(Icons.flag, color: AppColors.backgroundDark,),
       title: Text(
         'HASTA',
         style: TextStyle(
-          color: Colors.white,
+          color: AppColors.backgroundDark,
           fontWeight: FontWeight.bold
         ),
       ),
       subtitle: Text(
         clientRequestResponse?.destinationDescription ?? '',
         style: TextStyle(
-          color: Colors.white
+          color: AppColors.backgroundDark
         ),
       ),
     );
@@ -114,18 +115,18 @@ class ClientRatingTripContent extends StatelessWidget {
 
   Widget _listTilePickup() {
     return ListTile(
-      leading: Icon(Icons.location_on, color: Colors.white,),
+      leading: Icon(Icons.location_on, color: AppColors.backgroundDark,),
       title: Text(
         'DESDE',
         style: TextStyle(
-          color: Colors.white,
+          color: AppColors.backgroundDark,
           fontWeight: FontWeight.bold
         ),
       ),
       subtitle: Text(
         clientRequestResponse?.pickupDescription ?? '',
         style: TextStyle(
-          color: Colors.white
+          color: AppColors.backgroundDark
         ),
       ),
     );
@@ -137,7 +138,7 @@ class ClientRatingTripContent extends StatelessWidget {
       style: TextStyle(
         fontSize: 20,
         fontWeight: FontWeight.bold,
-        color: Colors.white
+        color: AppColors.backgroundDark
       ),
     );
   }
@@ -145,7 +146,7 @@ class ClientRatingTripContent extends StatelessWidget {
   Widget _iconCheck() {
     return Icon(
       Icons.check_circle,
-      color: Colors.white,
+      color: AppColors.backgroundDark,
       size: 100,
     );
   }

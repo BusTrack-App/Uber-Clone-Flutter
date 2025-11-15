@@ -6,6 +6,7 @@ import 'package:uber_clone/src/domain/utils/resource.dart';
 import 'package:uber_clone/src/presentation/screens/client/ratingTrip/bloc/client_rating_trip_bloc.dart';
 import 'package:uber_clone/src/presentation/screens/client/ratingTrip/bloc/client_rating_trip_state.dart';
 import 'package:uber_clone/src/presentation/screens/client/ratingTrip/client_rating_trip_content.dart';
+import 'package:uber_clone/src/presentation/utils/colors.dart';
 
 
 class ClientRatingTripScreen extends StatefulWidget {
@@ -36,13 +37,8 @@ class _ClientRatingTripScreenState extends State<ClientRatingTripScreen> {
           builder: (context, state) {
             return Container(
                 decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                        begin: Alignment.topRight,
-                        end: Alignment.bottomLeft,
-                        colors: [
-                      Color.fromARGB(255, 12, 38, 145),
-                      Color.fromARGB(255, 34, 156, 249),
-                    ])),
+                  color: AppColors.background
+                ),
                 child: ClientRatingTripContent(state, clientRequestResponse));
           },
         ),

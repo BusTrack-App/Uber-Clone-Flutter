@@ -91,7 +91,7 @@ class ClientMapSeeckerScreenState extends State<ClientMapSeeckerScreen> {
 
   Widget _bottomCard(BuildContext context, ClientMapSeekerState state) {
     return Container(
-      height: MediaQuery.of(context).size.height * 0.37,
+      height: MediaQuery.of(context).size.height * 0.50,
       decoration: const BoxDecoration(
         color: AppColors.background,
         borderRadius: BorderRadius.only(
