@@ -7,6 +7,7 @@ import 'package:uber_clone/src/presentation/screens/client/driver_offers/bloc/cl
 import 'package:uber_clone/src/presentation/screens/client/driver_offers/bloc/client_driver_offers_event.dart';
 import 'package:uber_clone/src/presentation/screens/client/driver_offers/bloc/client_driver_offers_state.dart';
 import 'package:uber_clone/src/presentation/screens/client/driver_offers/client_driver_offers_item.dart';
+import 'package:uber_clone/src/presentation/utils/colors.dart';
 
 class ClientDriverOffersScreen extends StatefulWidget {
   const ClientDriverOffersScreen({super.key});
@@ -33,6 +34,7 @@ class _ClientDriverOffersScreenState extends State<ClientDriverOffersScreen> {
   Widget build(BuildContext context) {
     idClientRequest = ModalRoute.of(context)?.settings.arguments as int;
     return Scaffold(
+      backgroundColor: AppColors.background,
       body: BlocListener<ClientDriverOffersBloc, ClientDriverOffersState>(
         listener: (context, state) {
           final response = state.responseDriverOffers;

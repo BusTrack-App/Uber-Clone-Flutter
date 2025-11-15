@@ -32,7 +32,7 @@ class UserCard extends StatelessWidget {
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
           color: backgroundColor ?? AppColors.greyLight,
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(30),
         ),
         child: Row(
           children: [

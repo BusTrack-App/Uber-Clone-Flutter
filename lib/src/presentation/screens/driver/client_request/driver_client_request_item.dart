@@ -7,21 +7,11 @@ import 'package:uber_clone/src/presentation/screens/driver/client_request/bloc/d
 import 'package:uber_clone/src/presentation/screens/driver/client_request/bloc/driver_client_request_event.dart';
 import 'package:uber_clone/src/presentation/screens/driver/client_request/bloc/driver_client_request_state.dart';
 import 'package:uber_clone/src/presentation/utils/bloc_form_item.dart';
+import 'package:uber_clone/src/presentation/utils/colors.dart';
 import 'package:uber_clone/src/presentation/widgets/custom_text_field.dart';
-import 'package:uber_clone/src/data/api/api_config.dart';
 import 'package:uber_clone/src/presentation/widgets/default_image_url.dart';
 
-class AppColors {
-  static const Color yellow = Color(0xFFF0C836);
-  static const Color yellowLight = Color(0xFFFFF8C2);
-  static const Color yellowDark = Color(0xFFCD8501);
-  static const Color background = Color(0xFFF1F1F1);
-  static const Color backgroundLight = Color(0xFFFDFDFD);
-  static const Color backgroundDark = Color.fromARGB(255, 64, 62, 62);
-  static const Color red = Color(0xFFF1331B);
-  static const Color greyMedium = Color(0xFFC0C3C5);
-  static const Color greyLight = Color.fromARGB(255, 225, 226, 226);
-}
+
 
 class DriverClientRequestsItem extends StatelessWidget {
   DriverClientRequestsState state;

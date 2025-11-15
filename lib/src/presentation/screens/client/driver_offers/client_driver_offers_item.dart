@@ -18,18 +18,27 @@ class ClientDriverOffersItem extends StatelessWidget {
       return const SizedBox.shrink();
     }
 
-    return Card(
-      elevation: 2,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+    return Container(
+      decoration: BoxDecoration(
+        color: AppColors.backgroundLight,
+        borderRadius: BorderRadius.circular(30),
+        border: Border.all(color: AppColors.greyMedium, width: 1),
+      ),
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       child: Column(
         children: [
           // Información del conductor
+          // UserCard(
+          //   name: driverTripRequest!.driver?.name,
+          //   lastname: driverTripRequest!.driver?.lastname,
+          //   imageUrl: driverTripRequest!.driver?.image,
+          //   backgroundColor: AppColors.backgroundLight,
+          // ),
           UserCard(
-            name: driverTripRequest!.driver?.name,
-            lastname: driverTripRequest!.driver?.lastname,
-            imageUrl: driverTripRequest!.driver?.image,
-            backgroundColor: AppColors.background,
+            name: driverTripRequest!.car!.brand,
+            phone:  '${driverTripRequest?.car?.plate} - ${driverTripRequest?.car?.color}',
+            imageUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRKGbrUhKoGOsCi_hR2c0IFNFMFJgx7_d87D5363c_uLITymI2NotuyRcsilcj4AflkVjA&usqp=CAU',
+            backgroundColor: AppColors.backgroundLight,
           ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -37,12 +46,6 @@ class ClientDriverOffersItem extends StatelessWidget {
               height: 1,
               color: AppColors.greyMedium,
             ),
-          ),
-          UserCard(
-            name: driverTripRequest!.car!.brand,
-            phone:  '${driverTripRequest?.car?.plate} - ${driverTripRequest?.car?.color}',
-            imageUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRKGbrUhKoGOsCi_hR2c0IFNFMFJgx7_d87D5363c_uLITymI2NotuyRcsilcj4AflkVjA&usqp=CAU',
-            backgroundColor: AppColors.background,
           ),
 
           // Detalles del viaje y botón
@@ -81,16 +84,8 @@ class ClientDriverOffersItem extends StatelessWidget {
                         fontWeight: FontWeight.w500,
                       ),
                     ),
-                    const SizedBox(height: 4),
-                    Text(
-                      driverTripRequest!.car?.brand ?? 'Auto',
-                      style: const TextStyle(
-                        fontSize: 13,
-                        color: AppColors.greyMedium,
-                      ),
-                    ),
                     CustomButton(
-                      text: 'Aceptar',
+                      text: 'Accept',
                       onPressed: () {
                         context.read<ClientDriverOffersBloc>().add(
                               AssignDriver(
@@ -102,7 +97,6 @@ class ClientDriverOffersItem extends StatelessWidget {
                       },
                       width: 140,
                       height: 44,
-                      textColor: Colors.white,
                       margin: EdgeInsets.zero,
                     ),
                   ],
